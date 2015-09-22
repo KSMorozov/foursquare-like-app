@@ -14,7 +14,7 @@ router.post('/login', function (req, res, next) {
       if (!isValid) {
         return res.status(401).send({ message : 'Wrong email and/or password' });
       }
-      var token = jwt.sign({ username : user.username, _id : user._id },
+      var token = jwt.sign({ name : user.name, sub : user._id },
                            secret, { expiresInMinutes : 1440 });
       res.send({ token : token });
     });

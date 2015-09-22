@@ -15,7 +15,7 @@ router.post('/signup', function (req, res, next) {
       email    : req.body.email,
       password : req.body.password
     });
-    var token = jwt.sign({ username : user.name, sub : user._id },
+    var token = jwt.sign({ name : user.name, sub : user._id },
                          secret, { expiresInMinutes : 1440 });
     user.save(function () {
       res.send({ token :  token});
