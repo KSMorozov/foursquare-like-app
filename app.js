@@ -1,12 +1,18 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
+var express      = require('express');
+var path         = require('path');
+var favicon      = require('serve-favicon');
+var logger       = require('morgan');
 var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+var bodyParser   = require('body-parser');
+var mongoose     = require('mongoose');
+var config       = require('./config');
 
-var home = require('./routes/index');
-var auth = require('./routes/auth/auth');
+var auth         = require('./routes/auth.js');
+
+mongoose.connect(config.MONGO_URI);
+mongoose.connection.on('error', function (err) {
+  console.log('Error: Could not connect to MongoDB.');
+});
 
 var app = express();
 
@@ -22,7 +28,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/'    , home);
 app.use('/auth', auth);
 
 // catch 404 and forward to error handler

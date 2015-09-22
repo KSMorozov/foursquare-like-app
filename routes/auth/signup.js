@@ -5,9 +5,9 @@ var User    = require('../../models/user');
 var router  = express.Router();
 var secret  = config.TOKEN_SECRET;
 
-router.post('/', function () {
+router.post('/signup', function (req, res, next) {
   User.findOne({ email : req.body.email }, function (err, existingUser) {
-    if (user) {
+    if (existingUser) {
       return res.status(409).send({ message : 'Email is already taken' });
     }
     var user = new User({
@@ -15,7 +15,7 @@ router.post('/', function () {
       email    : req.body.email,
       password : req.body.password
     });
-    var token = jwt.sign({ username : user.username, _id : user._id },
+    var token = jwt.sign({ username : user.name, sub : user._id },
                          secret, { expiresInMinutes : 1440 });
     user.save(function () {
       res.send({ token :  token});
