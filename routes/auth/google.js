@@ -6,7 +6,7 @@ var request = require('request');
 var router  = express.Router();
 var secret  = config.TOKEN_SECRET;
 
-router.post('/google', function (req, res) {
+router.post('/google', function (req, res, next) {
   var accessTokenUrl = 'https://accounts.google.com/o/oauth2/token';
   var peopleApiUrl   = 'https://www.googleapis.com/plus/v1/people/me/openIdConnect';
   var params         = {
@@ -34,7 +34,7 @@ router.post('/google', function (req, res) {
           var payload = jwt.verify(token, secret);
           User.findById(payload.sub, function (err, user) {
             if (!user) {
-              return res.status(400).send({ messsage : 'User not found' });
+              return res.status(400).send({ message : 'User not found' });
             }
             user.google  = profile.sub;
             user.picture = user.picture || profile.picture.replace('sz=50', 'sz=200');
