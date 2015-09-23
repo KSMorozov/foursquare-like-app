@@ -9,5 +9,7 @@
     - [x] Facebook
     - [ ] Vkontakte
   - [x] Authentication Middleware
+  - [x] Unlink Provider Feature
 - [x] Basic Profile API
+
 ## *Frontend:*
