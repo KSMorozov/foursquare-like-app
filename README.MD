@@ -8,5 +8,6 @@
     - [x] Twitter
     - [x] Facebook
     - [ ] Vkontakte
-
+  - [x] Authentication Middleware
+- [x] Basic Profile API
 ## *Frontend:*

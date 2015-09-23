@@ -8,6 +8,7 @@ var mongoose     = require('mongoose');
 var config       = require('./config');
 
 var auth         = require('./routes/auth.js');
+var api          = require('./routes/api.js');
 
 mongoose.connect(config.MONGO_URI);
 mongoose.connection.on('error', function (err) {
@@ -29,6 +30,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/auth', auth);
+app.use('/api' , api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,8 +1,9 @@
-var express = require('express');
-var jwt     = require('jsonwebtoken');
-var config  = require('../../config');
 var User    = require('../../models/user');
+var config  = require('../../config');
+var jwt     = require('jsonwebtoken');
+var express = require('express');
 var request = require('request');
+var moment  = require('moment');
 var router  = express.Router();
 var secret  = config.TOKEN_SECRET;
 
@@ -40,8 +41,9 @@ router.post('/facebook', function (req, res, next) {
             user.picture  = user.picture || 'https://graph.facebook.com/v2.3/' + profile.id + '/picture?type=large';
             user.name     = user.name    || profile.name;
             user.save(function () {
-              var token  = jwt.sign({ name : user.name, sub : user._id },
-                                   secret, { expiresInMinutes : 1440 });
+              var token  = jwt.sign({ name : user.name, sub : user._id,
+                                      iat: moment().unix(),
+                                      exp: moment().add(14, 'days').unix() }, secret);
               res.send({ token : token });
             });
           });
@@ -49,8 +51,9 @@ router.post('/facebook', function (req, res, next) {
       } else {
         User.findOne({ facebook : profile.id }, function (err, existingUser) {
           if (existingUser) {
-            var token = jwt.sign({ name : existingUser.name, sub : existingUser._id },
-                                 secret, { expiresInMinutes : 1440 });
+            var token  = jwt.sign({ name : existingUser.name, sub : existingUser._id,
+                                    iat: moment().unix(),
+                                    exp: moment().add(14, 'days').unix() }, secret);
             return res.send({ token : token });
           }
           var user      = new User();
@@ -58,8 +61,9 @@ router.post('/facebook', function (req, res, next) {
           user.picture  = 'https://graph.facebook.com/' + profile.id + '/picture?type=large';
           user.name     = profile.name;
           user.save(function () {
-            var token  = jwt.sign({ name : user.name, sub : user._id },
-                                 secret, { expiresInMinutes : 1440 });
+            var token  = jwt.sign({ name : user.name, sub : user._id,
+                                    iat: moment().unix(),
+                                    exp: moment().add(14, 'days').unix() }, secret);
             res.send({ token : token });
           });
         });

@@ -1,7 +1,8 @@
-var express = require('express');
-var jwt     = require('jsonwebtoken');
-var config  = require('../../config');
 var User    = require('../../models/user');
+var config  = require('../../config');
+var jwt     = require('jsonwebtoken');
+var express = require('express');
+var moment  = require('moment');
 var router  = express.Router();
 var secret  = config.TOKEN_SECRET;
 
@@ -14,8 +15,9 @@ router.post('/login', function (req, res, next) {
       if (!isValid) {
         return res.status(401).send({ message : 'Wrong email and/or password' });
       }
-      var token = jwt.sign({ name : user.name, sub : user._id },
-                           secret, { expiresInMinutes : 1440 });
+      var token  = jwt.sign({ name : user.name, sub : user._id,
+                              iat: moment().unix(),
+                              exp: moment().add(14, 'days').unix() }, secret);
       res.send({ token : token });
     });
   });

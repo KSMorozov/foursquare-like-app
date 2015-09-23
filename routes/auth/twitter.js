@@ -1,9 +1,10 @@
-var express = require('express');
-var qs      = require('querystring');
-var jwt     = require('jsonwebtoken');
-var config  = require('../../config');
 var User    = require('../../models/user');
+var config  = require('../../config');
+var jwt     = require('jsonwebtoken');
+var qs      = require('querystring');
+var express = require('express');
 var request = require('request');
+var moment  = require('moment');
 var router  = express.Router();
 var secret  = config.TOKEN_SECRET;
 
@@ -58,8 +59,9 @@ router.post('/twitter', function (req, res, next) {
               user.name    = user.name    || profile.name;
               user.picture = user.picture || profile.profile_image_url.replace('_normal', '');
               user.save(function (err) {
-                var token  = jwt.sign({ name : user.name, sub : user._id },
-                                     secret, { expiresInMinutes : 1440 });
+                var token  = jwt.sign({ name : user.name, sub : user._id,
+                                        iat: moment().unix(),
+                                        exp: moment().add(14, 'days').unix() }, secret);
                 res.send({ token : token });
               });
             });
@@ -67,8 +69,9 @@ router.post('/twitter', function (req, res, next) {
         } else {
           User.findOne({ twitter : profile.id }, function (err, existingUser) {
             if (existingUser) {
-              var token = jwt.sign({ name : existingUser.name, sub : existingUser._id },
-                                   secret, { expiresInMinutes : 1440 });
+              var token  = jwt.sign({ name : existingUser.name, sub : existingUser._id,
+                                      iat: moment().unix(),
+                                      exp: moment().add(14, 'days').unix() }, secret);
               return res.send({ token : token });
             }
             var user = new User();
@@ -76,8 +79,9 @@ router.post('/twitter', function (req, res, next) {
             user.name    = profile.name;
             user.picture = profile.profile_image_url.replace('_normal', '');
             user.save(function () {
-              var token  = jwt.sign({ name : user.name, sub : user._id },
-                                   secret, { expiresInMinutes : 1440 });
+              var token  = jwt.sign({ name : user.name, sub : user._id,
+                                      iat: moment().unix(),
+                                      exp: moment().add(14, 'days').unix() }, secret);
               res.send({ token : token });
             });
           });

@@ -1,7 +1,8 @@
-var express = require('express');
-var jwt     = require('jsonwebtoken');
-var config  = require('../../config');
 var User    = require('../../models/user');
+var config  = require('../../config');
+var jwt     = require('jsonwebtoken');
+var express = require('express');
+var moment  = require('moment');
 var router  = express.Router();
 var secret  = config.TOKEN_SECRET;
 
@@ -15,8 +16,9 @@ router.post('/signup', function (req, res, next) {
       email    : req.body.email,
       password : req.body.password
     });
-    var token = jwt.sign({ name : user.name, sub : user._id },
-                         secret, { expiresInMinutes : 1440 });
+    var token  = jwt.sign({ name : user.name, sub : user._id,
+                            iat: moment().unix(),
+                            exp: moment().add(14, 'days').unix() }, secret);
     user.save(function () {
       res.send({ token :  token});
     });
