@@ -5,5 +5,9 @@ module.exports = {
   // OAuth 2.0
   GOOGLE_SECRET    : process.env.GOOGLE_SECRET    || 'apz2BkdT1Wo0mZm3JYofwH04',
   INSTAGRAM_SECRET : process.env.INSTAGRAM_SECRET || '05cb628ea1954b86b174f2497cfe7eab',
-  FACEBOOK_SECRET  : process.env.FACEBOOK_SECRET  || '0a5fb8a1b3ea2e6cd2280ed4028d817b'
+  FACEBOOK_SECRET  : process.env.FACEBOOK_SECRET  || '0a5fb8a1b3ea2e6cd2280ed4028d817b',
+
+  // OAuth 1.0
+  TWITTER_KEY    : process.env.TWITTER_KEY || '87RSzCFl40diEsbGnomYAAisN',
+  TWITTER_SECRET : process.env.TWITTER_SECRET || 'QvsKEvsSZmg1NNKxah2Pch5RFJSABDdrgyWldj5msP4Iq0i3OY'
 };

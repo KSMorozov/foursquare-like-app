@@ -5,7 +5,7 @@
   - [ ]  3rd Party Login/Signup Providers:
     - [x] Google
     - [x] Instagram
-    - [ ] Twitter
+    - [x] Twitter
     - [x] Facebook
     - [ ] Vkontakte
 
