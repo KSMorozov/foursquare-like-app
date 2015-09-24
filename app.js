@@ -7,8 +7,9 @@ var bodyParser   = require('body-parser');
 var mongoose     = require('mongoose');
 var config       = require('./config');
 
-var auth         = require('./routes/auth.js');
-var api          = require('./routes/api.js');
+var auth         = require('./routes/auth');
+var api          = require('./routes/api');
+var index        = require('./routes/index');
 
 mongoose.connect(config.MONGO_URI);
 mongoose.connection.on('error', function (err) {
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/auth', auth);
 app.use('/api' , api);
+app.use('/'    , index);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
