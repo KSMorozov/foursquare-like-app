@@ -1,5 +1,96 @@
 extends layout
 
 block content
-  h1 Home
-  p Sweet Home.
+  div(ng-controller='NavbarController as Navbar', ng-cloak, layout='column')
+    md-toolbar(layout='row')
+      div(class='md-toolbar-tools', layout='row', layout-align='space-between', flex)
+        div
+          md-button(aria-label='Login', class='md-icon-button', hide-gt-lg, ng-click='Navbar.toggleLeft()')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/menu.svg')
+        div(hide-sm, hide-md)
+          md-button(aria-label='Login', class='md-icon-button')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/baloon.svg')
+          md-button(aria-label='Login', class='md-icon-button')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/cup.svg')
+          md-button(aria-label='Login', class='md-icon-button')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/flag.svg')
+          md-button(aria-label='Login', class='md-icon-button')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/pin.svg')
+          md-button(aria-label='Login', class='md-icon-button')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/camera.svg')
+          md-button(aria-label='Login', class='md-icon-button')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/bike.svg')
+          md-button(aria-label='Login', class='md-icon-button')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/basket.svg')
+          md-button(aria-label='Login', class='md-icon-button')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/frame.svg')
+          md-button(aria-label='Login', class='md-icon-button')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/smile.svg')
+          md-button(aria-label='Login', class='md-icon-button')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/tent.svg')
+        div
+          md-button(aria-label='Login', class='md-icon-button', ng-click="$state.go('home.login')",
+                    ng-if='!Navbar.isAuthenticated()')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/login.svg')
+          md-button(aria-label='Login', class='md-icon-button', ng-click="$state.go('home.logout')",
+                    ng-if='Navbar.isAuthenticated()')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/logout.svg')
+  div(ng-controller='ApplicationController as App', ng-cloak, layout='row', flex, layout-fill,
+  class='md-whiteframe-z1')
+    md-sidenav(class='md-sidenav-left',
+                      md-component-id='left',
+                      md-is-locked-open="$mdMedia('gt-lg')",
+                      layout='column',
+                      layout-margin, 
+                      layout-fill, flex)
+      md-content(layout='column'
+                 layout-align='start',
+                 ng-controller='SideNavLeftController as SideNavLeft', flex)
+        md-list
+          md-list-item(ng-click='SideNavLeft.close()')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/profile.svg')
+            p Profile
+          md-list-item(ng-click='SideNavLeft.close()')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/friends.svg')
+            p Friends
+          md-list-item(ng-click='SideNavLeft.close()')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/msg.svg')
+            p Messages
+          md-list-item(ng-click='SideNavLeft.close()')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/star.svg')
+            p Glory Alley
+          md-list-item(ng-click='SideNavLeft.close()')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/news.svg')
+            p News
+          md-list-item(ng-click='SideNavLeft.close()')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/article.svg')
+            p Articles
+          md-list-item(ng-click='SideNavLeft.close()')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/calendar.svg')
+            p Сalendar
+          md-list-item(ng-click='SideNavLeft.close()')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/meeting.svg')
+            p Meetings
+          md-list-item(ng-click='SideNavLeft.close()')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/notes.svg')
+            p Notes
+          md-list-item(ng-click='SideNavLeft.close()')
+            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/wishlist.svg')
+            p Wishlist
+    ui-view(layout='column', layout-fill, flex)
+  div(layout='column', flex)
+    md-toolbar(layout='row')
+      div(class='md-toolbar-tools', layout='row',
+          layout-align='space-around center'
+          class='md-whiteframe-z1',
+          layout-padding,
+          ng-cloak,
+          flex)
+        p hey there
+        p hey there
+        p hey there
+        p hey there
+        p hey there
+        p hey there
+        p hey there
+        p hey there

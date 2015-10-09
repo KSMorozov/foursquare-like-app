@@ -1,0 +1,25 @@
+md-dialog(aria-label='Login Dialog', ng-cloak, flex='20')
+  md-toolbar
+    .md-toolbar-tools(layout='row', layout-align='start center')
+      h1 Вход
+  md-dialog-content
+    form(method='post', ng-submit='LoginDialog.login()', name='signForm')
+      md-input-container(flex, class='md-accent md-hue-7')
+        label Электронный адрес
+        input(type='text', name='email', ng-model='LoginDialog.user.email',
+              required,
+              autofocus)
+      md-input-container(flex, class='md-accent md-hue-7')
+        label Пароль
+        input(type='password', name='password', ng-model='LoginDialog.user.password',
+              required)
+      md-input-container(flex, class='md-accent md-hue-7')
+        md-button(ng-disabled='signForm.$invalid', class='md-accent md-hue-7', type='submit') Вход
+      md-input-container(flex, class='md-accent md-hue-7')
+        .or-divider
+          p.text или
+          hr
+    md-list(layout-fill, flex)
+      md-list-item(ng-repeat='provider in LoginDialog.providers', ng-click='LoginDialog.authenticate(provider.name)')
+        md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/{{provider.icon}}')
+        p Войти с помощью {{provider.name}}

@@ -1,8 +1,21 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+md-icon svg {
+  fill: inherit;
 }
 
-a {
-  color: #00B7FF;
+.or-divider {
+  position: relative;
+  height: 34px;
+  text-align: center;
+}
+
+.or-divider hr{
+  width: 90%;
+  margin: -16px auto 10px auto;
+  border-top: 1px solid #dce0e0;
+}
+
+.or-divider .text {
+  display: inline-block;
+  padding: 8px;
+  margin: 0;
 }
