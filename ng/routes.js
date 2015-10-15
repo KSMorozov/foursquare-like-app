@@ -8,8 +8,20 @@
       controller   : 'HomeController',
       controllerAs : 'Home'
     })
-    .state('home.login', {
-      url : 'login',
+    .state('profile', {
+      url : '/profile',
+      templateUrl  : 'templates/profile.html',
+      controller   : 'ProfileController',
+      controllerAs : 'Profile',
+    })
+    .state('messages', {
+      url : '/messages',
+      templateUrl  : 'templates/messages.html',
+      controller   : 'MessagesController',
+      controllerAs : 'Messages',
+    })
+    .state('login', {
+      url : '/login',
       templateUrl  : 'templates/login.html',
       controller   : 'LoginController',
       controllerAs : 'Login',
@@ -17,8 +29,8 @@
         skipIfLoggedIn : skipIfLoggedIn
       }
     })
-    .state('home.logout', {
-      url        : 'logout',
+    .state('logout', {
+      url        : '/logout',
       template   : null,
       controller : 'LogoutController'
     });

@@ -23,9 +23,6 @@
   angular.module('FourApp')
   .controller('ApplicationController', function () {
     var self = this;
-    self.a = function () {
-      console.log('hey');
-    }
   });
 })();
 
@@ -142,7 +139,7 @@
     $auth.logout()
     .then(function () {
       console.log('Logged out boys');
-      $state.go('home.login');
+      $state.go('login');
     });
   });
 })();
@@ -155,6 +152,13 @@
       'default' : '100'
     })
     .accentPalette('deep-orange');
+  });
+})();
+
+(function () {
+  angular.module('FourApp')
+  .controller('MessagesController', function () {
+    
   });
 })();
 
@@ -183,6 +187,37 @@
 
 (function () {
   angular.module('FourApp')
+  .controller('ProfileController', function (Account, $filter) {
+    var self = this;
+
+    self.getProfile = function () {
+      Account.getProfile()
+      .then(function (res) {
+        self.user = res.data;
+        self.user.date = new Date(self.user.date) || new Date();
+        console.log(self.user);
+      })
+      .catch(function (res) {
+        console.log(res.data.message, res.status);
+      });
+    };
+
+    self.updateProfile = function () {
+      Account.updateProfile(self.user)
+      .then(function () {
+        console.log('Profile Updated!');
+      })
+      .catch(function (res) {
+        console.log(res.data.message, res.status);
+      });
+    }
+
+    self.getProfile();
+  });
+})();
+
+(function () {
+  angular.module('FourApp')
   .config(function ($locationProvider, $stateProvider, $urlRouterProvider) {
     $stateProvider
     .state('home', {
@@ -191,8 +226,20 @@
       controller   : 'HomeController',
       controllerAs : 'Home'
     })
-    .state('home.login', {
-      url : 'login',
+    .state('profile', {
+      url : '/profile',
+      templateUrl  : 'templates/profile.html',
+      controller   : 'ProfileController',
+      controllerAs : 'Profile',
+    })
+    .state('messages', {
+      url : '/messages',
+      templateUrl  : 'templates/messages.html',
+      controller   : 'MessagesController',
+      controllerAs : 'Messages',
+    })
+    .state('login', {
+      url : '/login',
       templateUrl  : 'templates/login.html',
       controller   : 'LoginController',
       controllerAs : 'Login',
@@ -200,8 +247,8 @@
         skipIfLoggedIn : skipIfLoggedIn
       }
     })
-    .state('home.logout', {
-      url        : 'logout',
+    .state('logout', {
+      url        : '/logout',
       template   : null,
       controller : 'LogoutController'
     });

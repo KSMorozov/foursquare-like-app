@@ -5,7 +5,7 @@
     $auth.logout()
     .then(function () {
       console.log('Logged out boys');
-      $state.go('home.login');
+      $state.go('login');
     });
   });
 })();

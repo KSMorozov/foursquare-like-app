@@ -16,6 +16,10 @@ router.put('/me', limit, function (req, res) {
     }
     user.name  = req.body.name  || user.name;
     user.email = req.body.email || user.email;
+    user.city  = req.body.city  || user.city;
+    user.info  = req.body.info  || user.info;
+    user.sex   = req.body.sex   || user.sex;
+    user.date  = new Date(req.body.date)  || user.date;
     user.save(function (err) {
       res.status(200).end();
     });

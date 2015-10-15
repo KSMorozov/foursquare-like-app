@@ -6,7 +6,7 @@ var router  = express.Router();
 router.post('/messages', limit, function (req, res) {
   var message = new Message({
     from    : req.user,
-    to      : req.body.to,
+    to      : req.body.friend,
     subject : req.body.subject,
     body    : req.body.body
   });
@@ -20,20 +20,13 @@ router.post('/messages', limit, function (req, res) {
   });
 });
 
-router.get('/message/inbox', limit, function (req, res) {
-  Message.find({ to : req.user })
+router.get('/messages', limit, function (req, res) {
+  var inbox  = Message.find({ to : req.user, from : req.body.friend });
+  var outbox = Message.find({ to : req.body.friend, from : req.user });
+  inbox.concat(outbox)
   .sort('-date')
   .exec(function (err, messages) {
-    if (err) return res.status(404).send({ message : 'No Inbox Messages.' });
-    res.json(messages);
-  });
-});
-
-router.get('/message/outbox', limit, function (req, res) {
-  Message.find({ from : req.user })
-  .sort('-date')
-  .exec(function (err, messages) {
-    if (err) return res.status(404).send({ message : 'No Outbox Messages.' });
+    if (err) return res.status(404).send({ message : 'No Messages Found.' });
     res.json(messages);
   });
 });

@@ -22,7 +22,7 @@ router.post('/facebook', function (req, res, next) {
       return res.status(500).send({ message : accessToken.error.message });
     }
 
-    request.get({ url : graphApiUrl, qs : accessToken, jsson : true }, function (error, response, profile) {
+    request.get({ url : graphApiUrl, qs : accessToken, json : true }, function (error, response, profile) {
       if (response.statusCode !== 200) {
         return res.status(500).send({ message : profile.error.message });
       }
@@ -40,6 +40,7 @@ router.post('/facebook', function (req, res, next) {
             user.facebook = profile.id;
             user.picture  = user.picture || 'https://graph.facebook.com/v2.3/' + profile.id + '/picture?type=large';
             user.name     = user.name    || profile.name;
+            console.log(user.picture);
             user.save(function () {
               var token  = jwt.sign({ name : user.name, sub : user._id,
                                       iat: moment().unix(),
@@ -58,7 +59,7 @@ router.post('/facebook', function (req, res, next) {
           }
           var user      = new User();
           user.facebook = profile.id;
-          user.picture  = 'https://graph.facebook.com/' + profile.id + '/picture?type=large';
+          user.picture  = 'https://graph.facebook.com/v2.3/' + profile.id + '/picture?type=large';
           user.name     = profile.name;
           user.save(function () {
             var token  = jwt.sign({ name : user.name, sub : user._id,

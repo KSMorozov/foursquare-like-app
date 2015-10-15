@@ -10,53 +10,61 @@ var secret  = config.TOKEN_SECRET;
 
 router.post('/twitter', function (req, res, next) {
   var requestTokenUrl = 'https://api.twitter.com/oauth/request_token';
-  var accessTokenUrl  = 'https://api.twitter.com/oauth/access_token';
-  var profileUrl      = 'https://api.twitter.com/1.1/users/show.json?screen_name=';
-  if (!req.body.oauth_token || !req.body.oauth_veriier) {
+  var accessTokenUrl = 'https://api.twitter.com/oauth/access_token';
+  var profileUrl = 'https://api.twitter.com/1.1/users/show.json?screen_name=';
+
+  if (!req.body.oauth_token || !req.body.oauth_verifier) {
     var requestTokenOauth = {
-      consumer_key    : config.TWITTER_KEY,
-      consumer_secret : config.TWITTER_SECRET,
-      callback        : req.body.redirectUri
+      consumer_key: config.TWITTER_KEY,
+      consumer_secret: config.TWITTER_SECRET,
+      callback: req.body.redirectUri
     };
 
-    request.post({ url : requestTokenUrl, oauth : requestTokenOauth }, function (error, response, body) {
+    request.post({ url: requestTokenUrl, oauth: requestTokenOauth }, function(err, response, body) {
       var oauthToken = qs.parse(body);
+
       res.send(oauthToken);
     });
   } else {
     var accessTokenOauth = {
-      consumer_key    : config.TWITTER_KEY,
-      consumer_secret : config.TWITTER_SECRET,
-      token           : req.body.oauth_token,
-      verifier        : req.body.oauth_veriier
+      consumer_key: config.TWITTER_KEY,
+      consumer_secret: config.TWITTER_SECRET,
+      token: req.body.oauth_token,
+      verifier: req.body.oauth_verifier
     };
 
-    request.post({ url : accessTokenUrl, oauth : accessTokenOauth }, function (error, response, accessToken) {
+    request.post({ url: accessTokenUrl, oauth: accessTokenOauth }, function(err, response, accessToken) {
+
       accessToken = qs.parse(accessToken);
+
       var profileOauth = {
-        consumer_key    : config.TWITTER_KEY,
-        consumer_secret : config.TWITTER_SECRET,
-        oauth_token     : accessToken.oauth_token
+        consumer_key: config.TWITTER_KEY,
+        consumer_secret: config.TWITTER_SECRET,
+        oauth_token: accessToken.oauth_token
       };
 
       request.get({
-        url   : profileUrl + accessToken.screen_name,
-        oauth : profileOauth,
-        json  : true
-      }, function (error, response, profile) {
+        url: profileUrl + accessToken.screen_name,
+        oauth: profileOauth,
+        json: true
+      }, function(err, response, profile) {
+
         if (req.headers.authorization) {
-          User.findOne({ twitter : profile.id }, function (err, existingUser) {
+          User.findOne({ twitter: profile.id }, function(err, existingUser) {
             if (existingUser) {
-              return res.status(409).send({ message : 'There is already a Twitter account that belongs to you' });
+              return res.status(409).send({ message: 'There is already a Twitter account that belongs to you' });
             }
-            var token   = req.headers.authorization.split(' ')[1];
+
+            var token = req.headers.authorization.split(' ')[1];
             var payload = jwt.verify(token, secret);
-            User.findById(payload.sub, function (err, user) {
+
+            User.findById(payload.sub, function(err, user) {
               if (!user) {
-                return res.status(400).send({ message : 'User not found' });
+                return res.status(400).send({ message: 'User not found' });
               }
+
               user.twitter = profile.id;
-              user.name    = user.name    || profile.name;
+              user.displayName = user.displayName || profile.name;
               user.picture = user.picture || profile.profile_image_url.replace('_normal', '');
               user.save(function (err) {
                 var token  = jwt.sign({ name : user.name, sub : user._id,
@@ -67,7 +75,7 @@ router.post('/twitter', function (req, res, next) {
             });
           });
         } else {
-          User.findOne({ twitter : profile.id }, function (err, existingUser) {
+          User.findOne({ twitter: profile.id }, function(err, existingUser) {
             if (existingUser) {
               var token  = jwt.sign({ name : existingUser.name, sub : existingUser._id,
                                       iat: moment().unix(),
@@ -76,7 +84,7 @@ router.post('/twitter', function (req, res, next) {
             }
             var user = new User();
             user.twitter = profile.id;
-            user.name    = profile.name;
+            user.displayName = profile.name;
             user.picture = profile.profile_image_url.replace('_normal', '');
             user.save(function () {
               var token  = jwt.sign({ name : user.name, sub : user._id,

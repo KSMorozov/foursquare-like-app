@@ -11,8 +11,13 @@ var schema = new mongoose.Schema({
     type   : String,
     select : false
   },
+  friends  : [{type : mongoose.Schema.Types.ObjectId, ref : 'User'}],
   name      : String,
   picture   : String,
+  city      : String,
+  sex       : String,
+  info      : String,
+  date      : Date,
   facebook  : String,
   google    : String,
   instagram : String,
