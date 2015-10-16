@@ -97,7 +97,7 @@
       $mdDialog.cancel();
     };
 
-    var providers = [
+    self.providers = [
       { name : 'facebook' , display : 'Facebook' ,  icon : 'facebook.svg'},
       { name : 'google'   , display : 'Google'   ,  icon : 'google.svg'},
       { name : 'instagram', display : 'Instagram',  icon : 'instagram.svg'},
