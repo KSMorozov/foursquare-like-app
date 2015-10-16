@@ -11,14 +11,12 @@
       $mdDialog.cancel();
     };
 
-    self.message = 'hey there';
-
-    self.providers = [
-      { name : 'facebook' , icon : 'facebook.svg'},
-      { name : 'google'   , icon : 'google.svg'},
-      { name : 'Instagram', icon : 'instagram.svg'},
-      { name : 'twitter'  , icon : 'twitter.svg'},
-      { name : 'vkontakte', icon : 'vkontakte.svg'}
+    var providers = [
+      { name : 'facebook' , display : 'Facebook' ,  icon : 'facebook.svg'},
+      { name : 'google'   , display : 'Google'   ,  icon : 'google.svg'},
+      { name : 'instagram', display : 'Instagram',  icon : 'instagram.svg'},
+      { name : 'twitter'  , display : 'Twitter'  ,  icon : 'twitter.svg'},
+      { name : 'vkontakte', display : 'Vkontakte',  icon : 'vkontakte.svg'}
     ];
 
     self.login = function () {

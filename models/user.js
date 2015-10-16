@@ -11,17 +11,17 @@ var schema = new mongoose.Schema({
     type   : String,
     select : false
   },
-  friends  : [{type : mongoose.Schema.Types.ObjectId, ref : 'User'}],
-  name      : String,
-  picture   : String,
-  city      : String,
-  sex       : String,
-  info      : String,
-  date      : Date,
-  facebook  : String,
-  google    : String,
-  instagram : String,
-  twitter   : String
+  friends     : [{type : mongoose.Schema.Types.ObjectId, ref : 'User'}],
+  displayName : String,
+  picture     : String,
+  city        : String,
+  sex         : String,
+  info        : String,
+  date        : Date,
+  facebook    : String,
+  google      : String,
+  instagram   : String,
+  twitter     : String
 });
 
 schema.pre('save', function (next) {
@@ -35,7 +35,7 @@ schema.pre('save', function (next) {
   });
 });
 
-schema.methods.comparePasswords = function (password, callback) {
+schema.methods.comparePassword = function (password, callback) {
   var user = this;
   bcrypt.compare(password, user.password, function (err, isValid) {
     callback(err, isValid);

@@ -1,7 +1,6 @@
-var jwt     = require('jsonwebtoken');
-var config  = require('../../config');
-var moment  = require('moment');
-var secret  = config.TOKEN_SECRET;
+var jwtutils = require('../../utils/jwtutils');
+var config   = require('../../config');
+var moment   = require('moment');
 
 module.exports = function (req, res, next) {
   if (!req.headers.authorization) {
@@ -10,7 +9,7 @@ module.exports = function (req, res, next) {
   var token   = req.headers.authorization.split(' ')[1];
   var payload = null;
   try {
-    payload = jwt.verify(token, secret);
+    payload = jwtutils.decode(token);
   } catch (err) {
     return res.status(401).send({ message : err.message });
   }

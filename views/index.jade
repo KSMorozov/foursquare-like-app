@@ -35,43 +35,16 @@ block content
           md-button(aria-label='Login', class='md-icon-button', ng-click="$state.go('logout')",
                     ng-if='Navbar.isAuthenticated()')
             md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/logout.svg')
-  md-content(flex='100')
+  md-content(flex='100', style='min-height:100%;')
     div(layout='row', layout-fill, ng-controller='ApplicationController as App')
       md-sidenav(class='md-sidenav-left',
                         md-component-id='left',
                         md-is-locked-open="$mdMedia('gt-lg')")
         md-content(ng-controller='SideNavLeftController as SideNavLeft')
           md-list
-            md-list-item(ng-click="$state.go('profile'); SideNavLeft.close()")
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/profile.svg')
-              p Мой Кабинет
-            md-list-item(ng-click='SideNavLeft.close()')
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/friends.svg')
-              p Друзья
-            md-list-item(ng-click="$state.go('messages'); SideNavLeft.close()")
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/msg.svg')
-              p Сообщения
-            md-list-item(ng-click='SideNavLeft.close()')
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/star.svg')
-              p Аллея Славы
-            md-list-item(ng-click='SideNavLeft.close()')
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/news.svg')
-              p Новости
-            md-list-item(ng-click='SideNavLeft.close()')
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/article.svg')
-              p Статьи
-            md-list-item(ng-click='SideNavLeft.close()')
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/calendar.svg')
-              p Мой Календарь
-            md-list-item(ng-click='SideNavLeft.close()')
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/meeting.svg')
-              p Встречи
-            md-list-item(ng-click='SideNavLeft.close()')
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/clipy.svg')
-              p Избранное
-            md-list-item(ng-click='SideNavLeft.close()')
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/wishlist.svg')
-              p Доска желаний
+            md-list-item(ng-repeat='item in SideNavLeft.menu', aria-label='item.name', ng-click="$state.go(item.route); SideNavLeft.close()")
+              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/{{item.icon}}')
+              p(ng-bind='item.name')
       md-content(flex, class='md-padding')
         div(ui-view)
       md-sidenav(class='md-sidenav-right',
@@ -79,36 +52,9 @@ block content
                         md-is-locked-open="$mdMedia('gt-lg')")
         md-content(ng-controller='SideNavLeftController as SideNavLeft')
           md-list
-            md-list-item(ng-click="$state.go('profile'); SideNavLeft.close()")
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/profile.svg')
-              p Мой Кабинет
-            md-list-item(ng-click='SideNavLeft.close()')
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/friends.svg')
-              p Друзья
-            md-list-item(ng-click="$state.go('messages'); SideNavLeft.close()")
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/msg.svg')
-              p Сообщения
-            md-list-item(ng-click='SideNavLeft.close()')
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/star.svg')
-              p Аллея Славы
-            md-list-item(ng-click='SideNavLeft.close()')
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/news.svg')
-              p Новости
-            md-list-item(ng-click='SideNavLeft.close()')
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/article.svg')
-              p Статьи
-            md-list-item(ng-click='SideNavLeft.close()')
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/calendar.svg')
-              p Мой Календарь
-            md-list-item(ng-click='SideNavLeft.close()')
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/meeting.svg')
-              p Встречи
-            md-list-item(ng-click='SideNavLeft.close()')
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/clipy.svg')
-              p Избранное
-            md-list-item(ng-click='SideNavLeft.close()')
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/wishlist.svg')
-              p Доска желаний
+            md-list-item(ng-repeat='item in SideNavLeft.menu', aria-label='item.name', ng-click="$state.go(item.route); SideNavLeft.close()")
+              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/{{item.icon}}')
+              p(ng-bind='item.name')
   div(layout='column', class='footer')
     md-toolbar(layout='row')
       div(class='md-toolbar-tools',

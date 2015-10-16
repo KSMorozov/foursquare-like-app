@@ -1,14 +1,12 @@
-var User    = require('../../models/user');
-var config  = require('../../config');
-var jwt     = require('jsonwebtoken');
-var qs      = require('querystring');
-var express = require('express');
-var request = require('request');
-var moment  = require('moment');
-var router  = express.Router();
-var secret  = config.TOKEN_SECRET;
+var jwtutils = require('../../utils/jwtutils');
+var User       = require('../../models/user');
+var config     = require('../../config');
+var qs         = require('querystring');
+var express    = require('express');
+var request    = require('request');
+var router     = express.Router();
 
-router.post('/twitter', function (req, res, next) {
+router.post('/twitter', function (req, res) {
   var requestTokenUrl = 'https://api.twitter.com/oauth/request_token';
   var accessTokenUrl = 'https://api.twitter.com/oauth/access_token';
   var profileUrl = 'https://api.twitter.com/1.1/users/show.json?screen_name=';
@@ -49,6 +47,7 @@ router.post('/twitter', function (req, res, next) {
         json: true
       }, function(err, response, profile) {
 
+        // Step 5a. Link user accounts.
         if (req.headers.authorization) {
           User.findOne({ twitter: profile.id }, function(err, existingUser) {
             if (existingUser) {
@@ -56,7 +55,7 @@ router.post('/twitter', function (req, res, next) {
             }
 
             var token = req.headers.authorization.split(' ')[1];
-            var payload = jwt.verify(token, secret);
+            var payload = jwtutils.decode(token);
 
             User.findById(payload.sub, function(err, user) {
               if (!user) {
@@ -66,31 +65,26 @@ router.post('/twitter', function (req, res, next) {
               user.twitter = profile.id;
               user.displayName = user.displayName || profile.name;
               user.picture = user.picture || profile.profile_image_url.replace('_normal', '');
-              user.save(function (err) {
-                var token  = jwt.sign({ name : user.name, sub : user._id,
-                                        iat: moment().unix(),
-                                        exp: moment().add(14, 'days').unix() }, secret);
-                res.send({ token : token });
+              user.save(function(err) {
+                var token = jwtutils.sign(user);
+                res.send({ token: token });
               });
             });
           });
         } else {
           User.findOne({ twitter: profile.id }, function(err, existingUser) {
             if (existingUser) {
-              var token  = jwt.sign({ name : existingUser.name, sub : existingUser._id,
-                                      iat: moment().unix(),
-                                      exp: moment().add(14, 'days').unix() }, secret);
-              return res.send({ token : token });
+              var token = jwtutils.sign(existingUser);
+              return res.send({ token: token });
             }
+
             var user = new User();
             user.twitter = profile.id;
             user.displayName = profile.name;
             user.picture = profile.profile_image_url.replace('_normal', '');
-            user.save(function () {
-              var token  = jwt.sign({ name : user.name, sub : user._id,
-                                      iat: moment().unix(),
-                                      exp: moment().add(14, 'days').unix() }, secret);
-              res.send({ token : token });
+            user.save(function() {
+              var token = jwtutils.sign(user);
+              res.send({ token: token });
             });
           });
         }

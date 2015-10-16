@@ -11,7 +11,7 @@ router.post('/unlink', limit, function (req, res) {
     return res.status(400).send({ message : 'Unknown OAuth Provider' });
   }
 
-  User.findById(req.user, function (req, res) {
+  User.findById(req.user, function (err, user) {
     if (!user) {
       return res.status(400).send({ message : 'User Not Found' });
     }

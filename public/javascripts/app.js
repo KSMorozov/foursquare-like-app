@@ -45,6 +45,7 @@
     $authProvider.twitter({
       url: '/auth/twitter'
     });
+
   });
 })();
 
@@ -96,14 +97,12 @@
       $mdDialog.cancel();
     };
 
-    self.message = 'hey there';
-
-    self.providers = [
-      { name : 'facebook' , icon : 'facebook.svg'},
-      { name : 'google'   , icon : 'google.svg'},
-      { name : 'Instagram', icon : 'instagram.svg'},
-      { name : 'twitter'  , icon : 'twitter.svg'},
-      { name : 'vkontakte', icon : 'vkontakte.svg'}
+    var providers = [
+      { name : 'facebook' , display : 'Facebook' ,  icon : 'facebook.svg'},
+      { name : 'google'   , display : 'Google'   ,  icon : 'google.svg'},
+      { name : 'instagram', display : 'Instagram',  icon : 'instagram.svg'},
+      { name : 'twitter'  , display : 'Twitter'  ,  icon : 'twitter.svg'},
+      { name : 'vkontakte', display : 'Vkontakte',  icon : 'vkontakte.svg'}
     ];
 
     self.login = function () {
@@ -187,14 +186,22 @@
 
 (function () {
   angular.module('FourApp')
-  .controller('ProfileController', function (Account, $filter) {
+  .controller('ProfileController', function (Account, $auth) {
     var self = this;
+
+    self.providers = [
+      { name : 'facebook' , display : 'Facebook' ,  icon : 'facebook.svg'},
+      { name : 'google'   , display : 'Google'   ,  icon : 'google.svg'},
+      { name : 'instagram', display : 'Instagram',  icon : 'instagram.svg'},
+      { name : 'twitter'  , display : 'Twitter'  ,  icon : 'twitter.svg'},
+      { name : 'vkontakte', display : 'Vkontakte',  icon : 'vkontakte.svg'}
+    ];
 
     self.getProfile = function () {
       Account.getProfile()
       .then(function (res) {
         self.user = res.data;
-        self.user.date = new Date(self.user.date) || new Date();
+        self.user.date = self.user.date ? new Date(self.user.date) : new Date();
         console.log(self.user);
       })
       .catch(function (res) {
@@ -209,6 +216,28 @@
       })
       .catch(function (res) {
         console.log(res.data.message, res.status);
+      });
+    };
+
+    self.link = function (provider) {
+      $auth.link(provider)
+      .then(function () {
+        console.log('linked', provider);
+        self.getProfile();
+      })
+      .catch(function (res) {
+        console.log(res.data.message, res.status);
+      });
+    };
+
+    self.unlink = function (provider) {
+      $auth.unlink(provider)
+      .then(function () {
+        console.log('unlinked', provider);
+        self.getProfile();
+      })
+      .catch(function (res) {
+        console.log(res.data ? res.data.message : 'Failed unlink' + provider, res.status);
       });
     }
 
@@ -275,6 +304,19 @@
   angular.module('FourApp')
   .controller('SideNavLeftController', function ($timeout, $mdSidenav, $log) {
     var self   = this;
+
+    self.menu = [
+      { name : 'Мой Кабинет'  , route : 'profile'  , icon : 'profile.svg'},
+      { name : 'Друзья'       , route : 'friends'  , icon : 'friends.svg'},
+      { name : 'Сообщения'    , route : 'messages' , icon : 'msg.svg'},
+      { name : 'Аллея Славы'  , route : 'alley'    , icon : 'star.svg'},
+      { name : 'Новости'      , route : 'news'     , icon : 'news.svg'},
+      { name : 'Статьи'       , route : 'articles' , icon : 'article.svg'},
+      { name : 'Мой Календарь', route : 'calendar' , icon : 'calendar.svg'},
+      { name : 'Встречи'      , route : 'meetings' , icon : 'meeting.svg'},
+      { name : 'Избранное'    , route : 'favorites', icon : 'clipy.svg'},
+      { name : 'Доска желаний', route : 'wishlist' , icon : 'wishlist.svg'},
+    ];
 
     self.close = function () {
       $mdSidenav('left').close()
