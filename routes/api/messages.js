@@ -1,13 +1,13 @@
-var express = require('express');
-var Message = require('../../models/message');
-var limit   = require('../middleware/limit');
-var router  = express.Router();
+var express  = require('express');
+var mongoose = require('mongoose');
+var Message  = require('../../models/message');
+var limit    = require('../middleware/limit');
+var router   = express.Router();
 
 router.post('/messages', limit, function (req, res) {
   var message = new Message({
-    from    : req.user,
-    to      : req.body.friend,
-    subject : req.body.subject,
+    from    : mongoose.Types.ObjectId(req.user),
+    to      : mongoose.Types.ObjectId(req.body.user_id),
     body    : req.body.body
   });
 
@@ -15,26 +15,32 @@ router.post('/messages', limit, function (req, res) {
     if (err) return res.send(err);
     res.json({
       message : 'New Message Sent!',
-      id      : message._id
+      id      : message
     });
   });
 });
 
-router.get('/messages', limit, function (req, res) {
-  var inbox  = Message.find({ to : req.user, from : req.body.friend });
-  var outbox = Message.find({ to : req.body.friend, from : req.user });
-  inbox.concat(outbox)
+router.post('/messages/chats', limit, function (req, res) {
+  var amount = req.body.amount || 20;
+  console.log(amount, req.body.friend);
+  Message.find({
+    $or: [
+      { to : req.user, from : req.body.friend },
+      { to : req.body.friend, from : req.user }
+    ]
+  })
   .sort('-date')
+  .limit(amount)
   .exec(function (err, messages) {
     if (err) return res.status(404).send({ message : 'No Messages Found.' });
-    res.json(messages);
+    res.send(messages);
   });
 });
 
-router.get('/messages/:_id', limit, function (req, res) {
-  Message.findOne({ _id : req.params._id }, function (err, message) {
+router.get('/messages/:id', limit, function (req, res) {
+  Message.findById(req.params.id, function (err, message) {
     if (err) return res.status(404).send({ message : 'No Such Message Found!' });
-    res.json(message);
+    res.send(message);
   });
 });
 

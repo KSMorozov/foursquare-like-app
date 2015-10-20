@@ -1,0 +1,6 @@
+md-content(class='md-padding md-whiteframe-z1')
+  md-list(ng-cloak)
+    md-list-item(ng-repeat='friend in Friends.friends', ng-click="$state.go('user', {id:friend._id})",
+                 aria-label='{{friend.displayName}}')
+      img(alt='{{friend.displayName}}', ng-src='{{friend.picture}}', class='md-avatar')
+      p(ng-bind='friend.displayName')

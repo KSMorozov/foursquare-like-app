@@ -1,57 +1,33 @@
-div(layout-gt-md='row')
-  section(layout-margin, class='custom-card', style='height:100%;', flex, flex-gt-md='40')
-    section(layout-margin, class='md-whiteframe-z1 custom-card', style='height:100%;', flex)
-      md-content(class='md-padding')
-        md-card
-          img(ng-src='{{Profile.user.picture}}', class='md-card-image')
-        md-grid-list(md-cols-gt-sm='3', md-cols='1',
-                     md-row-height-gt-sm='1:1', md-row-height='1:1'
-                     md-gutter-gt-sm='4px', md-gutter-sm='2px')
-          md-grid-tile(class='photo', md-colspan='3')
-            md-grid-tile-footer 
-              h3 Some kind of photo
-          md-grid-tile(class='photo')
-            md-grid-tile-footer 
-              h3 Some kind of photo
-          md-grid-tile(class='photo')
-            md-grid-tile-footer 
-              h3 Some kind of photo
-          md-grid-tile(class='photo')
-            md-grid-tile-footer 
-              h3 Some kind of photo
-          md-grid-tile(class='photo')
-            md-grid-tile-footer 
-              h3 Some kind of photo
-          md-grid-tile(class='photo')
-            md-grid-tile-footer 
-              h3 Some kind of photo
-          md-grid-tile(class='photo')
-            md-grid-tile-footer 
-              h3 Some kind of photo
-  section(layout-margin, class='custom-card', style='height:100%;', flex)
-    section(layout-margin, class='md-whiteframe-z1 custom-card', style='height:100%;', flex)
-      md-content(class='md-padding', layout='column')
-        form(method="post", ng-submit='Profile.updateProfile()', name='ProfileForm')
-          md-input-container(class='md-accent md-hue-7')
-            label Имя
-            input(type='text', ng-model='Profile.user.displayName')
-          md-input-container(class='md-accent md-hue-7')
-            label Город
-            input(type='text', ng-model='Profile.user.city')
-          md-input-container(class='md-accent md-hue-7')
-            label Пол
-            md-select(ng-model='Profile.user.sex')
-              md-option(value='Муж') Муж
-              md-option(value='Жен') Жен
-          md-datepicker(ng-model='Profile.user.date', md-placeholder='Дата Рождения')
-          md-input-container(class='md-accent md-hue-7')
-            label О себе
-            textarea(ng-model='Profile.user.info', columns='1', md-maxlength="150")
-          md-input-container(class='md-accent md-hue-7', layout='row')
-            md-button(class='md-accent md-hue-7', type='submit') Сохранить
-    section(layout-margin, class='md-whiteframe-z1 custom-card', style='height:100%;', flex)
-      md-content(class='md-padding', layout='column')
-        md-list
-          md-list-item(ng-repeat='provider in Profile.providers', aria-label='provider.name', ng-click='Profile.user[provider.name] ? Profile.unlink(provider.name) : Profile.link(provider.name)')
-            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/{{provider.icon}}')
-            p(ng-bind='Profile.user[provider.name] ? "Отключить " + provider.display :  "Подключить " + provider.display')
+md-content(class='md-whiteframe-z1 md-padding', ng-if='Profile.user')
+  section(flex, class='', layout-gt-sm='row')
+    md-card(flex-gt-sm='30', style='height:100%;')
+      img(ng-src='{{Profile.user.picture}}', class='md-card-image')
+      section(class='md-actions')
+        md-input-container(style='margin-bottom:-22px;')
+          md-button(class='md-accent md-hue-7 md-margin', ng-click='') Загрузить Аватар
+    div(layout='column', class='md-padding', flex-gt-sm='70', style='height:100%;')
+      form(method="post", ng-submit='Profile.updateProfile()', name='ProfileForm', flex)
+        md-input-container(class='md-accent md-hue-7')
+          label Имя
+          input(type='text', ng-model='Profile.user.displayName')
+        md-input-container(class='md-accent md-hue-7')
+          label Город
+          input(type='text', ng-model='Profile.user.city')
+        md-input-container(class='md-accent md-hue-7')
+          label Пол
+          md-select(ng-model='Profile.user.sex')
+            md-option(value='Муж') Муж
+            md-option(value='Жен') Жен
+        md-datepicker(ng-model='Profile.user.date', md-placeholder='Дата Рождения')
+        md-input-container(class='md-accent md-hue-7')
+          label О себе
+          textarea(ng-model='Profile.user.info', columns='1', md-maxlength="150")
+        md-input-container(class='md-accent md-hue-7', layout='row')
+          md-button(class='md-accent md-hue-7', type='submit') Сохранить
+md-content(class='md-whiteframe-z1 md-padding', ng-if='Profile.user', layout-align='end')
+  section(flex, class='', layout-gt-sm='row')
+    md-list
+      md-list-item(ng-repeat='provider in Profile.providers', aria-label='{{provider.name}}',
+                   ng-click='Profile.user[provider.name] ? Profile.unlink(provider.name) : Profile.link(provider.name)')
+        md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/{{provider.icon}}')
+        p(ng-bind='Profile.user[provider.name] ? "Отключить " + provider.display :  "Подключить " + provider.display')

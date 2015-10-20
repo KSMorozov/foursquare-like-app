@@ -51,6 +51,126 @@
 
 (function () {
   angular.module('FourApp')
+  .controller('ChatController', function ($stateParams, $http, Account) {
+    var self = this;
+
+    self.messages = [];
+    self.me       = {};
+    self.friend   = {};
+
+    self.is_friend    = function (id) {
+      return id === $stateParams.id;
+    };
+
+    self.get_yourself = function () {
+      Account.getProfile()
+      .then(function (res) {
+        self.me = res.data;
+        console.log(self.me);
+      });
+    };
+
+    self.get_friend   = function () {
+      $http.get('/api/users/' + $stateParams.id)
+      .then(function (res) {
+        self.friend = res.data;
+        console.log(self.friend);
+      });
+    };
+
+    self.get_messages = function () {
+      $http.post('/api/messages/chats', {
+        friend : $stateParams.id
+      })
+      .then(function (res) {
+        self.messages = res.data;
+        console.log(self.messages);
+      });
+    };
+
+    self.send_message = function () {
+      $http.post('/api/messages', {
+        user_id : $stateParams.id, body : self.message
+      })
+      .then(function (res) {
+        self.message = '';
+        console.log(res.data);
+      })
+      .catch(function (res) {
+        console.log(res.status);
+      });
+    };
+
+    self.get_messages();
+    self.get_yourself();
+    self.get_friend();
+  });
+})();
+
+(function () {
+  angular.module('FourApp')
+  .controller('ChatsController', function ($http, Account) {
+    var self = this;
+
+    self.chats = [];
+
+    self.get_chats = function () {
+      Account.getProfile()
+      .then(function (res) {
+        res.data.friends.forEach(function (id) {
+          $http.post('/api/messages/chats', {
+            friend : id,
+            amount : 1
+          })
+          .then(function (res) {
+            console.log(res.data);
+            $http.get('/api/users/' + id)
+            .then(function (response) {
+              self.chats.push({
+                friend_id   : id,
+                displayName : response.data.displayName,
+                picture     : response.data.picture,
+                message     : res.data[0].body
+              });
+            });
+          });
+        });
+      });
+    };
+
+    self.get_chats();
+  });
+})();
+
+(function () {
+  angular.module('FourApp')
+  .controller('FriendsController', function (Account, $http) {
+    var self = this;
+
+    self.friends = [];
+
+    self.get_friends = function () {
+      Account.getProfile()
+      .then(function (res) {
+        res.data.friends.forEach(function (id) {
+          $http.get('/api/users/' + id)
+          .then(function (res) {
+            self.friends.push(res.data);
+          });
+        });
+        console.log('Got Your Friends Boy!', self.friends);
+      })
+      .catch(function (res) {
+        console.log(res.data ? res.data.message : 'Failed to get Friends', res.status);
+      });
+    };
+
+    self.get_friends();
+  });
+})();
+
+(function () {
+  angular.module('FourApp')
   .controller('HomeController', function () {
     var self = this;
     self.message = 'Home Controller';
@@ -89,12 +209,14 @@
   .controller('LoginDialogController', function ($mdDialog, $auth, $state) {
     var self = this;
 
+    self.status = 'Войти';
+
     self.hide   = function () {
       $mdDialog.hide();
     };
 
-    self.cancel = function () {
-      $mdDialog.cancel();
+    self.change_status = function (status) {
+      self.status = status;
     };
 
     self.providers = [
@@ -105,6 +227,19 @@
       { name : 'vkontakte', display : 'Vkontakte',  icon : 'vkontakte.svg'}
     ];
 
+    self.signup = function () {
+      $auth.signup(self.user)
+      .then(function (res) {
+        $auth.setToken(res);
+        $state.go('home');
+        self.hide();
+        console.log('Authenticated boys');
+      })
+      .catch(function (res) {
+        console.log('Failed to Authenticate boys');
+      });
+    };
+
     self.login = function () {
       $auth.login(self.user)
       .then(function () {
@@ -113,7 +248,7 @@
         self.hide();
       })
       .catch(function (res) {
-
+        console.log('Failed to Login boys');
       });
     };
 
@@ -125,9 +260,9 @@
         self.hide();
       })
       .catch(function (res) {
-
+        console.log('Failed to Authenticate boys');
       });
-    }
+    };
   });
 })();
 
@@ -150,14 +285,9 @@
     .primaryPalette('grey', {
       'default' : '100'
     })
-    .accentPalette('deep-orange');
-  });
-})();
-
-(function () {
-  angular.module('FourApp')
-  .controller('MessagesController', function () {
-    
+    .accentPalette('deep-orange', {
+      'default' : '500'
+    });
   });
 })();
 
@@ -260,12 +390,42 @@
       templateUrl  : 'templates/profile.html',
       controller   : 'ProfileController',
       controllerAs : 'Profile',
+      resolve      : {
+          loginRequired: loginRequired
+      }
     })
-    .state('messages', {
-      url : '/messages',
-      templateUrl  : 'templates/messages.html',
-      controller   : 'MessagesController',
-      controllerAs : 'Messages',
+    .state('user', {
+      url : '/user/:id',
+      templateUrl  : 'templates/user.html',
+      controller   : 'UserController',
+      controllerAs : 'User'
+    })
+    .state('friends', {
+      url : '/friends',
+      templateUrl  : 'templates/friends.html',
+      controller   : 'FriendsController',
+      controllerAs : 'Friends',
+      resolve      : {
+          loginRequired: loginRequired
+      }
+    })
+    .state('chats', {
+      url : '/chats',
+      templateUrl  : 'templates/chats.html',
+      controller   : 'ChatsController',
+      controllerAs : 'Chats',
+      resolve      : {
+          loginRequired: loginRequired
+      }
+    })
+    .state('chat', {
+      url : '/chats/:id',
+      templateUrl  : 'templates/chat.html',
+      controller   : 'ChatController',
+      controllerAs : 'Chat',
+      resolve      : {
+          loginRequired: loginRequired
+      }
     })
     .state('login', {
       url : '/login',
@@ -296,7 +456,15 @@
       return deferred.promise;
     }
 
-    // $state.go('home.login');
+    function loginRequired($q, $auth, $location) {
+      var deferred = $q.defer();
+      if ($auth.isAuthenticated()) {
+        deferred.resolve();
+      } else {
+        $location.path('/login');
+      }
+      return deferred.promise;
+    }
   });
 })();
 
@@ -308,7 +476,7 @@
     self.menu = [
       { name : 'Мой Кабинет'  , route : 'profile'  , icon : 'profile.svg'},
       { name : 'Друзья'       , route : 'friends'  , icon : 'friends.svg'},
-      { name : 'Сообщения'    , route : 'messages' , icon : 'msg.svg'},
+      { name : 'Сообщения'    , route : 'chats'    , icon : 'msg.svg'},
       { name : 'Аллея Славы'  , route : 'alley'    , icon : 'star.svg'},
       { name : 'Новости'      , route : 'news'     , icon : 'news.svg'},
       { name : 'Статьи'       , route : 'articles' , icon : 'article.svg'},
@@ -324,5 +492,36 @@
           $log.debug('close Left is done.');
         });
     };
+  });
+})();
+
+(function () {
+  angular.module('FourApp')
+  .controller('UserController', function ($stateParams, $http) {
+    var self = this;
+
+    self.getProfile = function () {
+      $http.get('/api/users/' + $stateParams.id)
+      .then(function (res) {
+        self.user = res.data;
+        console.log(self.user);
+      })
+      .catch(function (res) {
+        console.log(res.data.message, res.status);
+      });
+    };
+
+    self.add_friend = function () {
+      $http.post('/api/users/' + $stateParams.id + '/friend')
+      .then(function (res) {
+        console.log(res.data.message);
+      })
+      .catch(function (res) {
+        console.log(res.data ? res.data.message : 'Failed to Friend', res.status);
+      });
+    };
+
+    self.message = 'Requested id: ' + $stateParams.id;
+    self.getProfile();
   });
 })();

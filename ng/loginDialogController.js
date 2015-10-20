@@ -3,12 +3,14 @@
   .controller('LoginDialogController', function ($mdDialog, $auth, $state) {
     var self = this;
 
+    self.status = 'Войти';
+
     self.hide   = function () {
       $mdDialog.hide();
     };
 
-    self.cancel = function () {
-      $mdDialog.cancel();
+    self.change_status = function (status) {
+      self.status = status;
     };
 
     self.providers = [
@@ -19,6 +21,19 @@
       { name : 'vkontakte', display : 'Vkontakte',  icon : 'vkontakte.svg'}
     ];
 
+    self.signup = function () {
+      $auth.signup(self.user)
+      .then(function (res) {
+        $auth.setToken(res);
+        $state.go('home');
+        self.hide();
+        console.log('Authenticated boys');
+      })
+      .catch(function (res) {
+        console.log('Failed to Authenticate boys');
+      });
+    };
+
     self.login = function () {
       $auth.login(self.user)
       .then(function () {
@@ -27,7 +42,7 @@
         self.hide();
       })
       .catch(function (res) {
-
+        console.log('Failed to Login boys');
       });
     };
 
@@ -39,8 +54,8 @@
         self.hide();
       })
       .catch(function (res) {
-
+        console.log('Failed to Authenticate boys');
       });
-    }
+    };
   });
 })();

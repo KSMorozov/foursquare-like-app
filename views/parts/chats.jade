@@ -1,0 +1,8 @@
+md-content(class='md-padding md-whiteframe-z1')
+  md-list(ng-cloak)
+    md-list-item(class='md-2-line', ng-repeat='chat in Chats.chats', ng-click="$state.go('chat', {id:chat.friend_id})",
+                 aria-label='{{chat.displayName}}')
+      img(alt='{{chat.displayName}}', ng-src='{{chat.picture}}', class='md-avatar')
+      .md-list-item-text
+        h3(ng-bind='chat.displayName')
+        p(ng-bind='chat.message')

@@ -42,7 +42,7 @@ block content
                         md-is-locked-open="$mdMedia('gt-lg')")
         md-content(ng-controller='SideNavLeftController as SideNavLeft')
           md-list
-            md-list-item(ng-repeat='item in SideNavLeft.menu', aria-label='item.name', ng-click="$state.go(item.route); SideNavLeft.close()")
+            md-list-item(ng-repeat='item in SideNavLeft.menu', aria-label='{{item.name}}', ng-click="$state.go(item.route); SideNavLeft.close()")
               md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/{{item.icon}}')
               p(ng-bind='item.name')
       md-content(flex, class='md-padding')
@@ -52,7 +52,7 @@ block content
                         md-is-locked-open="$mdMedia('gt-lg')")
         md-content(ng-controller='SideNavLeftController as SideNavLeft')
           md-list
-            md-list-item(ng-repeat='item in SideNavLeft.menu', aria-label='item.name', ng-click="$state.go(item.route); SideNavLeft.close()")
+            md-list-item(ng-repeat='item in SideNavLeft.menu', aria-label='{{item.name}}', ng-click="$state.go(item.route); SideNavLeft.close()")
               md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/{{item.icon}}')
               p(ng-bind='item.name')
   div(layout='column', class='footer')

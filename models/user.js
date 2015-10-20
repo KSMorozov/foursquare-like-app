@@ -11,7 +11,8 @@ var schema = new mongoose.Schema({
     type   : String,
     select : false
   },
-  friends     : [{type : mongoose.Schema.Types.ObjectId, ref : 'User'}],
+  friends     : [{type : mongoose.Schema.Types.ObjectId, ref : 'User', unique : true}],
+  followers   : [{type : mongoose.Schema.Types.ObjectId, ref : 'User', unique : true}],
   displayName : String,
   picture     : String,
   city        : String,

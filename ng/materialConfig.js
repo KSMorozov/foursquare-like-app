@@ -5,6 +5,8 @@
     .primaryPalette('grey', {
       'default' : '100'
     })
-    .accentPalette('deep-orange');
+    .accentPalette('deep-orange', {
+      'default' : '500'
+    });
   });
 })();

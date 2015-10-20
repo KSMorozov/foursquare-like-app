@@ -13,12 +13,42 @@
       templateUrl  : 'templates/profile.html',
       controller   : 'ProfileController',
       controllerAs : 'Profile',
+      resolve      : {
+          loginRequired: loginRequired
+      }
     })
-    .state('messages', {
-      url : '/messages',
-      templateUrl  : 'templates/messages.html',
-      controller   : 'MessagesController',
-      controllerAs : 'Messages',
+    .state('user', {
+      url : '/user/:id',
+      templateUrl  : 'templates/user.html',
+      controller   : 'UserController',
+      controllerAs : 'User'
+    })
+    .state('friends', {
+      url : '/friends',
+      templateUrl  : 'templates/friends.html',
+      controller   : 'FriendsController',
+      controllerAs : 'Friends',
+      resolve      : {
+          loginRequired: loginRequired
+      }
+    })
+    .state('chats', {
+      url : '/chats',
+      templateUrl  : 'templates/chats.html',
+      controller   : 'ChatsController',
+      controllerAs : 'Chats',
+      resolve      : {
+          loginRequired: loginRequired
+      }
+    })
+    .state('chat', {
+      url : '/chats/:id',
+      templateUrl  : 'templates/chat.html',
+      controller   : 'ChatController',
+      controllerAs : 'Chat',
+      resolve      : {
+          loginRequired: loginRequired
+      }
     })
     .state('login', {
       url : '/login',
@@ -49,6 +79,14 @@
       return deferred.promise;
     }
 
-    // $state.go('home.login');
+    function loginRequired($q, $auth, $location) {
+      var deferred = $q.defer();
+      if ($auth.isAuthenticated()) {
+        deferred.resolve();
+      } else {
+        $location.path('/login');
+      }
+      return deferred.promise;
+    }
   });
 })();

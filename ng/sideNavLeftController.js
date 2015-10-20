@@ -6,7 +6,7 @@
     self.menu = [
       { name : 'Мой Кабинет'  , route : 'profile'  , icon : 'profile.svg'},
       { name : 'Друзья'       , route : 'friends'  , icon : 'friends.svg'},
-      { name : 'Сообщения'    , route : 'messages' , icon : 'msg.svg'},
+      { name : 'Сообщения'    , route : 'chats'    , icon : 'msg.svg'},
       { name : 'Аллея Славы'  , route : 'alley'    , icon : 'star.svg'},
       { name : 'Новости'      , route : 'news'     , icon : 'news.svg'},
       { name : 'Статьи'       , route : 'articles' , icon : 'article.svg'},
