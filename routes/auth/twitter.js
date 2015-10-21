@@ -46,7 +46,6 @@ router.post('/twitter', function (req, res) {
         oauth: profileOauth,
         json: true
       }, function(err, response, profile) {
-
         // Step 5a. Link user accounts.
         if (req.headers.authorization) {
           User.findOne({ twitter: profile.id }, function(err, existingUser) {
@@ -79,10 +78,12 @@ router.post('/twitter', function (req, res) {
             }
 
             var user = new User();
+            user.email   = user.email || profile.id;
             user.twitter = profile.id;
             user.displayName = profile.name;
             user.picture = profile.profile_image_url.replace('_normal', '');
-            user.save(function() {
+            user.save(function(err) {
+              if (err) console.log(err);
               var token = jwtutils.sign(user);
               res.send({ token: token });
             });

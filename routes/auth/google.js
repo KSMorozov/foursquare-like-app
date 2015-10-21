@@ -52,10 +52,12 @@ router.post('/google', function (req, res) {
             return res.send({ token: token });
           }
           var user = new User();
+          user.email   = user.email || profile.email;
           user.google  = profile.sub;
           user.picture = profile.picture.replace('sz=50', 'sz=200');
           user.displayName = profile.name;
           user.save(function (err) {
+            if (err) console.log(err);
             var token = jwtutils.sign(user);
             res.send({ token: token });
           });
