@@ -30,7 +30,8 @@ router.post('/uploads/avatars', limit, function (req, res) {
               if (err) return res.status(404).send({ message : 'No User Found' });
               user.picture = new_path.substr(new_path.indexOf('images'));
               user.save(function (err) {
-                res.status(200).send({'picture' : '/app/public/' + new_path.substr(new_path.indexOf('images'))});
+                var newpath = path.join(__dirname, '/app/public/' + new_path.substr(new_path.indexOf('images')));
+                res.status(200).send({'picture' : newpath });
               });
             });
           }
