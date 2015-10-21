@@ -8,9 +8,11 @@ md-content(class='md-padding md-whiteframe-z1')
       .md-list-item-text
         h3(ng-bind='Chat.is_friend(message.from) ? Chat.friend.displayName : Chat.me.displayName')
         p(ng-bind='message.body')
-  form(layout-gt-sm='row', layout-align='space-between', ng-submit='Chat.send_message()')
+  form(method='post', layout-gt-sm='row', layout-align='space-between', ng-submit='Chat.send_message()')
     md-input-container(class='md-accent md-hue-7', flex-gt-sm='80')
-      textarea(aria-label='Отправить Сообщение', ng-model='Chat.message', columns='1', rows='4')
+      textarea(aria-label='Отправить Сообщение', ng-model='Chat.message', columns='1', rows='4',
+               ng-keydown='Chat.down($event)'
+               ng-keyup='Chat.up($event); Chat.check()')
     md-input-container(class='md-accent md-hue-7', flex-gt-sm='20', layout-align='space-between', style='margin-top:10px;')
       md-button(class='md-accent md-hue-7') Смайлы
       md-button(class='md-accent md-hue-7', type='submit') Отправить

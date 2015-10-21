@@ -16,6 +16,11 @@ html body::-webkit-scrollbar {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
 }
 
+md-tab-item span {
+  color : black;
+  font-weight: normal;
+}
+
 .photo {
   background: grey;
   background: url("https://graph.facebook.com/v2.3/1485034798491045/picture?type=large"), no-repeat center center fixed;

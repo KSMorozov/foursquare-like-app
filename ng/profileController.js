@@ -1,7 +1,8 @@
 (function () {
   angular.module('FourApp')
-  .controller('ProfileController', function (Account, $auth) {
+  .controller('ProfileController', function (Account, $auth, $mdDialog) {
     var self = this;
+    self.comb = [];
 
     self.providers = [
       { name : 'facebook' , display : 'Facebook' ,  icon : 'facebook.svg'},
@@ -53,7 +54,31 @@
       .catch(function (res) {
         console.log(res.data ? res.data.message : 'Failed unlink' + provider, res.status);
       });
-    }
+    };
+
+    self.show_upload = function (ev) {
+      $mdDialog.show({
+        controller   : 'UploadDialog',
+        controllerAs : 'Upload',
+        templateUrl  : 'templates/upload.dialog.html',
+        parent       : angular.element(document.body),
+        targetEvent  : ev,
+        clickOutsideToClose : true
+      })
+      .then(function () {
+        self.message += ' hide dialog';
+      }, function () {
+        self.message += ' close dialog';
+      });
+    };
+
+    self.up   = function (e) { self.comb.push(e.keyCode) };
+
+    self.down = function (e) { self.comb = []; self.comb.push(e.keyCode) };
+
+    self.check = function () {
+      if (self.comb.join('').split(0, 4) == '1391') self.updateProfile();
+    };
 
     self.getProfile();
   });

@@ -54,6 +54,7 @@
   .controller('ChatController', function ($stateParams, $http, Account) {
     var self = this;
 
+    self.comb     = [];
     self.messages = [];
     self.me       = {};
     self.friend   = {};
@@ -99,6 +100,14 @@
       .catch(function (res) {
         console.log(res.status);
       });
+    };
+
+    self.up   = function (e) { self.comb.push(e.keyCode) };
+
+    self.down = function (e) { self.comb = []; self.comb.push(e.keyCode) };
+
+    self.check = function () {
+      if (self.comb.join('').split(0, 4) == '1391') self.send_message();
     };
 
     self.get_messages();
@@ -316,8 +325,9 @@
 
 (function () {
   angular.module('FourApp')
-  .controller('ProfileController', function (Account, $auth) {
+  .controller('ProfileController', function (Account, $auth, $mdDialog) {
     var self = this;
+    self.comb = [];
 
     self.providers = [
       { name : 'facebook' , display : 'Facebook' ,  icon : 'facebook.svg'},
@@ -369,7 +379,31 @@
       .catch(function (res) {
         console.log(res.data ? res.data.message : 'Failed unlink' + provider, res.status);
       });
-    }
+    };
+
+    self.show_upload = function (ev) {
+      $mdDialog.show({
+        controller   : 'UploadDialog',
+        controllerAs : 'Upload',
+        templateUrl  : 'templates/upload.dialog.html',
+        parent       : angular.element(document.body),
+        targetEvent  : ev,
+        clickOutsideToClose : true
+      })
+      .then(function () {
+        self.message += ' hide dialog';
+      }, function () {
+        self.message += ' close dialog';
+      });
+    };
+
+    self.up   = function (e) { self.comb.push(e.keyCode) };
+
+    self.down = function (e) { self.comb = []; self.comb.push(e.keyCode) };
+
+    self.check = function () {
+      if (self.comb.join('').split(0, 4) == '1391') self.updateProfile();
+    };
 
     self.getProfile();
   });
@@ -493,6 +527,54 @@
         });
     };
   });
+})();
+
+(function () {
+  angular.module('FourApp')
+  .controller('UploadDialog', function ($mdDialog, Account, $state, $http, $scope) {
+    var self = this;
+
+    self.upload = function () {
+      var fd = new FormData();
+      fd.append('file', $scope.myFile);
+      $http.post('/api/uploads/avatars', fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        })
+      .then(function (res) {
+        self.image = res.data.picture;
+        console.log(res, 'WE did it Fam!');
+      })
+      .catch(function (res) {
+        console.log('rekt', res.status);
+      });
+    };
+
+    self.close = function () {
+      $mdDialog.hide();
+      $state.go('profile');
+    };
+    
+  });
+})();
+
+(function () {
+  angular.module('FourApp')
+  .directive('fileModel', ['$parse', function ($parse) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            var model = $parse(attrs.fileModel);
+            var modelSetter = model.assign;
+
+            element.bind('change', function(){
+                scope.$apply(function(){
+                    modelSetter(scope, element[0].files[0]);
+                });
+            });
+        }
+    };
+  }]);
 })();
 
 (function () {

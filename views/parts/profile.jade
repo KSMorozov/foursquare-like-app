@@ -4,11 +4,11 @@ md-content(class='md-whiteframe-z1 md-padding', ng-if='Profile.user')
       img(ng-src='{{Profile.user.picture}}', class='md-card-image')
       section(class='md-actions')
         md-input-container(style='margin-bottom:-22px;')
-          md-button(class='md-accent md-hue-7 md-margin', ng-click='') Загрузить Аватар
+          md-button(class='md-raised md-accent md-hue-5 md-margin', ng-click='Profile.show_upload($event)') Загрузить Аватар
     div(layout='column', class='md-padding', flex-gt-sm='70', style='height:100%;')
       form(method="post", ng-submit='Profile.updateProfile()', name='ProfileForm', flex)
         md-input-container(class='md-accent md-hue-7')
-          label Имя
+          label(ng-bind='Profile.control + Profile.enter') Имя
           input(type='text', ng-model='Profile.user.displayName')
         md-input-container(class='md-accent md-hue-7')
           label Город
@@ -21,9 +21,11 @@ md-content(class='md-whiteframe-z1 md-padding', ng-if='Profile.user')
         md-datepicker(ng-model='Profile.user.date', md-placeholder='Дата Рождения')
         md-input-container(class='md-accent md-hue-7')
           label О себе
-          textarea(ng-model='Profile.user.info', columns='1', md-maxlength="150")
-        md-input-container(class='md-accent md-hue-7', layout='row')
-          md-button(class='md-accent md-hue-7', type='submit') Сохранить
+          textarea(ng-model='Profile.user.info', columns='1', md-maxlength="150",
+                ng-keydown='Profile.down($event)'
+                ng-keyup='Profile.up($event); Profile.check()')
+        md-input-container(layout='row')
+          md-button(class='md-raised md-accent md-hue-5', type='submit') Сохранить
 md-content(class='md-whiteframe-z1 md-padding', ng-if='Profile.user', layout-align='end')
   section(flex, class='', layout-gt-sm='row')
     md-list

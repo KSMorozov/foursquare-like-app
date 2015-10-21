@@ -3,6 +3,7 @@
   .controller('ChatController', function ($stateParams, $http, Account) {
     var self = this;
 
+    self.comb     = [];
     self.messages = [];
     self.me       = {};
     self.friend   = {};
@@ -48,6 +49,14 @@
       .catch(function (res) {
         console.log(res.status);
       });
+    };
+
+    self.up   = function (e) { self.comb.push(e.keyCode) };
+
+    self.down = function (e) { self.comb = []; self.comb.push(e.keyCode) };
+
+    self.check = function () {
+      if (self.comb.join('').split(0, 4) == '1391') self.send_message();
     };
 
     self.get_messages();

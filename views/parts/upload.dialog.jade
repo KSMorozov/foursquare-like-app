@@ -1,0 +1,20 @@
+md-dialog(aria-label='upload dialog', ng-cloak,
+          style='min-height:500px;width:350px;',
+          layout-align='space-between')
+  md-toolbar(class='md-accent')
+    .md-toolbar-tools
+      h1 Загрузить Аватар
+  md-dialog-content(layout='column', flex, class='md-padding')
+    form(method='post', enctype="multipart/form-data",
+         layout='column', layout-align='space-between', flex, ng-submit='Upload.upload()')
+      div(layout='row', layout-fill)
+        label(class='md-button md-raised md-accent', md-ink-ripple, for='file-input', flex)
+          span Выбрать Файл
+      input(id='file-input', type='file', style='display:none;', name='file', accept='image/*',
+            file-model='myFile')
+      md-card(ng-if='Upload.image')
+        img(ng-src='{{Upload.image}}')
+      md-input-container
+        md-button(class='md-raised md-accent', type='submit', ng-if='!Upload.image') Загрузить!
+        md-button(class='md-raised md-accent', ng-click='Upload.close()', ng-if='Upload.image') К Профайлу
+      

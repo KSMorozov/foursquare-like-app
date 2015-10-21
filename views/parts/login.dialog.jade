@@ -1,11 +1,11 @@
 md-dialog(aria-label='Sign Dialog', ng-cloak,
           style='height:100%;width:350px;',
           layout-align='space-between')
-  md-toolbar
+  md-toolbar(class='md-accent')
     .md-toolbar-tools
       h1(ng-bind='LoginDialog.status')
   md-dialog-content(flex)
-    md-tabs(md-dynamic-height, md-stretch-tabs='always', md-center-tabs)
+    md-tabs(md-dynamic-height, md-stretch-tabs='always', md-center-tabs, class='md-primary')
       md-tab(label='Войти', ng-click='LoginDialog.change_status("Войти")')
         form(method='post', ng-submit='LoginDialog.login()', name='signinForm',
                class='md-padding')
