@@ -29,3 +29,9 @@ node_modules
 
 # Bower Dependencies
 bower_components
+
+public/images/avatars
+
+.DS_Store
+
+**/.DS_Store

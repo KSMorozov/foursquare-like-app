@@ -1,3 +1,7 @@
+html body md-content{
+  overflow-x: hidden;
+}
+
 html body::-webkit-scrollbar {
   display: none;
 }
@@ -21,19 +25,12 @@ md-tab-item span {
   font-weight: normal;
 }
 
-.photo {
-  background: grey;
-  background: url("https://graph.facebook.com/v2.3/1485034798491045/picture?type=large"), no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-}
-
-.custom-card {
-  background-color: white;
-}
-
 md-icon svg {
   fill: inherit;
+}
+
+md-icon {
+  svg {
+      fill: white;
+  }
 }

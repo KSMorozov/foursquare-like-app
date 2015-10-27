@@ -9,7 +9,7 @@ var router     = express.Router();
 router.post('/uploads/avatars', limit, function (req, res) {
   var form = new formidable.IncomingForm();
   form.parse(req, function (err, fields, files) {
-    console.log(fields.user);
+    if (!files.file) return;
     var old_path  = files.file.path;
     var file_size = files.file.size;
     var file_ext  = files.file.name.split('.').pop();
@@ -30,8 +30,7 @@ router.post('/uploads/avatars', limit, function (req, res) {
               if (err) return res.status(404).send({ message : 'No User Found' });
               user.picture = new_path.substr(new_path.indexOf('images'));
               user.save(function (err) {
-                var newpath = path.join(__dirname, './../../../' + new_path.substr(new_path.indexOf('images')));
-                res.status(200).send({'picture' : newpath });
+                res.status(200).send({'picture' : new_path.substr(new_path.indexOf('images'))});
               });
             });
           }

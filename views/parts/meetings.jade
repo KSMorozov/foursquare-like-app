@@ -1,0 +1,30 @@
+md-content(class='md-whiteframe-z1 md-padding')
+  section(layout-wrap, layout='row')
+    md-button(class='md-raised md-accent md-hue-9',
+              ng-bind='Meetings.show ? "Скрыть Карту" : "Показать Карту"',
+              ng-click='Meetings.toggle_map()', flex,
+              style='margin:-15px -20px 0px -20px;z-index:1;',
+              aria-label='show/hide map')
+  section(ng-show='Meetings.show')
+    div(id='map', layout-wrap, style='min-height:300px;', flex)
+  section(layout='row', layout-align='end', style='')
+    md-button(class='md-raised md-accent md-hue-9',
+              style='z-index:2;margin-bottom:-120px;margin-top:15px;border-radius:0px;height:20px;',
+              ng-click='$state.go("new_meeting")')
+      | Cоздать Встречу
+  section
+    md-list(layout='column')
+      md-subheader(class='md-no-sticky') Встречи : 
+      md-list-item.md-whiteframe-z1(ng-repeat='meeting in Meetings.meetings',
+                   layout='row', layout-sm='column',
+                   layout-gt-sm-wrap, layout-fill,
+                   layout-align='start start', layout-sm-align='center',
+                   style='background-color: #F5F5F5;padding:0px 0px;margin:15px 0px;')
+        img(ng-src='{{meeting.picture}}', class='md-card-image',
+            flex-gt-sm='50', flex='100')
+        md-content(style='background-color: #F5F5F5;padding-left:10px;', layout-fill,
+                   flex-gt-sm='50', flex='100')
+          p(ng-bind='meeting.date', flex)
+          h3(ng-bind='meeting.title', flex)
+          p(ng-bind='meeting.loc', flex)
+          p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam lobortis ipsum vel odio feugiat aliquam. Integer lectus neque, imperdiet id eros accumsan, dictum ultrices lectus. Donec maximus, nibh a tincidunt ullamcorper, massa turpis tempus metus, in fermentum diam tortor sed tellus. Donec eu nunc eros. Nunc ac justo venenatis, semper dolor quis, lacinia felis. Mauris maximus elit quis massa eleifend, eu ultrices tellus elementum. Nullam mattis consectetur justo non luctus. Sed eleifend tellus in odio tincidunt, non consequat libero imperdiet. Fusce augue diam, finibus in justo sit amet, aliquet maximus orci. Quisque ut consequat nulla. Mauris egestas maximus nisl. Aenean tincidunt leo lectus, vitae varius justo semper vitae. Ut nec dui augue. Mauris a eleifend risus, non sagittis lacus. Donec imperdiet, ligula ut laoreet sollicitudin, nisl lacus congue arcu, sed sodales felis turpis et augue.

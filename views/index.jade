@@ -1,52 +1,71 @@
 extends layout
 
 block content
-  div(ng-controller='NavbarController as Navbar', layout='column')
-    md-toolbar(layout='row')
-      div(class='md-toolbar-tools', layout='row', layout-align='space-between')
-        div
-          md-button(aria-label='Login', class='md-icon-button', hide-gt-lg, ng-click='Navbar.toggleLeft()')
-            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/menu.svg')
-        div(hide-sm, hide-md)
-          md-button(aria-label='Login', class='md-icon-button')
-            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/baloon.svg')
-          md-button(aria-label='Login', class='md-icon-button')
-            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/cup.svg')
-          md-button(aria-label='Login', class='md-icon-button')
-            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/flag.svg')
-          md-button(aria-label='Login', class='md-icon-button')
-            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/pin.svg')
-          md-button(aria-label='Login', class='md-icon-button')
-            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/camera.svg')
-          md-button(aria-label='Login', class='md-icon-button')
-            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/bike.svg')
-          md-button(aria-label='Login', class='md-icon-button')
-            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/basket.svg')
-          md-button(aria-label='Login', class='md-icon-button')
-            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/frame.svg')
-          md-button(aria-label='Login', class='md-icon-button')
-            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/smile.svg')
-          md-button(aria-label='Login', class='md-icon-button')
-            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/tent.svg')
-        div
-          md-button(aria-label='Login', class='md-icon-button', ng-click="$state.go('login')",
-                    ng-if='!Navbar.isAuthenticated()')
-            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/login.svg')
-          md-button(aria-label='Login', class='md-icon-button', ng-click="$state.go('logout')",
-                    ng-if='Navbar.isAuthenticated()')
-            md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/logout.svg')
   md-content(flex='100', style='min-height:100%;')
+    div(ng-controller='NavbarController as Navbar', layout='column')
+      md-toolbar(layout='row')
+        div(class='md-toolbar-tools', layout='row', layout-align='space-between')
+          div
+            md-button(aria-label='Login', class='md-icon-button', hide-gt-lg, ng-click='Navbar.toggleLeft()')
+              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/menu.svg')
+          div(hide-sm, hide-md)
+            md-button(aria-label='Login', class='md-icon-button')
+              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/baloon.svg')
+            md-button(aria-label='Login', class='md-icon-button')
+              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/cup.svg')
+            md-button(aria-label='Login', class='md-icon-button')
+              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/flag.svg')
+            md-button(aria-label='Login', class='md-icon-button')
+              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/pin.svg')
+            md-button(aria-label='Login', class='md-icon-button')
+              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/camera.svg')
+            md-button(aria-label='Login', class='md-icon-button')
+              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/bike.svg')
+            md-button(aria-label='Login', class='md-icon-button')
+              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/basket.svg')
+            md-button(aria-label='Login', class='md-icon-button')
+              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/frame.svg')
+            md-button(aria-label='Login', class='md-icon-button')
+              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/smile.svg')
+            md-button(aria-label='Login', class='md-icon-button')
+              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/tent.svg')
+          div
+            md-button(aria-label='Login', class='md-icon-button', ng-click="$state.go('login')",
+                      ng-if='!Navbar.isAuthenticated()')
+              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/login.svg')
+            md-button(aria-label='Login', class='md-icon-button', ng-click="$state.go('logout')",
+                      ng-if='Navbar.isAuthenticated()')
+              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/logout.svg')
+    div(layout='row', layout-align='center', ng-controller='HeadMenuController as HeadMenu', style='margin-top:10px;')
+      div(layout-sm='column', layout-sm-align='center center', layout='row', layout-align='space-around', class='md-padding md-margin')
+        span(flex-gt-sm='35')
+        md-button(aria-label='events', class='md-fab md-raised md-accent', style='min-width:100px;min-height:100px;',
+                  ng-click="$state.go('events')")
+          md-icon(md-svg-src='images/icons/fireworks.svg', style='min-width:70px;min-height:80px;margin-top:3px;')
+        span(flex-gt-sm='10')
+        md-button(aria-label='meetings', class='md-fab md-raised md-accent', style='min-width:100px;min-height:100px;',
+                  ng-click="$state.go('meetings')")
+          md-icon(md-svg-src='images/icons/events.svg', style='min-width:80px;min-height:70px;margin-top:10px;')
+        span(flex-gt-sm='10')
+        md-button(aria-label='places', class='md-fab md-raised md-accent', style='min-width:100px;min-height:100px;',
+                  ng-click="$state.go('places')")
+          md-icon(md-svg-src='images/icons/places.svg', style='min-width:80px;min-height:70px;margin-top:-5px;')
+        span(flex-gt-sm='10')
+        md-button(aria-label='jobs', class='md-fab md-raised md-accent', style='min-width:100px;min-height:100px;',
+                  ng-click="$state.go('jobs')")
+          md-icon(md-svg-src='images/icons/jobs.svg', style='min-width:70px;min-height:80px;fill:white;font:bold;')
+        span(flex-gt-sm='35')
     div(layout='row', layout-fill, ng-controller='ApplicationController as App')
       md-sidenav(class='md-sidenav-left',
                         md-component-id='left',
-                        md-is-locked-open="$mdMedia('gt-lg')")
+                        md-is-locked-open="$mdMedia('gt-lg')", style='margin-right:-10px;')
         md-content(ng-controller='SideNavLeftController as SideNavLeft')
           md-list
             md-list-item(ng-repeat='item in SideNavLeft.menu', aria-label='{{item.name}}', ng-click="$state.go(item.route); SideNavLeft.close()")
               md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/{{item.icon}}')
               p(ng-bind='item.name')
       md-content(flex, class='md-padding')
-        div(ui-view)
+        div(ui-view, layout-wrap)
       md-sidenav(class='md-sidenav-right',
                         md-component-id='right',
                         md-is-locked-open="$mdMedia('gt-lg')")
@@ -55,16 +74,16 @@ block content
             md-list-item(ng-repeat='item in SideNavLeft.menu', aria-label='{{item.name}}', ng-click="$state.go(item.route); SideNavLeft.close()")
               md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/{{item.icon}}')
               p(ng-bind='item.name')
-  div(layout='column', class='footer')
-    md-toolbar(layout='row')
-      div(class='md-toolbar-tools',
-          layout='row',
-          layout-align='space-around center')
-        p hey there
-        p hey there
-        p hey there
-        p hey there
-        p hey there
-        p hey there
-        p hey there
-        p hey there
+    div(layout='column', style='padding-top:600px;')
+      md-toolbar(layout='row')
+        div(class='md-toolbar-tools',
+            layout='row',
+            layout-align='space-around center')
+          p hey there
+          p hey there
+          p hey there
+          p hey there
+          p hey there
+          p hey there
+          p hey there
+          p hey there

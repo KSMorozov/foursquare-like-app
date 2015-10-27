@@ -8,7 +8,7 @@ md-content(class='md-whiteframe-z1 md-padding', ng-if='Profile.user')
     div(layout='column', class='md-padding', flex-gt-sm='70', style='height:100%;')
       form(method="post", ng-submit='Profile.updateProfile()', name='ProfileForm', flex)
         md-input-container(class='md-accent md-hue-7')
-          label(ng-bind='Profile.control + Profile.enter') Имя
+          label Имя
           input(type='text', ng-model='Profile.user.displayName')
         md-input-container(class='md-accent md-hue-7')
           label Город

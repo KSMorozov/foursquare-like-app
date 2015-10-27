@@ -17,6 +17,7 @@
     "angular-material": "~0.11.0",
     "angular": "~1.4.6",
     "angular-ui-router": "~0.2.15",
-    "satellizer": "~0.12.5"
+    "satellizer": "~0.12.5",
+    "angular-ymaps": "~0.1.0"
   }
 }

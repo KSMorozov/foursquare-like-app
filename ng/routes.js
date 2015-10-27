@@ -8,6 +8,24 @@
       controller   : 'HomeController',
       controllerAs : 'Home'
     })
+    .state('meetings', {
+      url : '/meetings',
+      templateUrl  : 'templates/meetings.html',
+      controller   : 'MeetingsController',
+      controllerAs : 'Meetings',
+      resolve      : {
+          loginRequired: loginRequired
+      }
+    })
+    .state('new_meeting', {
+      url : '/new_meeting',
+      templateUrl  : 'templates/new.meeting.html',
+      controller   : 'NewMeetingController',
+      controllerAs : 'NewMeeting',
+      resolve      : {
+          loginRequired: loginRequired
+      }
+    })
     .state('profile', {
       url : '/profile',
       templateUrl  : 'templates/profile.html',
