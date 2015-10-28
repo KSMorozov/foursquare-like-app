@@ -169,79 +169,79 @@
         name : 'Кино',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/movies.png'
       },
       food : {
         name : 'Еда',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/food.png'
       },
       sports : {
         name : 'Спорт',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/sports.png'
       },
       arts : {
         name : 'Творчество',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/arts.png'
       },
       eco : {
         name : 'Природа',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/eco.png'
       },
       dance : {
         name : 'Танцы',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/dance.png'
       },
       music : {
         name : 'Музыка',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/music.png'
       },
       cars : {
         name : 'Транспорт',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/cars.png'
       },
       theatre : {
         name : 'Театр',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/theatre.png'
       },
       it : {
         name : 'Мультимедия и ИТ',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/it.png'
       },
       science : {
         name : 'Наука',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/science.png'
       },
       mystic : {
         name : 'Мистика',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/mystic.png'
       },
       charity : {
         name : 'Благотворительность',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/charity.png'
       }
     };
 
@@ -516,16 +516,12 @@
 
 (function () {
   angular.module('FourApp')
-  .controller('MeetingsController', function ($window) {
+  .controller('MeetingsController', function ($window, $http) {
     var self  = this;
     self.show = false;
 
-    self.meetings = [
-      { date : '22/10/2015', title : 'Me & u', loc : 'Moscow', likes : 10, attendees : 5, picture: 'images/avatars/meeting.jpg' },
-      { date : '22/10/2015', title : 'Me & u', loc : 'Moscow', likes : 10, attendees : 5, picture: 'images/avatars/meeting.jpg' },
-      { date : '22/10/2015', title : 'Me & u', loc : 'Moscow', likes : 10, attendees : 5, picture: 'images/avatars/meeting.jpg' },
-      { date : '22/10/2015', title : 'Me & u', loc : 'Moscow', likes : 10, attendees : 5, picture: 'images/avatars/meeting.jpg' },
-    ];
+    self.meetings = [];
+    self.owners   = {};
 
     self.toggle_map = function () {
       self.show = !self.show;
@@ -536,7 +532,7 @@
       ymaps.ready(function () {
         self.map = new ymaps.Map('map', {
           center: [55.76, 37.64],
-          zoom: 7
+          zoom: 11
         });
       });
     }
@@ -544,6 +540,33 @@
     angular.element($window).bind('resize', function () {
       if (self.show) self.map.container.fitToViewport();
     });
+
+    self.fetch_meetings = function () {
+      $http.get('/api/meetings/')
+      .then(function (res) {
+        console.log('got meetings', res.data);
+        self.meetings = res.data;
+        self.fetch_users();
+      })
+      .catch(function (res) {
+        console.log('Failed to fetch meetings.', res.data.status);
+      });
+    };
+
+    self.fetch_users = function () {
+      self.meetings.forEach(function (e) {
+        $http.get('/api/users/' + e.owner)
+        .then(function (res) {
+          self.owners[e.owner] = res.data;
+          console.log(self.owners);
+        })
+        .catch(function () {
+          console.log('Failed to fetch owners.');
+        });
+      });
+    };
+
+    self.fetch_meetings();
   });
 })();
 

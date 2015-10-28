@@ -107,7 +107,10 @@ router.post('/meetings', limit, function (req, res) {
   });
 });
 
-router.get('/meetings', limit, function () {
-  
+router.get('/meetings', limit, function (req, res) {
+  Meeting.find({}, function (err, meetings) {
+    if (err) res.status(404).send({ message : 'There is no meetings yet.' });
+    res.send(meetings);
+  });
 });
 module.exports = router;

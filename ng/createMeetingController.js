@@ -15,79 +15,79 @@
         name : 'Кино',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/movies.png'
       },
       food : {
         name : 'Еда',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/food.png'
       },
       sports : {
         name : 'Спорт',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/sports.png'
       },
       arts : {
         name : 'Творчество',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/arts.png'
       },
       eco : {
         name : 'Природа',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/eco.png'
       },
       dance : {
         name : 'Танцы',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/dance.png'
       },
       music : {
         name : 'Музыка',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/music.png'
       },
       cars : {
         name : 'Транспорт',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/cars.png'
       },
       theatre : {
         name : 'Театр',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/theatre.png'
       },
       it : {
         name : 'Мультимедия и ИТ',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/it.png'
       },
       science : {
         name : 'Наука',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/science.png'
       },
       mystic : {
         name : 'Мистика',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/mystic.png'
       },
       charity : {
         name : 'Благотворительность',
         show : false,
         tags : [],
-        pic  : 'http://i.imgur.com/qR9A2Fi.png'
+        pic  : 'images/category_icons/charity.png'
       }
     };
 
