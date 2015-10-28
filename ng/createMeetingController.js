@@ -1,12 +1,13 @@
 (function () {
   angular.module('FourApp')
-  .controller('NewMeetingController', function ($http, $window, $scope) {
+  .controller('NewMeetingController', function ($http, $window, $scope, Account) {
     var self  = this;
     $scope.map = {
       center : [55.76, 37.64],
       zoom   : 11,
       show   : false,
-      spot   : null
+      spot   : null,
+      options: { draggable : false }
     };
 
     self.categories = {
@@ -91,9 +92,36 @@
     };
 
     self.meeting = {
-      time  : new Date().getHours() + ':' + new Date().getMinutes(),
+      time  : time(),
       place : '',
       categories  : {}
+    };
+
+    self.create_meeting = function () {
+      // console.log(self.meeting);
+      Account.getProfile()
+      .then(function (res) {
+        var id = res.data._id;
+        $http.post('/api/meetings/', {
+          owner       : id,
+          description : self.meeting.description,
+          eventname   : self.meeting.event,
+          location    : self.meeting.place,
+          date        : self.meeting.date,
+          time        : self.meeting.time,
+          private     : self.meeting.private,
+          categories  : self.meeting.categories
+        })
+        .then(function (res) {
+          console.log(res.data);
+        })
+        .catch(function (res) {
+          console.log(res);
+        });
+      })
+      .catch(function (res) {
+        console.log(res);
+      });
     };
 
     self.choose_place = function (place) {
@@ -104,8 +132,8 @@
         .then(function (res) {
           var coordinates = res.geoObjects.get(0).geometry.getCoordinates();
           self.meeting.place = $scope.map.spot = coordinates;
-          console.log(self.meeting);
         });
+        $scope.map.options.draggable = false;
       } else if (self.option === 'direction') {
         $scope.map.show = true;
         $scope.$watch(function () { return self.direction },
@@ -118,11 +146,26 @@
             });
           }
         );
+        $scope.map.options.draggable = false;
       } else if (self.option === 'onmap') {
+        $scope.map.spot = null;
         $scope.map.show = true;
+        ymaps.geolocation.get({ provider : 'browser', mapStateAutoApply : true })
+        .then(function (res) {
+          var coordinates = res.geoObjects.get(0).geometry.getCoordinates();
+          self.meeting.place = $scope.map.spot = coordinates;
+        });
+        $scope.$watch(function () { return $scope.map.center; },
+          function (n, o) {
+            if (n[0] === o[0] && n[1] === o[1]) return ;
+            self.meeting.place = n;
+          }
+        );
+        $scope.map.options.draggable = true;
       } else {
         $scope.map.show = false;
         $scope.map.spot = null;
+        $scope.map.options.draggable = false;
       }
     };
 
@@ -133,91 +176,30 @@
       $http.get('/api/meetings/tags/' + category)
       .then(function (res) {
         self.categories[category].tags = res.data[category];
-        console.log(self.categories[category].tags);
       })
       .catch(function (res) {
-        console.log(res.status);
       });
     };
 
     self.toggle = function (tag, category) {
       var exists = self.meeting.categories[category];
-      console.log(tag + ' ' + category);
       if (exists) {
         var idx = self.meeting.categories[category].indexOf(tag);
         if (idx > -1) self.meeting.categories[category].splice(idx, 1)
         else self.meeting.categories[category].push(tag)
       }
       else self.meeting.categories[category] = [tag];
-      console.log(self.meeting.categories[category]);
     };
 
     self.checked = function (tag, category) {
       return self.meeting.categories[category].indexOf(tag) > -1;
     }
 
-    // $scope.$watch(function () { return self.option; }, function (n, o) {
-    //   if (n === o) return ;
-    //   else init();
-    // });
-    //
-    // function init () {
-    //   ymaps.ready(function () {
-    //     if (self.map) {
-    //       self.map.destroy();
-    //       self.map = null;
-    //     }
-    //     if (self.option === 'any') {
-    //       self.show = false;
-    //       console.log('any', self.show, self.map);
-    //     } else {
-    //       self.map = new ymaps.Map('map', {
-    //         center: [55.76, 37.64],
-    //         zoom: 11
-    //       });
-    //       if (self.option === 'nearby') {
-    //         self.show = true;
-    //         console.log('nearby', self.show, self.map);
-    //         var geolocation = ymaps.geolocation;
-    //         geolocation.get({ provider : 'browser', mapStateAutoApply : true })
-    //           .then(function (res) {
-    //             var first  = res.geoObjects.get(0);
-    //             var coords = first.geometry.getCoordinates();
-    //             var bounds = first.properties.get('boundedBy');
-    //             self.meeting.place = coords;
-    //             self.map.geoObjects.add(first);
-    //             self.map.setBounds(bounds, { checkZoomRange : true });
-    //           });
-    //       } else if (self.option === 'direction') {
-    //         self.show = true;
-    //         console.log('direction', self.show, self.map);
-    //         $scope.$watch(function () {
-    //           return self.direction;
-    //         }, function (n, o) {
-    //           if (n == o) return ;
-    //           ymaps.geocode(self.direction, {
-    //             results : 1
-    //           })
-    //             .then(function (res) {
-    //               self.map.geoObjects.removeAll();
-    //               var first  = res.geoObjects.get(0);
-    //               var coords = first.geometry.getCoordinates();
-    //               var bounds = first.properties.get('boundedBy');
-    //               self.meeting.place = coords;
-    //               self.map.geoObjects.add(first);
-    //               self.map.setBounds(bounds, { checkZoomRange : true });
-    //             });
-    //         });
-    //       } else if (self.option === 'onmap'){
-    //         self.show = true;
-    //         console.log('onmap', self.show, self.map);
-    //         self.map.events.add('click', function (e) {
-    //           console.log(e.get('coords'));
-    //         });
-    //       }
-    //     }
-    //     console.log('the end.', self.show, self.map);
-    //   });
-    // }
+    function time() {
+      var h = new Date().getHours();
+      var m = new Date().getMinutes();
+      return (h.length < 2 ? '0' + h : h) + ':' + (m.length < 2 ? '0' + m : m);
+    }
+
   });
 })();

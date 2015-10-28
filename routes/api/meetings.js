@@ -1,5 +1,6 @@
 var express  = require('express');
 var limit    = require('../middleware/limit');
+var Meeting  = require('../../models/meeting');
 var router   = express.Router();
 
 router.get('/meetings/tags/:category', limit, function (req, res) {
@@ -83,4 +84,30 @@ router.get('/meetings/tags/:category', limit, function (req, res) {
   return res.status(404).send({ message : 'No Such Tag Category Exists.' });
 });
 
+router.post('/meetings', limit, function (req, res) {
+  var meeting = new Meeting({
+    owner : req.body.owner,
+    description : req.body.description,
+    eventname : req.body.eventname,
+    location : req.body.location,
+    date : req.body.date,
+    time : req.body.time,
+    private : (req.body.private === 'true'),
+    categories : req.body.categories
+  });
+  meeting.save(function (err) {
+    if (err) {
+      return res.status(500).send({ message : 'Failed to Create Meeting' });
+    }
+    console.log(meeting);
+    res.status(200).send({
+      message   : 'New Meeting Created!',
+      meetingid : meeting._id
+    });
+  });
+});
+
+router.get('/meetings', limit, function () {
+  
+});
 module.exports = router;

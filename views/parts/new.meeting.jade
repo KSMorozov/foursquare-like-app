@@ -7,14 +7,13 @@ md-content(class='md-whiteframe-z1 md-padding')
   section
     md-text-float
      h4 Выберите Дату
-    form(method='post', ng-submit='',
-         layout='column', layout-align='center center'
-         layout-align-sm='start start')
+    form(layout='column', layout-align='center center'
+         layout-align-sm='center center', name='dateForm')
       div(layout='row', layout-align='start start',
           layout-sm='column', layout-sm-align='start start')
         md-input-container(style='margin-top:-9px;', class='md-padding')
           label Открытая?
-          md-select(ng-model='NewMeeting.meeting.private')
+          md-select(ng-model='NewMeeting.meeting.private', required)
             md-option(value='{{true}}') {{'Да'}}
             md-option(value='{{false}}') {{'Нет'}}
         md-input-container(style='margin-top:-9px;', class='md-padding')
@@ -22,15 +21,14 @@ md-content(class='md-whiteframe-z1 md-padding')
           input(ng-model='NewMeeting.meeting.time', type='text',
                 aria-label='Meeting Time')
         md-datepicker(ng-model='NewMeeting.meeting.date', class='md-padding',
-                      md-placeholder='Дата Встречи', style='margin-left: -22px;')
+                      md-placeholder='Дата Встречи', style='margin-left: -22px;', required)
     //- md-divider
     md-text-float
       h4 Куда хотите пойти?
-    form(method='post', ng-submit='',
-         layout='column', layout-align='center center'
-         layout-align-sm='start start')
-      div(layout='row', layout-align='start start',
-          layout-sm='column', layout-sm-align='start start')
+    section(layout='column', layout-align='center center'
+         layout-align-sm='center center')
+      div(layout='column', layout-align='start start',
+          layout-gt-sm='row', layout-sm-align='center center')
         md-button(class='md-accent md-raised', style='border-radius:0px;',
                   ng-click='NewMeeting.choose_place("any")', ng-class='NewMeeting.option == "any" ? "md-hue-3" : "md-hue-5"')
                   | Любое Место
@@ -44,30 +42,29 @@ md-content(class='md-whiteframe-z1 md-padding')
                   ng-click='NewMeeting.choose_place("nearby")', ng-class='NewMeeting.option == "nearby" ? "md-hue-3" : "md-hue-5"')
                   | Рядом Со Мной
       md-input-container(class='md-accent', layout-wrap, layout-fill, style='margin-top:5px;',
-                        layout='row', layout-sm='column',
-                        layout-align='center', layout-sm-align='start start')
+                        layout='row',
+                        layout-align='center', layout-sm-align='center center')
         input(ng-model='NewMeeting.meeting.event', type='text',
               aria-label='Event Name', flex='75', placeholder='Введите название события')
       md-input-container(class='md-accent', layout-wrap, layout-fill, style='margin-top:5px;',
-                        layout='row', layout-sm='column',
-                        layout-align='center', layout-sm-align='start start', ng-if='NewMeeting.option == "direction"')
+                        layout='row',
+                        layout-align='center', layout-sm-align='center center', ng-if='NewMeeting.option == "direction"')
         input(ng-model='NewMeeting.direction', type='text',
               aria-label='Event Name', flex='75', placeholder='Введите адрес')
     //- section(ng-show='NewMeeting.show')
     //-   div(id='map', style='min-height:300px;', flex)
     yandex-map(ng-if='map.show', center='map.center', zoom='map.zoom', style='min-height:300px;display:block;', flex)
-      ymap-marker(ng-if='map.spot', coordinates='map.spot')
+      ymap-marker(ng-if='map.spot', coordinates='map.spot', options='map.options')
     md-text-float
       h4 Чем хотите заняться?
-    form(method='post', ng-submit='',
-         layout='column', layout-align='center center'
-         layout-align-sm='start start')
+    form(layout='column', layout-align='center center'
+         layout-align-sm='center center', name='descrForm')
       md-input-container(class='md-accent', layout-wrap, layout-fill, style='margin-top:5px;',
                          layout='row', layout-sm='column',
-                         layout-align='center', layout-sm-align='start start')
+                         layout-align='center', layout-sm-align='center center')
         textarea(ng-model='NewMeeting.meeting.description',
                  aria-label='Description', flex='75',
-                 columns="1", rows='4', md-maxlength="150")
+                 columns="1", rows='4', md-maxlength="150", required)
     md-text-float
       h4 Выберите интерес
     section(method='post', ng-submit='',
@@ -79,9 +76,10 @@ md-content(class='md-whiteframe-z1 md-padding')
         div(flex-sm='25', flex-md='20', flex-gt-md='15', ng-repeat='(key, value) in NewMeeting.categories',
             layout='column', layout-align='center center')
           md-button(aria-label='{{value.name}}', class='md-fab md-raised md-margin',
-                    style='min-width:9px;min-height:8px;margin-left:-5px;', ng-click='NewMeeting.fetch_tags(key)')
+                    style='', ng-click='NewMeeting.fetch_tags(key)')
             img(ng-src='{{value.pic}}', style='margin-left:-7px;margin-bottom:3px;')
-          md-subheader(ng-bind='value.name', style='font-size: 11px;')
+          md-subheader(style='margin-top:-25px;')
+            p(ng-bind='value.name', style='font-size:11px;text-align: center;')
     section(layout='column', layout-align='center center'
             layout-align-sm='center center', style='margin-top: 20px;', class='md-padding')
       fieldset(ng-repeat='(key, value) in NewMeeting.categories',
@@ -93,4 +91,12 @@ md-content(class='md-whiteframe-z1 md-padding')
             md-checkbox(aria-label='{{tag}}', style='font-size:14px;', 
                         ng-click='NewMeeting.toggle(tag, key)',
                         md-checked='NewMeeting.checked(tag, key)') {{tag}}
-        
+    form(method='post',
+         layout='column', layout-align='center center'
+         layout-align-sm='center center')
+      div(class='md-accent',
+                        layout='row', layout-sm='column',
+                        layout-align='center', layout-sm-align='center center')
+        md-button(ng-disabled='dateForm.$invalid || descrForm.$invalid',
+                  class='md-accent md-raised', style='border-radius:0px;',
+                  ng-click='NewMeeting.create_meeting()') Создать
