@@ -6,6 +6,10 @@ html body::-webkit-scrollbar {
   display: none;
 }
 
+.md-dialog-container md-dialog::-webkit-scrollbar {
+  display: none;
+}
+
 ::-webkit-scrollbar {
     width: 5px;
 }

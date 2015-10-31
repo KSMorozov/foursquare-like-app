@@ -68,13 +68,15 @@ block content
         div(ui-view, layout-wrap)
       md-sidenav(class='md-sidenav-right',
                         md-component-id='right',
-                        md-is-locked-open="$mdMedia('gt-lg')")
-        md-content(ng-controller='SideNavLeftController as SideNavLeft')
-          md-list
-            md-list-item(ng-repeat='item in SideNavLeft.menu', aria-label='{{item.name}}', ng-click="$state.go(item.route); SideNavLeft.close()")
-              md-icon(style="fill:black;font:bold;", md-svg-src='images/icons/{{item.icon}}')
-              p(ng-bind='item.name')
-    div(layout='column', style='padding-top:600px;')
+                        md-is-locked-open="$mdMedia('gt-lg')", ng-cloak)
+        md-content(ng-controller='SideNavRightController as SideNavRight')
+          section(layout='column', ng-if='$state.is("meetings")')
+            md-button(style='border-radius:0px;margin-top:17px;', class='md-raised md-accent md-hue-5 md-margin', flex,
+                      ng-click='SideNavRight.show_categories($event)')
+              | Добавить Интересы
+            md-button(style='border-radius:0px;margin-top:17px;', class='md-raised md-accent md-hue-5 md-margin', flex)
+              | Использовать Мои Интересы
+    div(layout='column', style='padding-top:600px;', ng-cloak)
       md-toolbar(layout='row')
         div(class='md-toolbar-tools',
             layout='row',

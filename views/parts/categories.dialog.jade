@@ -1,0 +1,33 @@
+md-dialog(aria-label='upload dialog', ng-cloak,
+          style='min-height:100%;width:100%;overflow-x: hidden;',
+          layout-align='space-between center', flex='75')
+  md-toolbar(class='md-accent')
+    .md-toolbar-tools
+      h1 Выберите Интересы
+  section(layout='column', layout-align='center center',
+          layout-align-sm='center center', style='margin-top:20px;', flex)
+    div(class='md-accent', layout-wrap,
+        layout='row', layout-align='space-around center',
+        layout-align-sm='center center')
+      div(flex-sm='25', flex-md='20', flex-gt-md='15', ng-repeat='(key, value) in Categories.categories',
+          layout='column', layout-align='center center', ng-cloak)
+          img(ng-src='{{value.pic}}', style='margin-bottom:-64px;z-index:-1;')
+          md-button(aria-label='{{value.name}}', class='md-fab md-raised md-margin',
+                    style='z-index:1;opacity:.05;', ng-click='Categories.fetch_tags(key)')
+          md-subheader(style='margin-top:-25px;z-index:-2;')
+            p(ng-bind='value.name', style='font-size:11px;text-align: center;')
+  section(layout='column', layout-align='center center',
+          layout-align-sm='center center', style='margin-top: 20px;', class='md-padding', flex)
+    fieldset(ng-repeat='(key, value) in Categories.categories',
+             layout='row', layout-sm='column', layout-wrap, style='border:none;'
+             layout-align='center center', layout-sm-align='start start', ng-show='value.show')
+      div(layout='row', flex, layout-wrap)
+        div(flex-sm='50', flex-md='30', flex-lg='25', flex-gt-lg='25',
+            ng-repeat='tag in value.tags')
+          md-checkbox(aria-label='{{tag}}', style='font-size:11px;', 
+                      ng-click='Categories.toggle(tag, key)',
+                      md-checked='Categories.checked(tag, key)') {{tag}}
+  section(layout='column', layout-align='end end',flex)
+    section(layout='row', layout-align='space-between center')
+      md-button(ng-click='Categories.confirm()', class='md-raised md-accent md-hue-5 md-margin') Применить
+      md-button(ng-click='Categories.cancel()', class='md-raised md-warn md-accent md-hue-5 md-margin') Отменить

@@ -4,10 +4,9 @@ md-content(class='md-whiteframe-z1 md-padding', ng-if='User.user')
       img(ng-src='{{User.user.picture}}', class='md-card-image')
       section(class='md-actions')
         md-input-container(style='margin-bottom:-30px;')
-          md-button(class='md-accent md-hue-7 md-margin', ng-click='User.add_friend()') Добавить В Друзья
-        md-input-container(style='margin-top:-15px;margin-bottom: -20px;',
-                           class='md-accent md-hue-7 md-margin')
-          md-button(class='md-accent md-hue-7 md-margin', ng-click="$state.go('chat', {id:User.user._id})") Написать Сообщение
+          md-button(class='md-raised md-accent md-hue-5 md-margin', ng-click='User.add_friend()') Добавить В Друзья
+        md-input-container(style='margin-top:-15px;margin-bottom: -20px;')
+          md-button(class='md-raised md-accent md-hue-5 md-margin', ng-click="$state.go('chat', {id:User.user._id})") Написать Сообщение
     div(layout='column', class='md-padding', flex-gt-sm='70', style='height:100%;')
       md-card-content(flex)
         h1(ng-bind='User.user.displayName', flex)

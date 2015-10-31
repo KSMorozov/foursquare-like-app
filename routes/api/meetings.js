@@ -99,7 +99,6 @@ router.post('/meetings', limit, function (req, res) {
     if (err) {
       return res.status(500).send({ message : 'Failed to Create Meeting' });
     }
-    console.log(meeting);
     res.status(200).send({
       message   : 'New Meeting Created!',
       meetingid : meeting._id
@@ -109,8 +108,50 @@ router.post('/meetings', limit, function (req, res) {
 
 router.get('/meetings', limit, function (req, res) {
   Meeting.find({}, function (err, meetings) {
-    if (err) res.status(404).send({ message : 'There is no meetings yet.' });
+    if (err) return res.status(404).send({ message : 'There is no meetings yet.' });
     res.send(meetings);
   });
 });
+
+router.get('/meetings/by_category/:categories', limit, function (req, res) {
+  var categories = JSON.parse(req.params.categories);
+  var meetings = [];
+  var numque = 0;
+  for (category in categories) {
+    if (categories.hasOwnProperty(category)) {
+      categories[category].forEach(function (e) {
+        ++numque;
+        var query = {};
+        query['categories.' + category] = e;
+        Meeting.find(query, function (err, meeting) {
+          --numque;
+          meetings = meetings.concat(meeting);
+          if (numque === 0) {
+            var unique   = {};
+            var distinct = [];
+            meetings.forEach(function (e) {
+              if (!unique[e._id]) {
+                distinct.push(e);
+                unique[e._id] = true;
+              }
+            });
+            res.send(distinct);
+          }
+        })
+      });
+    }
+  }
+});
+
+router.get('/meetings/:coords', limit, function (req, res) {
+  var coords = req.params.coords.split(',');
+  console.log(coords);
+
+  Meeting.where('location').within().circle({ center : coords, radius : 0.2, unique : true })
+  .exec(function (err, meetings) {
+    if (err) return res.status(404).send({ message : 'There is no meetings yet.' });
+    res.send(meetings);
+  });
+});
+
 module.exports = router;

@@ -30,16 +30,20 @@ md-content(class='md-whiteframe-z1 md-padding')
       div(layout='column', layout-align='start start',
           layout-gt-sm='row', layout-sm-align='center center')
         md-button(class='md-accent md-raised', style='border-radius:0px;',
-                  ng-click='NewMeeting.choose_place("any")', ng-class='NewMeeting.option == "any" ? "md-hue-3" : "md-hue-5"')
+                  ng-click='NewMeeting.choose_place("any")',
+                  ng-class='NewMeeting.option == "any" ? "md-hue-3" : "md-hue-5"')
                   | Любое Место
         md-button(class='md-accent md-raised', style='border-radius:0px;',
-                  ng-click='NewMeeting.choose_place("onmap")', ng-class='NewMeeting.option == "onmap" ? "md-hue-3" : "md-hue-5"')
+                  ng-click='NewMeeting.choose_place("onmap")',
+                  ng-class='NewMeeting.option == "onmap" ? "md-hue-3" : "md-hue-5"')
                   | На Карте
         md-button(class='md-accent md-raised', style='border-radius:0px;',
-                  ng-click='NewMeeting.choose_place("direction")', ng-class='NewMeeting.option == "direction" ? "md-hue-3" : "md-hue-5"')
+                  ng-click='NewMeeting.choose_place("direction")',
+                  ng-class='NewMeeting.option == "direction" ? "md-hue-3" : "md-hue-5"')
                   | По Адресу
         md-button(class='md-accent md-raised', style='border-radius:0px;',
-                  ng-click='NewMeeting.choose_place("nearby")', ng-class='NewMeeting.option == "nearby" ? "md-hue-3" : "md-hue-5"')
+                  ng-click='NewMeeting.choose_place("nearby")',
+                  ng-class='NewMeeting.option == "nearby" ? "md-hue-3" : "md-hue-5"')
                   | Рядом Со Мной
       md-input-container(class='md-accent', layout-wrap, layout-fill, style='margin-top:5px;',
                         layout='row',
@@ -48,7 +52,8 @@ md-content(class='md-whiteframe-z1 md-padding')
               aria-label='Event Name', flex='75', placeholder='Введите название события')
       md-input-container(class='md-accent', layout-wrap, layout-fill, style='margin-top:5px;',
                         layout='row',
-                        layout-align='center', layout-sm-align='center center', ng-if='NewMeeting.option == "direction"')
+                        layout-align='center', layout-sm-align='center center',
+                        ng-if='NewMeeting.option == "direction"')
         input(ng-model='NewMeeting.direction', type='text',
               aria-label='Event Name', flex='75', placeholder='Введите адрес')
     //- section(ng-show='NewMeeting.show')
