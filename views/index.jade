@@ -54,14 +54,16 @@ block content
           input(type='text')
         md-button(class='md-raised md-accent md-hue-9', style='border-radius:0px;', flex='40', flex-md='100', flex-sm='100')
           | Найти
-      section(layout-align='center center', style='margin-top:-20px;',
-              layout='row', layout-align-gt-md='center center', class='md-padding', flex='60')
-        div(layout='row', layout-align='center center', style='margin-bottom:-30px;', flex-sm='70', flex-md='50', flex-lg='30', flex='25')
+      span(flex='5')
+      section(layout-align='center center', style='margin-left:-15px;margin-top:-20px;',
+              layout='row', layout-align-gt-md='center center', class='md-padding', flex='50')
+        div(layout='row', layout-align='center center', style='margin-bottom:-30px;', flex-sm='70', flex-md='50', flex-lg='30', flex='20')
           md-icon(style="fill:black;font:bold;margin-right:-15px;", md-svg-src='images/icons/pin.svg', flex='30')
           md-input-container(class='md-accent', flex='70')
             label(ng-bind='location')
             md-select(ng-model='location', aria-label='Location')
               md-option(ng-repeat='city in cities', value='{{city}}') {{city}}
+      span(flex='5')
       section(layout='column', layout-align='center center',class='md-padding', flex='20',style='margin-top:49px;')
         md-input-container(class='md-accent', style='margin-top:10px;', flex, layout-fill)
           label Введите ваш email

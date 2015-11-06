@@ -60,6 +60,7 @@ md-datepicker .md-datepicker-input-container {
 }
 
 a {
+  text-decoration: none;
   margin-left: 5px;
   color:black
 }

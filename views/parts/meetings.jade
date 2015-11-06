@@ -2,11 +2,11 @@ md-content(class='md-padding')
   section(layout='row', layout-align='center center', class='md-padding')
     md-datepicker(class='datefilter', ng-model='date_filter', palceholder='Выбрать дату', style='background-color:white;')
     section(layout='row', class='md-margin', style='margin-bottom:-5px;')
-      md-icon(style="fill:#FF7043;font:bold;margin-left:10px;margin-bottom:13px;", md-svg-src='images/icons/pin.svg')
-      a(href='', target='_blank', style='margin-left:7px;margin-bottom:0px;', ng-click='Meetings.fetch_nearby_meetings()', class='alink')
-        p Рядом со мной
-    section(layout='row', class='md-margin', style='margin-bottom:-5px;')
       md-icon(style="fill:#FF7043;font:bold;margin-left:10px;margin-bottom:13px;", md-svg-src='images/icons/moscow.svg')
+      a(href='', target='_blank', style='margin-left:7px;margin-bottom:0px;', ng-click='Meetings.fetch_nearby_meetings()', class='alink')
+        p Выбрать метро
+    section(layout='row', class='md-margin', style='margin-bottom:-5px;')
+      md-icon(style="fill:#FF7043;font:bold;margin-left:10px;margin-bottom:13px;", md-svg-src='images/icons/pin.svg')
       a(href='', target='_blank', style='margin-left:7px;margin-bottom:0px;', ng-click='Meetings.fetch_nearby_meetings()', class='alink')
         p Рядом со мной
   section(layout='row', layout-align='center center')
