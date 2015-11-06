@@ -1,6 +1,6 @@
 (function () {
   angular.module('FourApp')
-  .controller('SecondToolbarController', function ($scope) {
+  .controller('SecondToolbarController', function ($scope, $rootScope) {
     var self = this;
     $scope.location = '';
     $scope.cities = ['Москва', 'Екатеринбург'];
@@ -16,6 +16,7 @@
           var location = res.geoObjects.get(0).properties.get('text').split(',')[1];
           $scope.location = location;
           $scope.$apply();
+          $rootScope.user_city = location;
         });
       });
     });

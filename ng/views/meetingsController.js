@@ -8,6 +8,8 @@
     self.owners    = {};
     self.addresses = {};
 
+    $scope.date_filter = new Date();
+
     self.toggle_map = function () {
       self.show = !self.show;
       return self.show ? init() : (function () {

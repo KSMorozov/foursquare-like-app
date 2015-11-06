@@ -38,3 +38,40 @@ md-icon {
       fill: white;
   }
 }
+
+md-datepicker {
+  margin-top: 5px;
+}
+
+.md-datepicker-calendar-pane {
+  background-color: white;
+}
+
+.datefilter md-icon {
+   fill: #FF7043;
+}
+
+md-datepicker md-icon {
+   margin-bottom: -6px;
+}
+
+md-datepicker .md-datepicker-input-container {
+  margin-left: -5px;
+}
+
+a {
+  margin-left: 5px;
+  color:black
+}
+
+a:visited{
+  color:grey;
+}
+
+a:active{
+  color:#FF7043;
+}
+
+a:hover{
+  color:#FF7043;
+}
