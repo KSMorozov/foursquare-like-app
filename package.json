@@ -7,6 +7,7 @@
     "postinstall": "bower install"
   },
   "dependencies": {
+    "async": "^1.5.0",
     "bcrypt": "^0.8.5",
     "body-parser": "~1.13.2",
     "bower": "^1.6.2",
@@ -23,7 +24,7 @@
     "jade": "~1.11.0",
     "jsonwebtoken": "^5.0.5",
     "moment": "^2.10.6",
-    "mongoose": "^4.1.7",
+    "mongoose": "^4.2.5",
     "morgan": "~1.6.1",
     "path": "^0.12.7",
     "querystring": "^0.2.0",

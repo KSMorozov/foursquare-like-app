@@ -1,16 +1,19 @@
-md-content(class='md-padding')
-  section(layout='row', layout-align='center center', class='md-padding')
-    md-datepicker(class='datefilter', ng-model='date_filter', palceholder='Выбрать дату', style='background-color:white;')
-    section(layout='row', class='md-margin', style='margin-bottom:-5px;')
-      md-icon(style="fill:#FF7043;font:bold;margin-left:10px;margin-bottom:13px;", md-svg-src='images/icons/moscow.svg')
-      a(href='', target='_blank', style='margin-left:7px;margin-bottom:0px;', ng-click='Meetings.fetch_nearby_meetings()', class='alink')
-        p Выбрать метро
-    section(layout='row', class='md-margin', style='margin-bottom:-5px;')
-      md-icon(style="fill:#FF7043;font:bold;margin-left:10px;margin-bottom:13px;", md-svg-src='images/icons/pin.svg')
-      a(href='', target='_blank', style='margin-left:7px;margin-bottom:0px;', ng-click='Meetings.fetch_nearby_meetings()', class='alink')
-        p Рядом со мной
-  section(layout='row', layout-align='center center')
-    
+md-content(layout='row', layout-align='center center', style='padding:0px;margin:0px;')
+  div(layout='row', flex='30', layout-align='end')
+    md-icon(flex='15', style="fill:#FF7043;font:bold;", md-svg-src='images/icons/moscow.svg')
+    md-input-container(flex='75', class='md-accent',
+                       ng-style='!underground_station ? {"margin-top":"23px"} : {"margin-top":"5px"}')
+      label(ng-bind='underground_station')
+      md-select(ng-model='underground_station', aria-label='Location')
+        md-option(ng-repeat='station in underground_stations', value='{{station.name}}') {{station.name}}
+  div(layout='row', flex='30', layout-align='center', style='margin-top:13px;')
+    div(flex='50', layout='row')
+      md-icon(flex='15', style="fill:#FF7043;font:bold;margin-top:4px;", md-svg-src='images/icons/pin.svg')
+      section(flex='75', layout='row')
+        a(style='cursor:pointer;', ng-click='Meetings.apply_nearby()', class='alink', flex)
+          p(flex, style='font-size:14px;') Рядом со мной
+  div(layout='row', flex='30', layout-align='start')
+    md-datepicker(class='datefilter', flex, ng-model='date_filter', palceholder='Выбрать дату', style='background-color:white;')
 md-content(class='md-whiteframe-z1 md-padding')
   section(layout-wrap, layout='row')
     md-button(class='md-raised md-accent md-hue-9',
@@ -21,10 +24,6 @@ md-content(class='md-whiteframe-z1 md-padding')
   section(ng-show='Meetings.show')
     div(id='map', layout-wrap, style='min-height:300px;', flex)
   section(layout='row', layout-align='end', style='')
-    //- md-button(class='md-raised md-accent md-hue-9',
-    //-           style='z-index:2;margin-bottom:-120px;margin-top:15px;border-radius:0px;height:20px;',
-    //-           ng-click='Meetings.fetch_nearby_meetings()')
-    //-   | Рядом
     md-button(class='md-raised md-accent md-hue-9',
               style='z-index:2;margin-bottom:-120px;margin-top:15px;border-radius:0px;height:20px;',
               ng-click='$state.go("new_meeting")')
@@ -33,41 +32,48 @@ md-content(class='md-whiteframe-z1 md-padding')
     article(layout-sm='column',
             layout-md='column',
             layout='row', class='md-margin md-whiteframe-z1', style='background-color:#F5F5F5;'
-            ng-repeat='meeting in Meetings.meetings | orderBy : "+date"')
+            ng-repeat='meeting in meetings | orderBy : "+date"',
+            ng-init='fetch_address(meeting.place, $index)')
       div(layout='column', flex='35', style='background-color:#F5F5F5;', flex-sm='100', flex-md='100')
         md-card(layout='column', class='', style='background-color:#F5F5F5;')
-          img(ng-src='{{Meetings.owners[meeting.owner].picture || "http://placehold.it/300x200"}}', class='md-card-image', flex='40')
+          img(ng-src='{{meeting.owner_picture || "http://placehold.it/300x200"}}', class='md-card-image', flex='40')
           div(class='md-actions', layout='column', flex='20')
-            md-button(ng-click='Meetings.add_friend(meeting.owner)',
+            md-button(ng-click='add_friend(meeting.owner_id)',
                       style='text-align:left;font-size:12px;', flex='100') Добавить В Друзья
           md-divider
           div(class='md-actions', layout='column', flex='20')
-            md-button(ng-click='Meetings.add_friend(meeting.owner)',
+            md-button(ng-click='',
                       style='text-align:left;font-size:12px;', flex='100') Написать Сообщение
           md-divider
           div(class='md-actions', layout='column', flex='20')
             md-button(ng-click='true',
-                      style='text-align:left;font-size:12px;', flex='100') Друзья
+                      style='text-align:left;font-size:12px;', flex='100') Друзья {{"(" + meeting.owner_friends_amount + ")"}}
       div(layout='column', layout-align='space-between',flex='65', flex-sm='100', flex-md='100')
-        div(layout='row', flex='10')
+        div(layout='row', flex='10', class='md-padding')
           div(layout='column', flex)
             div(layout='row', layout-align='end')
-              img(ng-src='{{"images/category_icons/" + key + ".png"}}',
-                  ng-repeat='(key, val) in meeting.categories',
+              img(ng-src='{{"images/category_icons/" + category + ".png"}}',
+                  ng-repeat='category in meeting.categories',
                   style='height:25px;width:25px;margin:5px 5px 5px 0px;')
         div(layout='row', flex, style='margin-top:-20px;')
-          div(layout='column', layout-align='space-around start', flex, class='md-padding')
-            h3(style='font-size:18px;margin-top:-5px;',
-               ng-bind='Meetings.owners[meeting.owner].displayName', flex)
-            h4(style='font-size:14px;margin:0px;', flex) {{ (meeting.time) + ' ' + (meeting.date | date: 'MM/dd/yyyy')}}
-            p(style='font-size:14px;margin:-0px;', ng-if='meeting.eventname', flex) {{"Событие: " + meeting.eventname}}
-            p(style='font-size:12px;margin:0px;',
-              ng-if='meeting.location', ng-bind='"Место Встречи: " + Meetings.addresses[meeting.location]', flex) 
-            p(ng-bind='meeting.description', flex, style='margin:0px;')
+          div(layout='column', layout-align='start start', class='md-margin')
+            div(layout='row')
+              a(style='cursor:pointer;', ng-click='$state.go("meeting", {id:meeting._id})', class='alink')
+                h3.md-title(ng-bind='meeting.title', style='padding:0px;margin:0px;')
+            div(layout='row')
+              h3.md-headline(ng-bind='meeting.owner_name', style='padding:0px;margin:0px;cursor:pointer;', ui-sref='user({id: meeting.owner_id})')
+            div(layout='row')
+              h4.md-subhead(ng-bind='meeting.date | date: "medium"', style='padding:0px;margin:0px;')
+            div(layout='row')
+              p.md-caption(ng-if='meeting.eventname', style='padding:0px;margin:0px;') {{"Событие: " + meeting.eventname}}
+            div(layout='row')
+              p.md-body-1(ng-if='meeting.place', style='padding:0px;margin:0px;'){{addresses[$index]}}
+            div(layout='row')
+              p.md-body-2(ng-bind='meeting.description', style='padding:0px;margin:0px;')
         div(layout='row', flex)
           div(layout='column', flex, layout-align='end')
-              md-button(md-theme='background', class='md-raised', style='border-radius:0px;font-size:11px;') Встречи {{Meetings.owners[meeting.owner].displayName}}
-              md-button(md-theme='background', class='md-raised', style='border-radius:0px;font-size:11px;') Предложить Другу
+              md-button(md-theme='background', class='md-raised', style='border-radius:0px;font-size:11px;') Встречи {{meeting.owner_name}}
+              md-button(md-theme='background', class='md-raised', style='border-radius:0px;font-size:11px;', ng-click='show_invites($event, meeting._id)') Предложить Другу
           div(layout='column', flex, layout-align='end')
-              md-button(md-theme='background', class='md-raised', style='border-radius:0px;font-size:11px;', ng-click='Meetings.show_onmap(meeting.location, Meetings.addresses[meeting.location])') На Карте
-              md-button(md-theme='background', class='md-raised', style='border-radius:0px;font-size:11px;') Откликнуться
+              md-button(md-theme='background', class='md-raised', style='border-radius:0px;font-size:11px;', ng-click='Meetings.show_onmap(meeting.place, addresses[$index])') На Карте
+              md-button(md-theme='background', class='md-raised', style='border-radius:0px;font-size:11px;', ng-click='attend_meeting(meeting._id)') Откликнуться

@@ -39,9 +39,14 @@ md-icon {
   }
 }
 
-md-datepicker {
-  margin-top: 5px;
+.new-meeting-date {
+  margin-top: 0px;
 }
+
+
+/*md-datepicker .datefilter {
+  margin-top: 5px;
+}*/
 
 .md-datepicker-calendar-pane {
   background-color: white;
@@ -51,17 +56,17 @@ md-datepicker {
    fill: #FF7043;
 }
 
-md-datepicker md-icon {
+/*md-datepicker md-icon {
    margin-bottom: -6px;
-}
+}*/
 
-md-datepicker .md-datepicker-input-container {
+/*md-datepicker .md-datepicker-input-container {
   margin-left: -5px;
-}
+}*/
 
 a {
   text-decoration: none;
-  margin-left: 5px;
+  /*margin-left: 5px;*/
   color:black
 }
 
@@ -75,4 +80,12 @@ a:active{
 
 a:hover{
   color:#FF7043;
+}
+
+md-toast.md-success-toast-theme {
+    background-color: green;
+}
+
+md-toast.md-failed-toast-theme {
+    background-color: red;
 }

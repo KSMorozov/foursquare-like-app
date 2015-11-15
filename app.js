@@ -11,6 +11,7 @@ var cors         = require('cors');
 var auth         = require('./routes/auth');
 var api          = require('./routes/api');
 var index        = require('./routes/index');
+var utils        = require('./routes/utils');
 
 mongoose.connect(config.MONGO_URI);
 mongoose.connection.on('error', function (err) {
@@ -40,8 +41,9 @@ if (app.get('env') === 'production') {
   });
 }
 
-app.use('/auth', auth);
-app.use('/api' , api);
-app.use('/'    , index);
+app.use('/auth' , auth);
+app.use('/api'  , api);
+app.use('/utils', utils);
+app.use('/'     , index);
 
 module.exports = app;

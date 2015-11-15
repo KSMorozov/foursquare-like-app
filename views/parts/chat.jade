@@ -1,6 +1,7 @@
 
 md-content(class='md-padding md-whiteframe-z1')
   md-list(ng-cloak, ng-if='Chat.messages.length')
+    md-subheader(class="md-no-sticky", ng-bind='"Сообщения:"') 
     md-list-item(class='md-2-line', ng-repeat='message in Chat.messages | orderBy: "+date"',
                  aria-label='{{Chat.is_friend(message.from) ? Chat.friend.displayName : Chat.me.displayName}}')
       img(alt='{{Chat.is_friend(message.from) ? Chat.friend.displayName : Chat.me.displayName}}',
@@ -8,6 +9,17 @@ md-content(class='md-padding md-whiteframe-z1')
       .md-list-item-text
         h3(ng-bind='Chat.is_friend(message.from) ? Chat.friend.displayName : Chat.me.displayName')
         p(ng-bind='message.body')
+  md-list(ng-cloak, ng-if='invites')
+    md-subheader(class="md-no-sticky", ng-bind='"Приглашения:"') 
+    md-list-item(class='md-3-line', ng-repeat='invite in invites | orderBy: "+date"', layout='row', layout-align='center')
+      img(alt='{{invite.addresser_name}}', ng-src='{{invite.addresser_picture}}', class='md-avatar')
+      .md-list-item-text
+        h3(ng-bind='invite.addresser_name')
+        h4(ng-bind='invite.body')
+        p(ng-bind='invite.meeting_title', ui-sref='meeting({id: invite.event_id})', style='cursor:pointer;')
+      div(layout='row', layout-align='end')
+        md-button(md-theme='background', class='md-raised', style='border-radius:0px;font-size:11px;', ng-click='respond_invite(true, invite._id, invite.event_id)') Принять
+        md-button(md-theme='background', class='md-raised', style='border-radius:0px;font-size:11px;', ng-click='respond_invite(false, invite._id)') Отклонить
   form(method='post', layout-gt-sm='row', layout-align='space-between', ng-submit='Chat.send_message()')
     md-input-container(class='md-accent md-hue-7', flex-gt-sm='80')
       textarea(aria-label='Отправить Сообщение', ng-model='Chat.message', columns='1', rows='4',

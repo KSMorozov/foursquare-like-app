@@ -1,6 +1,7 @@
 (function () {
   angular.module('FourApp')
-  .controller('NewMeetingController', function ($http, $window, $scope, Account) {
+  .controller('NewMeetingController', function ($http, $window, $scope, $mdToast,
+                                                Account, Utils, Meeting, Toast) {
     var self  = this;
     $scope.map = {
       center : [55.76, 37.64],
@@ -92,36 +93,22 @@
     };
 
     self.meeting = {
-      time  : time(),
-      place : '',
-      categories  : {}
+      place      : '',
+      categories : [],
+      tags       : []
     };
 
     self.create_meeting = function () {
-      // console.log(self.meeting);
-      Account.getProfile()
+      Meeting.create_meeting(self.meeting)
       .then(function (res) {
-        var id = res.data._id;
-        $http.post('/api/meetings/', {
-          owner       : id,
-          description : self.meeting.description,
-          eventname   : self.meeting.event,
-          location    : self.meeting.place,
-          date        : self.meeting.date,
-          time        : self.meeting.time,
-          private     : self.meeting.private,
-          categories  : self.meeting.categories
-        })
-        .then(function (res) {
-          console.log(res.data);
-        })
-        .catch(function (res) {
-          console.log(res);
-        });
+        Toast.show_toast('success', res.data.message);
+        // redirect to specific meeting route
+        // id of meeting available at res.data.message_id
       })
       .catch(function (res) {
-        console.log(res);
+        Toast.show_toast('failed', res.data.message);
       });
+      self.meeting = {};
     };
 
     self.choose_place = function (place) {
@@ -173,33 +160,31 @@
       self.categories[category].show = !self.categories[category].show;
       if (!self.categories[category].show) return;
       (function () { for (var p in self.categories) { if (self.categories.hasOwnProperty(p) && p != category) self.categories[p].show = false; } })();
-      $http.get('/api/meetings/tags/' + category)
+      Utils.fetch_tags_for_category(category)
       .then(function (res) {
-        self.categories[category].tags = res.data[category];
-      })
-      .catch(function (res) {
+        self.categories[category].tags = res.data.tags;
       });
     };
 
     self.toggle = function (tag, category) {
-      var exists = self.meeting.categories[category];
-      if (exists) {
-        var idx = self.meeting.categories[category].indexOf(tag);
-        if (idx > -1) self.meeting.categories[category].splice(idx, 1)
-        else self.meeting.categories[category].push(tag)
+      var idx_tag = self.meeting.tags.indexOf(tag);
+      if (idx_tag > -1) self.meeting.tags.splice(idx_tag, 1);
+      else self.meeting.tags.push(tag);
+
+      var idx_cat = self.meeting.categories.indexOf(category);
+      var liable  = self.meeting.tags.filter(function (e) {
+        return self.categories[category].tags.indexOf(e) > -1;
+      }).length;
+
+      if (!liable) self.meeting.categories.splice(idx_cat, 1);
+      else if (self.meeting.categories.indexOf(category) === -1) {
+        self.meeting.categories.push(category);
       }
-      else self.meeting.categories[category] = [tag];
     };
 
     self.checked = function (tag, category) {
-      return self.meeting.categories[category].indexOf(tag) > -1;
-    }
-
-    function time() {
-      var h = new Date().getHours();
-      var m = new Date().getMinutes();
-      return (h.length < 2 ? '0' + h : h) + ':' + (m.length < 2 ? '0' + m : m);
-    }
+      return self.meeting.tags.indexOf(tag) > -1;
+    };
 
   });
 })();

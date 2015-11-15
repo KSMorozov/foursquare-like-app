@@ -1,11 +1,11 @@
 (function () {
   angular.module('FourApp')
-  .controller('CategoriesDialog', function ($mdDialog, $state, $http, $scope, $rootScope) {
+  .controller('CategoriesDialog', function ($mdDialog, $state, $http, $scope, $rootScope, Utils) {
     var self = this;
-    self.message = 'hey there it\'s categories dialog'
 
     self.meeting = {
-      categories : {}
+      categories : [],
+      tags       : []
     };
 
     self.categories = {
@@ -93,26 +93,30 @@
       self.categories[category].show = !self.categories[category].show;
       if (!self.categories[category].show) return;
       (function () { for (var p in self.categories) { if (self.categories.hasOwnProperty(p) && p != category) self.categories[p].show = false; } })();
-      $http.get('/api/meetings/tags/' + category)
+      Utils.fetch_tags_for_category(category)
       .then(function (res) {
-        self.categories[category].tags = res.data[category];
-      })
-      .catch(function (res) {
+        self.categories[category].tags = res.data.tags;
       });
     };
 
     self.toggle = function (tag, category) {
-      var exists = self.meeting.categories[category];
-      if (exists) {
-        var idx = self.meeting.categories[category].indexOf(tag);
-        if (idx > -1) self.meeting.categories[category].splice(idx, 1)
-        else self.meeting.categories[category].push(tag)
+      var idx_tag = self.meeting.tags.indexOf(tag);
+      if (idx_tag > -1) self.meeting.tags.splice(idx_tag, 1);
+      else self.meeting.tags.push(tag);
+
+      var idx_cat = self.meeting.categories.indexOf(category);
+      var liable  = self.meeting.tags.filter(function (e) {
+        return self.categories[category].tags.indexOf(e) > -1;
+      }).length;
+
+      if (!liable) self.meeting.categories.splice(idx_cat, 1);
+      else if (self.meeting.categories.indexOf(category) === -1) {
+        self.meeting.categories.push(category);
       }
-      else self.meeting.categories[category] = [tag];
     };
 
     self.checked = function (tag, category) {
-      return self.meeting.categories[category].indexOf(tag) > -1;
+      return self.meeting.tags.indexOf(tag) > -1;
     };
 
     self.cancel = function () {
@@ -120,7 +124,7 @@
     };
 
     self.confirm = function () {
-      $rootScope.$emit('categories_for_meetings', self.meeting.categories);
+      $rootScope.$emit('apply_tags', self.meeting);
       $mdDialog.hide();
     };
 

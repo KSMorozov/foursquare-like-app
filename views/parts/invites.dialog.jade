@@ -1,0 +1,17 @@
+md-dialog(aria-label='invites dialog', ng-cloak,
+          style='overflow-x: hidden;',
+          layout-align='space-between', flex='50')
+  md-toolbar(class='md-accent')
+    .md-toolbar-tools
+      h1 Пригласи друзей
+  section(layout='column', class='md-padding')
+    div(layout='row', layout-align='end')
+      md-button(md-theme='background', class='md-raised', style='border-radius:0px;font-size:11px;', ng-click='toggle_all_friends(true)') Выбрать всех
+      md-button(md-theme='background', class='md-raised', style='border-radius:0px;font-size:11px;', ng-click='toggle_all_friends(false)') Снять всех
+    md-list
+      md-list-item(ng-repeat='friend in friends')
+        img(alt='{{friend.friend_name}}', class='md-avatar', ng-src='{{friend.friend_picture}}')
+        p(ng-bind='friend.friend_name')
+        md-checkbox(class="md-secondary", ng-model='friend.selected')
+    div(layout='row', layout-align='center')
+      md-button(class='md-raised md-accent', ng-click='send_invites()') Пригласить

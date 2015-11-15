@@ -13,9 +13,9 @@
         clickOutsideToClose : true
       })
       .then(function () {
-        self.message += ' hide dialog';
+
       }, function () {
-        self.message += ' close dialog';
+
       });
     };
   });

@@ -1,157 +1,82 @@
-var express  = require('express');
+var User     = require('../../models/user');
 var limit    = require('../middleware/limit');
 var Meeting  = require('../../models/meeting');
+var express  = require('express');
 var router   = express.Router();
+var async    = require('async');
 
-router.get('/meetings/tags/:category', limit, function (req, res) {
-  var category = req.params.category;
-  var tags = {
-    movies : [
-      'Артхаус', 'Биография', 'Боевик', 'Вестерн', 'Военный', 'Детектив', 'Детский',
-      'Документальный', 'Драма', 'История', 'Комедия', 'Криминал', 'Мелодрама', 'Мюзикл',
-      'Мультфильм', 'Приключение', 'Фэнтези', 'Спорт', 'Триллер', 'Ужасы', 'Фантастика', 'Прочее'
-    ],
-    food   : [
-      'Американская', 'Армянская', 'Вегетарианская', 'Восточная', 'Грузинская',
-      'Европейская', 'Индийская', 'Итальянская', 'Китайская', 'Мексиканская', 'Русская',
-      'Украинская', 'Французкая', 'Экзотическая', 'Японская', 'Прочая'
-    ],
-    sports   : [
-      'Альпинизм', 'Бадминтон', 'Баскетбол', 'Бег', 'Бодибилдинг', 'Бокс', 'Боулинг',
-      'Бильярд', 'Велосипедный спорт', 'Верховая езда', 'Воллейбол', 'Гимнастика', 'Гольф',
-      'Дайвинг', 'Дельтапланеризм', 'Единоборства', 'Йога', 'Керлинг', 'Коньки', 'Лыжный спорт',
-      'Парашютный спорт', 'Паркур', 'Парусный спорт', 'Пейнтбол', 'Плавание', 'Прыжки', 'Рафтинг',
-      'Санный спорт', 'Серфинг', 'Скейтборд', 'Сноуборд', 'Стрельба', 'Теннис', 'Фехтование',
-      'Фитнес', 'Фристайл', 'Футбол', 'Ходьба', 'Шахматы', 'Прочее'
-    ],
-    arts     : [
-      'Дом и Творчество', 'Архитектура', 'Бодиарт', 'Ведение блога', 'Вязание и Рукоделие',
-      'Гончарное дело', 'Граффити', 'Дети', 'Дизайн', 'Живопись', 'Книги', 'Коллекционирование',
-      'Кулинария', 'Мозаика', 'Ораторство', 'Проектирование моделей', 'Психология и отношения',
-      'Пчеловодство', 'Роспись по дереву', 'Сад и огород', 'Семья', 'Скульптура', 'Столярное дело',
-      'Цветоводство', 'Ювелирное дело', 'Прочее'
-    ],
-    eco      : [
-      'Дикая природа', 'Домашние животные', 'Кладоискательство', 'Космос', 'Охота',
-      'Походы', 'Растения', 'Рыбалка', 'Собирание грибов', 'Туризм в городе/за городом',
-      'Туризм за рубежом', 'Прочее'
-    ],
-    dance    : [
-      'Балет', 'Блюз', 'Брейк данс', 'Буги-вуги', 'Вальс', 'Гоу-гоу', 'Дабстеп',
-      'Джаз франк', 'Джаз-модерн', 'Ирландские танцы', 'Испанские Танцы', 'Капоэйра',
-      'Клубные танцы', 'Ламбада', 'Лезгинка', 'Мамбо', 'Народные танцы', 'Пасодобль',
-      'РнБ', 'Робот', 'Рок-н-Ролл', 'Румба', 'Сальса', 'Самба', 'Степ', 'Стретчинг',
-      'Стрип танцы', 'Танго', 'Танец Живота', 'Танцевальная аэробика', 'Тверк', 'Твист',
-      'Тектоник', 'Уличные танцы', 'Фокстрот', 'Хастл', 'Хип-хоп', 'Ча-ча-ча', 'Шаффл',
-      'Прочие'
-    ],
-    music    : [
-      'Альтернатива', 'Вокал', 'Джаз и блюз', 'Инди', 'Классическая', 'Метал', 'Народная',
-      'Панк', 'Поп-музыка', 'Регги', 'Рок', 'Романсы', 'Фолк', 'Хип-хоп и рэп', 'Шансон',
-      'Электронная', 'Эстрадная', 'Прочая'
-    ],
-    cars     : [
-      'Багги', 'Велосипеды', 'Вертолеты', 'Внедорожники', 'Воздушные шары', 'Гидроциклы',
-      'Гироскутеры', 'Грузовые автомобили', 'Дельтапланы', 'Дирижабли', 'Карты',
-      'Катера и лодки', 'Квадроциклы', 'Корабли', 'Легковые автомобили', 'Мотоциклы',
-      'Поезда', 'Ретро-автомобили', 'Самолеты', 'Скутеры', 'Танки', 'Трамваи', 'Яхты',
-      'Прочий'
-    ],
-    theatre  : [
-      'Балет', 'Водевиль', 'Драмматургия', 'Комедии', 'Мим', 'Монодрама', 'Мюзикл',
-      'Оперетта', 'Пародия', 'Пьеса', 'Трагедия', 'Уличные спектакли', 'Фарс',
-      'Феерия', 'Прочий'
-    ],
-    it       : [
-      'Железо и ПО', 'Видеоигры', 'Фотография', 'Видео', 'Аудио', 'Радио', 'Анимация', 'Прочая'
-    ],
-    science  : [
-      'Археология', 'Астрономия', 'Биология', 'Генетика', 'История', 'Литература', 'Математика',
-      'Психология', 'Политика', 'Технологии', 'Уфология', 'Физика', 'Философия', 'Химия',
-      'Экология', 'Экономика', 'Прочая',
-    ],
-    mystic   : [
-      'Гадания', 'Гороскопы', 'Магия', 'Мистика', 'Парапсихология', 'Фокус',
-      'Эзотерика', 'Экстрасенсорика', 'Прочая',
-    ],
-    charity  : [
-      'Бездомные', 'Волонтерство', 'Детская', 'Для животных', 'Добровольное Пожертвование',
-      'Донорство', 'Меценатство', 'Социально-благотворительные программы',
-      'Социальное инвестировние', 'Спонсорство', 'Прочая'
-    ]
-  };
-  if (tags.hasOwnProperty(category)) return res.status(200).send({ [category] : tags[category] });
-  return res.status(404).send({ message : 'No Such Tag Category Exists.' });
+// create meeting with provided data.
+router.post('/meetings', limit, function (req, res) {
+  var data = req.body;
+  var meeting = new Meeting(data);
+  meeting.owner_id = req.user;
+  meeting.attendees.push(req.user);
+  meeting.save(function (err) {
+    if (err) return res.status(500).send({ message : 'Вы не смогли создать встречу.' });
+    res.status(200).send({ message : 'Вы успешно создали встречу.', meeting_id : meeting._id });
+  });
 });
 
-router.post('/meetings', limit, function (req, res) {
-  var meeting = new Meeting({
-    owner : req.body.owner,
-    description : req.body.description,
-    eventname : req.body.eventname,
-    location : req.body.location,
-    date : req.body.date,
-    time : req.body.time,
-    private : (req.body.private === 'true'),
-    categories : req.body.categories
-  });
-  meeting.save(function (err) {
-    if (err) {
-      return res.status(500).send({ message : 'Failed to Create Meeting' });
-    }
-    res.status(200).send({
-      message   : 'New Meeting Created!',
-      meetingid : meeting._id
+// find and send meetings according to search filters.
+router.get('/meetings', limit, function (req, res) {
+  var date  = req.query.date_filter,
+      tags  = req.query.tags_filter,
+      loc   = req.query.location_filter,
+      query = {
+        date : { $gt : new Date() }
+      };
+  if (date) query.date   = new Date(date);
+  if (tags) query.tags   = { $in : tags };
+  if (loc)  query.place  = { $geoWithin : { $center : [ loc.map(function (e) { return parseFloat(e); }), .15 ] } };
+
+  Meeting.find(query, function (err, meetings) {
+    if (err) return res.status(500).send({ message : 'Произошла ошибка :(.' });
+    async.map(meetings, function (meeting, callback) {
+      User.findById(meeting.owner_id, function (err, owner) {
+        if (err) callback(err);
+        else {
+          meeting.set('owner_picture' , owner.picture, {strict: false});
+          meeting.set('owner_name', owner.displayName, {strict: false});
+          meeting.set('owner_friends_amount' , owner.friends.length, {strict: false});
+          callback(null, meeting);
+        }
+      });
+    }, function (err, meetings_results) {
+      if (err) return res.status(500).send({ message : 'Произошла ошибка :(.' });
+      res.status(200).send(meetings_results);
     });
   });
 });
 
-router.get('/meetings', limit, function (req, res) {
-  Meeting.find({}, function (err, meetings) {
-    if (err) return res.status(404).send({ message : 'There is no meetings yet.' });
-    res.send(meetings);
+// find and send single meeting by its id.
+router.get('/meetings/single', limit, function (req, res) {
+  var id = req.query.id;
+  if (!id) return res.status(500).send({ message : 'Provide id for meeting to find.' });
+  Meeting.findById({ _id : id}, function (err, meeting) {
+    if (err) return res.status(500).send({ message : 'Произошла ошибка :(.' });
+    User.findById(meeting.owner_id, function (err, owner) {
+      if (err) return res.status(500).send({ message : 'Произошла ошибка :(.' });
+      meeting.set('owner_picture' , owner.picture, {strict: false});
+      meeting.set('owner_name', owner.displayName, {strict: false});
+      meeting.set('owner_friends_amount' , owner.friends.length, {strict: false});
+      res.status(200).send(meeting);
+    });
   });
 });
 
-router.get('/meetings/by_category/:categories', limit, function (req, res) {
-  var categories = JSON.parse(req.params.categories);
-  var meetings = [];
-  var numque = 0;
-  for (category in categories) {
-    if (categories.hasOwnProperty(category)) {
-      categories[category].forEach(function (e) {
-        ++numque;
-        var query = {};
-        query['categories.' + category] = e;
-        Meeting.find(query, function (err, meeting) {
-          --numque;
-          meetings = meetings.concat(meeting);
-          if (numque === 0) {
-            var unique   = {};
-            var distinct = [];
-            meetings.forEach(function (e) {
-              if (!unique[e._id]) {
-                distinct.push(e);
-                unique[e._id] = true;
-              }
-            });
-            res.send(distinct);
-          }
-        })
-      });
-    }
-  }
-});
-
-router.get('/meetings/:coords', limit, function (req, res) {
-  var coords = req.params.coords.split(',');
-  console.log(coords);
-
-  Meeting.where('location').within().circle({ center : coords, radius : 0.2, unique : true })
-  .exec(function (err, meetings) {
-    if (err) return res.status(404).send({ message : 'There is no meetings yet.' });
-    res.send(meetings);
-  });
+// attend meeting - add user id to the list of attendees.
+router.post('/meetings/attend', limit, function (req, res) {
+  var meeting_id = req.body.id;
+  Meeting.findById(meeting_id, function (err, meeting) {
+    if (err) return res.status(500).send({ message : 'Произошла ошибка :(.' });
+    if (!meeting) return res.status(404).send({ message : 'Отсутствует встреча по заданным критериям.' });
+    if (meeting.attendees.indexOf(req.user) > -1) return res.status(304).send({ message : 'Вы уже откликнулись на эту встречу ранее.' });
+    meeting.attendees.push(req.user);
+    meeting.save(function (err, meeting) {
+      if (err) return res.status(500).send({ message : 'Произошла ошибка :(.' });
+      res.status(200).send({ message : 'Вы успешно откликнулись на встречу.' });
+    });
+  })
 });
 
 module.exports = router;

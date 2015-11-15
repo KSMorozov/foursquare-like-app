@@ -7,6 +7,9 @@
       },
       updateProfile : function (profileData) {
         return $http.put('/api/me', profileData);
+      },
+      fetch_friends : function () {
+        return $http.get('/api/me/friends');
       }
     };
   });

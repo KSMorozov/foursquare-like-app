@@ -6,6 +6,15 @@ md-content(class='md-whiteframe-z1 md-padding')
       | Вернуться К Встречам
   section
     md-text-float
+      h4 Назовите встречу
+    section(layout='column', layout-align='center center'
+         layout-align-sm='center center')
+     md-input-container(class='md-accent', layout-wrap, layout-fill, style='margin-top:5px;',
+                       layout='row',
+                       layout-align='center', layout-sm-align='center center')
+       input(ng-model='NewMeeting.meeting.title', type='text',
+             aria-label='Meeting Name', flex='75', placeholder='Введите название встречи')
+    md-text-float
      h4 Выберите Дату
     form(layout='column', layout-align='center center'
          layout-align-sm='center center', name='dateForm')
@@ -16,13 +25,16 @@ md-content(class='md-whiteframe-z1 md-padding')
           md-select(ng-model='NewMeeting.meeting.private', required)
             md-option(value='{{true}}') {{'Да'}}
             md-option(value='{{false}}') {{'Нет'}}
+        //- md-input-container(style='margin-top:-9px;', class='md-padding')
+        //-   label Время Встречи
+        //-   input(ng-model='NewMeeting.meeting.time', type='text',
+        //-         aria-label='Meeting Time')
         md-input-container(style='margin-top:-9px;', class='md-padding')
           label Время Встречи
-          input(ng-model='NewMeeting.meeting.time', type='text',
+          input(ng-model='NewMeeting.meeting.date', type='time',
                 aria-label='Meeting Time')
-        md-datepicker(ng-model='NewMeeting.meeting.date', class='md-padding',
+        md-datepicker(ng-model='NewMeeting.meeting.date', class='md-padding new-meeting-date',
                       md-placeholder='Дата Встречи', style='margin-left: -22px;', required)
-    //- md-divider
     md-text-float
       h4 Куда хотите пойти?
     section(layout='column', layout-align='center center'
@@ -48,14 +60,14 @@ md-content(class='md-whiteframe-z1 md-padding')
       md-input-container(class='md-accent', layout-wrap, layout-fill, style='margin-top:5px;',
                         layout='row',
                         layout-align='center', layout-sm-align='center center')
-        input(ng-model='NewMeeting.meeting.event', type='text',
+        input(ng-model='NewMeeting.meeting.event_name', type='text',
               aria-label='Event Name', flex='75', placeholder='Введите название события')
       md-input-container(class='md-accent', layout-wrap, layout-fill, style='margin-top:5px;',
                         layout='row',
                         layout-align='center', layout-sm-align='center center',
                         ng-if='NewMeeting.option == "direction"')
         input(ng-model='NewMeeting.direction', type='text',
-              aria-label='Event Name', flex='75', placeholder='Введите адрес')
+              aria-label='Address', flex='75', placeholder='Введите адрес')
     //- section(ng-show='NewMeeting.show')
     //-   div(id='map', style='min-height:300px;', flex)
     yandex-map(ng-if='map.show', center='map.center', zoom='map.zoom', style='min-height:300px;display:block;', flex)

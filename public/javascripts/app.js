@@ -25,6 +25,15 @@
           loginRequired: loginRequired
       }
     })
+    .state('meeting', {
+      url : '/meeting/:id',
+      templateUrl  : 'templates/meeting.html',
+      controller   : 'MeetingController',
+      controllerAs : 'Meeting',
+      resolve      : {
+          loginRequired: loginRequired
+      }
+    })
     .state('new_meeting', {
       url : '/new_meeting',
       templateUrl  : 'templates/new.meeting.html',
@@ -165,12 +174,12 @@
 
 (function () {
   angular.module('FourApp')
-  .controller('CategoriesDialog', function ($mdDialog, $state, $http, $scope, $rootScope) {
+  .controller('CategoriesDialog', function ($mdDialog, $state, $http, $scope, $rootScope, Utils) {
     var self = this;
-    self.message = 'hey there it\'s categories dialog'
 
     self.meeting = {
-      categories : {}
+      categories : [],
+      tags       : []
     };
 
     self.categories = {
@@ -258,26 +267,30 @@
       self.categories[category].show = !self.categories[category].show;
       if (!self.categories[category].show) return;
       (function () { for (var p in self.categories) { if (self.categories.hasOwnProperty(p) && p != category) self.categories[p].show = false; } })();
-      $http.get('/api/meetings/tags/' + category)
+      Utils.fetch_tags_for_category(category)
       .then(function (res) {
-        self.categories[category].tags = res.data[category];
-      })
-      .catch(function (res) {
+        self.categories[category].tags = res.data.tags;
       });
     };
 
     self.toggle = function (tag, category) {
-      var exists = self.meeting.categories[category];
-      if (exists) {
-        var idx = self.meeting.categories[category].indexOf(tag);
-        if (idx > -1) self.meeting.categories[category].splice(idx, 1)
-        else self.meeting.categories[category].push(tag)
+      var idx_tag = self.meeting.tags.indexOf(tag);
+      if (idx_tag > -1) self.meeting.tags.splice(idx_tag, 1);
+      else self.meeting.tags.push(tag);
+
+      var idx_cat = self.meeting.categories.indexOf(category);
+      var liable  = self.meeting.tags.filter(function (e) {
+        return self.categories[category].tags.indexOf(e) > -1;
+      }).length;
+
+      if (!liable) self.meeting.categories.splice(idx_cat, 1);
+      else if (self.meeting.categories.indexOf(category) === -1) {
+        self.meeting.categories.push(category);
       }
-      else self.meeting.categories[category] = [tag];
     };
 
     self.checked = function (tag, category) {
-      return self.meeting.categories[category].indexOf(tag) > -1;
+      return self.meeting.tags.indexOf(tag) > -1;
     };
 
     self.cancel = function () {
@@ -285,10 +298,60 @@
     };
 
     self.confirm = function () {
-      $rootScope.$emit('categories_for_meetings', self.meeting.categories);
+      $rootScope.$emit('apply_tags', self.meeting);
       $mdDialog.hide();
     };
 
+  });
+})();
+
+(function () {
+  angular.module('FourApp')
+  .controller('InvitesDialog', function ($scope, $mdDialog, meeting_id, Account, Toast, Invite) {
+    var self = this;
+
+    $scope.send_invites = function () {
+      var friends = $scope.friends.filter(function (e) {
+        if (e.selected) return e;
+      }).map(function (e) {
+        return e.friend_id;
+      });
+      Invite.send_invites({ friends : friends, meeting : meeting_id })
+      .then(function (res) {
+        Toast.show_toast('success', res.data.message);
+      })
+      .catch(function (res) {
+        Toast.show_toast('failed', res.data.message);
+      });
+      self.confirm();
+    };
+
+    $scope.toggle_all_friends = function (val) {
+      $scope.friends = $scope.friends.map(function (e) {
+        e.selected = val;
+        return e;
+      });
+    };
+
+    $scope.fetch_friends = function () {
+      Account.fetch_friends()
+      .then(function (res) {
+        $scope.friends = res.data;
+      })
+      .catch(function (res) {
+        Toast.show_toast('failed', res.data.message);
+      });
+    };
+
+    self.cancel = function () {
+      $mdDialog.cancel();
+    };
+
+    self.confirm = function () {;
+      $mdDialog.hide();
+    };
+
+    $scope.fetch_friends();
   });
 })();
 
@@ -437,7 +500,7 @@
   .controller('SecondToolbarController', function ($scope, $rootScope) {
     var self = this;
     $scope.location = '';
-    $scope.cities = ['Москва', 'Екатеринбург'];
+    $scope.cities = [{ name : 'Москва'}, { name : 'Екатеринбург' }];
 
     ymaps.ready(function () {
       var geolocation = ymaps.geolocation;
@@ -449,8 +512,19 @@
         }).then(function (res) {
           var location = res.geoObjects.get(0).properties.get('text').split(',')[1];
           $scope.location = location;
-          $scope.$apply();
           $rootScope.user_city = location;
+          $scope.$apply();
+        });
+      });
+    });
+
+    $scope.$watch(function () { return $scope.location }, function (new_value, old_value) {
+      ymaps.ready(function () {
+        ymaps.geocode(new_value, { results : 1 })
+        .then(function (res) {
+          var coords = res.geoObjects.get(0).geometry.getCoordinates();
+          $rootScope.user_city_coords = coords;
+          $rootScope.$emit('city_change', coords);
         });
       });
     });
@@ -499,9 +573,9 @@
         clickOutsideToClose : true
       })
       .then(function () {
-        self.message += ' hide dialog';
+
       }, function () {
-        self.message += ' close dialog';
+
       });
     };
   });
@@ -516,6 +590,113 @@
       },
       updateProfile : function (profileData) {
         return $http.put('/api/me', profileData);
+      },
+      fetch_friends : function () {
+        return $http.get('/api/me/friends');
+      }
+    };
+  });
+})();
+
+(function () {
+  angular.module('FourApp')
+  .factory('Comment', function ($http) {
+    return {
+      send_comment : function (comment) {
+        return $http.post('/api/comments', comment);
+      },
+      fetch_comments : function (thing_id) {
+        return $http.get('/api/comments/', { params : { id : thing_id } });
+      }
+    };
+  });
+})();
+
+(function () {
+  angular.module('FourApp')
+  .factory('Invite', function ($http) {
+    return {
+      send_invites : function (friends) {
+        return $http.post('/api/invites', friends);
+      },
+      fetch_invites : function (addresser_id) {
+        return $http.get('/api/invites', { params : { addresser : addresser_id } });
+      },
+      respond_invite : function (action, invite_id, meeting_id) {
+        return $http.post('/api/invites/respond', { action : action, invite_id : invite_id, meeting_id : meeting_id });
+      }
+    };
+  });
+})();
+
+(function () {
+  angular.module('FourApp')
+  .factory('Meeting', function ($http) {
+    return {
+      create_meeting : function (meeting) {
+        return $http.post('/api/meetings', meeting);
+      },
+      fetch_meetings : function (filters) {
+        return $http.get('/api/meetings/', { params : filters });
+      },
+      fetch_meeting : function (id) {
+        return $http.get('/api/meetings/single', { params : { id : id } });
+      },
+      attend_meeting : function (meeting) {
+        return $http.post('/api/meetings/attend', { id : meeting });
+      }
+    };
+  });
+})();
+
+(function () {
+  angular.module('FourApp')
+  .factory('Toast', function ($http, $mdToast) {
+    function getToastPosition () {
+      sanitizePosition();
+      return Object.keys(toastPosition)
+        .filter(function (pos) { return toastPosition[pos]; })
+        .join(' ');
+    }
+
+    function sanitizePosition() {
+      var current = toastPosition;
+      if ( current.bottom && last.top ) current.top = false;
+      if ( current.top && last.bottom ) current.bottom = false;
+      if ( current.right && last.left ) current.left = false;
+      if ( current.left && last.right ) current.right = false;
+      last = angular.extend({},current);
+    }
+
+    var last = {
+      bottom : false,
+      top    : true,
+      left   : false,
+      right  : true
+    };
+
+    var toastPosition = angular.extend({}, last);
+
+    return {
+      show_toast : function (type, msg) {
+        var toast = $mdToast.simple().theme(type + '-toast')
+          .content(msg)
+          .position(getToastPosition())
+          .hideDelay(3000);
+        $mdToast.show(toast);
+      }
+    };
+
+  });
+})();
+
+
+(function () {
+  angular.module('FourApp')
+  .factory('Utils', function ($http) {
+    return {
+      fetch_tags_for_category : function (category) {
+        return $http.get('/utils/categories/' + '?category=' + category);
       }
     };
   });
@@ -530,13 +711,35 @@
 
 (function () {
   angular.module('FourApp')
-  .controller('ChatController', function ($stateParams, $http, Account) {
+  .controller('ChatController', function ($scope, $stateParams, $http, Account, Invite, Toast) {
     var self = this;
 
     self.comb     = [];
     self.messages = [];
     self.me       = {};
     self.friend   = {};
+
+    $scope.respond_invite = function (action, invite_id, meeting_id) {
+      Invite.respond_invite(action, invite_id, meeting_id)
+      .then(function (res) {
+        Toast.show_toast('success', res.data.message);
+      })
+      .catch(function (res) {
+        Toast.show_toast('failed', res.data.message);
+      });
+    };
+
+    self.fetch_invites = function () {
+      Invite.fetch_invites($stateParams.id)
+      .then(function (res) {
+        $scope.invites = res.data.invites;
+        console.log(res.data);
+        Toast.show_toast('success', res.data.message);
+      })
+      .catch(function (res) {
+        Toast.show_toast('failed', res.data.message);
+      });
+    };
 
     self.is_friend    = function (id) {
       return id === $stateParams.id;
@@ -590,6 +793,7 @@
     };
 
     self.get_messages();
+    self.fetch_invites();
     self.get_yourself();
     self.get_friend();
   });
@@ -632,7 +836,8 @@
 
 (function () {
   angular.module('FourApp')
-  .controller('NewMeetingController', function ($http, $window, $scope, Account) {
+  .controller('NewMeetingController', function ($http, $window, $scope, $mdToast,
+                                                Account, Utils, Meeting, Toast) {
     var self  = this;
     $scope.map = {
       center : [55.76, 37.64],
@@ -724,36 +929,22 @@
     };
 
     self.meeting = {
-      time  : time(),
-      place : '',
-      categories  : {}
+      place      : '',
+      categories : [],
+      tags       : []
     };
 
     self.create_meeting = function () {
-      // console.log(self.meeting);
-      Account.getProfile()
+      Meeting.create_meeting(self.meeting)
       .then(function (res) {
-        var id = res.data._id;
-        $http.post('/api/meetings/', {
-          owner       : id,
-          description : self.meeting.description,
-          eventname   : self.meeting.event,
-          location    : self.meeting.place,
-          date        : self.meeting.date,
-          time        : self.meeting.time,
-          private     : self.meeting.private,
-          categories  : self.meeting.categories
-        })
-        .then(function (res) {
-          console.log(res.data);
-        })
-        .catch(function (res) {
-          console.log(res);
-        });
+        Toast.show_toast('success', res.data.message);
+        // redirect to specific meeting route
+        // id of meeting available at res.data.message_id
       })
       .catch(function (res) {
-        console.log(res);
+        Toast.show_toast('failed', res.data.message);
       });
+      self.meeting = {};
     };
 
     self.choose_place = function (place) {
@@ -805,33 +996,31 @@
       self.categories[category].show = !self.categories[category].show;
       if (!self.categories[category].show) return;
       (function () { for (var p in self.categories) { if (self.categories.hasOwnProperty(p) && p != category) self.categories[p].show = false; } })();
-      $http.get('/api/meetings/tags/' + category)
+      Utils.fetch_tags_for_category(category)
       .then(function (res) {
-        self.categories[category].tags = res.data[category];
-      })
-      .catch(function (res) {
+        self.categories[category].tags = res.data.tags;
       });
     };
 
     self.toggle = function (tag, category) {
-      var exists = self.meeting.categories[category];
-      if (exists) {
-        var idx = self.meeting.categories[category].indexOf(tag);
-        if (idx > -1) self.meeting.categories[category].splice(idx, 1)
-        else self.meeting.categories[category].push(tag)
+      var idx_tag = self.meeting.tags.indexOf(tag);
+      if (idx_tag > -1) self.meeting.tags.splice(idx_tag, 1);
+      else self.meeting.tags.push(tag);
+
+      var idx_cat = self.meeting.categories.indexOf(category);
+      var liable  = self.meeting.tags.filter(function (e) {
+        return self.categories[category].tags.indexOf(e) > -1;
+      }).length;
+
+      if (!liable) self.meeting.categories.splice(idx_cat, 1);
+      else if (self.meeting.categories.indexOf(category) === -1) {
+        self.meeting.categories.push(category);
       }
-      else self.meeting.categories[category] = [tag];
     };
 
     self.checked = function (tag, category) {
-      return self.meeting.categories[category].indexOf(tag) > -1;
-    }
-
-    function time() {
-      var h = new Date().getHours();
-      var m = new Date().getMinutes();
-      return (h.length < 2 ? '0' + h : h) + ':' + (m.length < 2 ? '0' + m : m);
-    }
+      return self.meeting.tags.indexOf(tag) > -1;
+    };
 
   });
 })();
@@ -912,15 +1101,182 @@
 
 (function () {
   angular.module('FourApp')
-  .controller('MeetingsController', function ($window, $http, $scope, $rootScope) {
-    var self  = this;
+  .controller('MeetingController', function ($scope, $stateParams, Meeting, Comment, Toast, $mdDialog) {
+    var self = this;
     self.show = false;
+    $scope.address = '';
 
-    self.meetings  = [];
-    self.owners    = {};
-    self.addresses = {};
+    $scope.show_invites = function (ev) {
+      var meeting_id = $scope.meeting._id;
 
-    $scope.date_filter = new Date();
+      $mdDialog.show({
+        controller   : 'InvitesDialog',
+        controllerAs : 'Invites',
+        templateUrl  : 'templates/invites.dialog.html',
+        parent       : angular.element(document.body),
+        targetEvent  : ev,
+        locals       : {
+          meeting_id : meeting_id
+        },
+        clickOutsideToClose : true
+      })
+      .then(function () {
+
+      }, function () {
+
+      });
+
+    };
+
+    $scope.toggle_map = function () {
+      self.show = !self.show;
+      return self.show ? init() : (function () {
+        self.map.destroy();
+        self.map = null;
+      })();
+    };
+
+    function init () {
+      ymaps.ready(function () {
+        self.map = new ymaps.Map('map', {
+          center: [55.76, 37.64],
+          zoom: 11
+        });
+      });
+    }
+
+    self.show_onmap = function () {
+      var loc = $scope.meeting.place;
+      var address = $scope.address;
+      self.show = true;
+      if (self.map === null || typeof self.map === 'undefined') {
+        ymaps.ready(function () {
+          self.map = new ymaps.Map('map', {
+            center: [55.76, 37.64],
+            zoom: 11
+          });
+          self.map.geoObjects.add(new ymaps.Placemark(loc, { balloonContent: '<strong>' + address + '</strong>' }));
+        });
+      } else {
+        ymaps.ready(function () {
+          self.map.geoObjects.add(new ymaps.Placemark(loc, { balloonContent: '<strong>' + address + '</strong>' }));
+        });
+      }
+    };
+
+    $scope.fetch_address = function (coords) {
+      console.log(coords);
+      if (!coords) return;
+      ymaps.ready(function () {
+        ymaps.geocode(coords, {
+          results : 1
+        })
+        .then(function (res) {
+          $scope.address = res.geoObjects.get(0).properties.get('text');
+          $scope.$apply();
+        })
+        .catch(function () {
+          $scope.address = '';
+          $scope.$apply();
+        });
+      });
+    };
+
+    $scope.fetch_meeting = function (id) {
+      Meeting.fetch_meeting(id)
+      .then(function (res) {
+        $scope.meeting = res.data;
+        $scope.fetch_address($scope.meeting.place);
+        console.log(res.data);
+      });
+    };
+
+    $scope.send_comment = function () {
+      var comment = {
+        body : $scope.comment,
+        to   : $scope.meeting._id
+      };
+      Comment.send_comment(comment)
+      .then(function (res) {
+        Toast.show_toast('success', res.data.message);
+        $scope.comment = '';
+      })
+      .catch(function (res) {
+        Toast.show_toast('failed', res.data.message);
+        $scope.comment = '';
+      });
+    };
+
+    $scope.fetch_comments = function (meeting_id) {
+      Comment.fetch_comments(meeting_id)
+      .then(function (res) {
+        $scope.comments = res.data;
+        console.log($scope.comments);
+      })
+      .catch(function (res) {
+        Toast.show_toast('failed', res.data.message);
+      });
+    };
+
+    $scope.attend_meeting = function () {
+      Meeting.attend_meeting($scope.meeting._id)
+      .then(function (res) {
+        Toast.show_toast('success', res.data.message);
+      })
+      .catch(function (res) {
+        Toast.show_toast('failed', res.status === 304 ? 'Вы уже откликнулись на эту встречу ранее.' : 'Произошла ошибка :(.');
+      });
+    };
+
+    $scope.fetch_comments($stateParams.id);
+    $scope.fetch_meeting($stateParams.id);
+  });
+})();
+
+(function () {
+  angular.module('FourApp')
+  .controller('MeetingsController', function ($window, $http, $scope, $rootScope, Toast, Meeting, $mdDialog) {
+    var self  = this;
+
+    self.show = false;
+    $scope.meetings = [];
+    $scope.addresses = [];
+
+    $scope.location = $rootScope.user_city_coords;
+
+    $scope.date_filter;
+
+    $scope.show_invites = function (ev, id) {
+      var meeting_id = id;
+
+      $mdDialog.show({
+        controller   : 'InvitesDialog',
+        controllerAs : 'Invites',
+        templateUrl  : 'templates/invites.dialog.html',
+        parent       : angular.element(document.body),
+        targetEvent  : ev,
+        locals       : {
+          meeting_id : meeting_id
+        },
+        clickOutsideToClose : true
+      })
+      .then(function () {
+
+      }, function () {
+
+      });
+
+    };
+
+    $scope.underground_station  = '';
+    $scope.underground_stations = [{ name : 'Бульвар Рокоссовского' },
+                                   { name : 'Авиамоторная' },
+                                   { name : 'Первомайская' },
+                                   { name : 'Щелковская'}];
+
+    $scope.filters = {
+      location_filter : $scope.location
+    };
 
     self.toggle_map = function () {
       self.show = !self.show;
@@ -939,64 +1295,31 @@
       });
     }
 
-    angular.element($window).bind('resize', function () {
-      if (self.show) self.map.container.fitToViewport();
-    });
-
-    self.fetch_nearby_meetings = function () {
-      ymaps.ready(function () {
-        ymaps.geolocation.get({ provider : 'browser', mapStateAuttoApply : true})
-        .then(function (res) {
-          var coords = res.geoObjects.get(0).geometry.getCoordinates();
-          $http.get('/api/meetings/'+ coords)
-          .then(function (res) {
-            self.meetings = res.data;
-            self.fetch_users();
-            self.fetch_addresses();
-          })
-          .catch(function (res) {
-            console.log('Failed to fetch meetings.', res.data.status);
-          });
-        });
-      });
-    }
-
-    self.fetch_meetings = function () {
-      $http.get('/api/meetings/')
+    self.fetch_meetings = function (filters) {
+      console.log(filters);
+      Meeting.fetch_meetings(filters)
       .then(function (res) {
-        self.meetings = res.data;
-        self.fetch_users();
-        self.fetch_addresses();
-      })
-      .catch(function (res) {
-        console.log('Failed to fetch meetings.', res.data.status);
+        if(!res.data.length) Toast.show_toast('failed', 'Отсутствуют Встречи по заданным критериям.');
+        $scope.meetings = res.data;
+        console.log($scope.meetings);
       });
     };
 
-    self.fetch_addresses = function () {
+    $scope.fetch_address = function (coords, index) {
+      if (!coords) return;
       ymaps.ready(function () {
-        self.meetings.forEach(function (e) {
-          ymaps.geocode(e.location, {
-            results : 1
-          })
-          .then(function (res) {
-            // console.log(res.geoObjects.get(0).properties.get('name'));
-            // console.log(res.geoObjects.get(0).properties.get('text'));
-            self.addresses[e.location] = res.geoObjects.get(0).properties.get('text');
-            $scope.$apply();
-          });
-        });
-      });
-    };
-
-    self.fetch_users = function () {
-      self.meetings.forEach(function (e) {
-        $http.get('/api/users/' + e.owner)
+        ymaps.geocode(coords, {
+          results : 1
+        })
         .then(function (res) {
-          self.owners[e.owner] = res.data;
+          // console.log(res.geoObjects.get(0).properties.get('name'));
+          // console.log(res.geoObjects.get(0).properties.get('text'));
+          $scope.addresses[index] = res.geoObjects.get(0).properties.get('text');
+          $scope.$apply();
         })
         .catch(function () {
-          console.log('Failed to fetch owner.');
+          $scope.addresses[index] = '';
+          $scope.$apply();
         });
       });
     };
@@ -1018,7 +1341,8 @@
       }
     };
 
-    self.add_friend = function (id) {
+    $scope.add_friend = function (id) {
+      console.log('hey', id);
       $http.post('/api/users/' + id + '/friend')
       .then(function (res) {
         console.log(res.data.message);
@@ -1028,19 +1352,70 @@
       });
     };
 
-    self.fetch_meetings();
-
-    $rootScope.$on('categories_for_meetings', function (event, data) {
-      $http.get('/api/meetings/by_category/' + JSON.stringify(data))
+    $scope.attend_meeting = function (id) {
+      Meeting.attend_meeting(id)
       .then(function (res) {
-        self.meetings = res.data;
-        self.fetch_users();
-        self.fetch_addresses();
+        Toast.show_toast('success', res.data.message);
       })
-      .catch(function () {
-        console.log('went wrong');
+      .catch(function (res) {
+        Toast.show_toast('failed', res.status === 304 ? 'Вы уже откликнулись на эту встречу ранее.' : 'Произошла ошибка :(.');
+      });
+    };
+
+    self.apply_nearby = function () {
+      ymaps.ready(function () {
+        ymaps.geolocation.get({ provider : 'browser' })
+        .then(function (res) {
+          var coords = res.geoObjects.get(0).geometry.getCoordinates();
+          $scope.location = coords;
+          $scope.$apply();
+        });
+      });
+    };
+
+    $rootScope.$on('apply_tags', function (event, data) {
+      $scope.filters.tags_filter = data.tags;
+    });
+
+    $rootScope.$on('city_change', function (event, data) {
+      $scope.location = data;
+      $scope.$apply();
+    });
+
+    $scope.$watch(function () { return $scope.date_filter }, function (new_value, old_value) {
+      if (!new_value || +new_value === +old_value) return;
+      $scope.filters.date_filter = new Date(new_value);
+    });
+
+    $scope.$watch(function () { return $scope.underground_station }, function (new_value, old_value) {
+      if (!new_value || new_value === old_value) return;
+      ymaps.ready(function () {
+        ymaps.geocode($rootScope.user_city + ' метро ' + new_value, {
+          results : 1
+        })
+        .then(function (res) {
+          var coords = res.geoObjects.get(0).geometry.getCoordinates();
+          $scope.location = coords;
+          $scope.$apply();
+        })
       });
     });
+
+    $scope.$watch(function () { return $scope.location }, function (new_value, old_value) {
+      if(!new_value || new_value === old_value) return;
+      $scope.filters.location_filter = new_value;
+    });
+
+    $scope.$watch(function () { return $scope.filters }, function (new_value, old_value) {
+      if (!new_value || new_value === old_value) return;
+      self.fetch_meetings(new_value);
+    }, true)
+
+    angular.element($window).bind('resize', function () {
+      if (self.show) self.map.container.fitToViewport();
+    });
+
+    self.fetch_meetings($scope.filters);
   });
 })();
 

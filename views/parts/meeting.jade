@@ -1,0 +1,69 @@
+md-content(class='md-whiteframe-z1 md-padding')
+  section(layout-wrap, layout='row')
+    md-button(class='md-raised md-accent md-hue-9',
+              ng-bind='Meeting.show ? "Скрыть Карту" : "Показать Карту"',
+              ng-click='toggle_map()', flex,
+              style='margin:-15px -20px 0px -20px;z-index:1;',
+              aria-label='show/hide map')
+  section(ng-show='Meeting.show')
+    div(id='map', layout-wrap, style='min-height:300px;', flex)
+md-content(class='md-whiteframe-z1 md-padding')
+  article(layout-sm='column',
+          layout-md='column',
+          layout='row', class='md-margin md-whiteframe-z1', style='background-color:#F5F5F5;')
+    div(layout='column', flex='35', style='background-color:#F5F5F5;', flex-sm='100', flex-md='100')
+      md-card(layout='column', class='', style='background-color:#F5F5F5;')
+        img(ng-src='{{meeting.owner_picture || "http://placehold.it/300x200"}}', class='md-card-image', flex='40')
+        div(class='md-actions', layout='column', flex='20')
+          md-button(ng-click='add_friend(meeting.owner_id)',
+                    style='text-align:left;font-size:12px;', flex='100') Добавить В Друзья
+        md-divider
+        div(class='md-actions', layout='column', flex='20')
+          md-button(ng-click='',
+                    style='text-align:left;font-size:12px;', flex='100') Написать Сообщение
+        md-divider
+        div(class='md-actions', layout='column', flex='20')
+          md-button(ng-click='true',
+                    style='text-align:left;font-size:12px;', flex='100') Друзья {{"(" + meeting.owner_friends_amount + ")"}}
+    div(layout='column', layout-align='space-between',flex='65', flex-sm='100', flex-md='100')
+      div(layout='row', flex='10', class='md-padding')
+        div(layout='column', flex)
+          div(layout='row', layout-align='end')
+            img(ng-src='{{"images/category_icons/" + category + ".png"}}',
+                ng-repeat='category in meeting.categories',
+                style='height:25px;width:25px;margin:5px 5px 5px 0px;')
+      div(layout='row', flex, style='margin-top:-20px;')
+        div(layout='column', layout-align='start start', class='md-margin')
+          div(layout='row')
+            a(style='cursor:pointer;', ng-click='$state.go("meeting", {id:meeting._id})', class='alink')
+              h3.md-title(ng-bind='meeting.title', style='padding:0px;margin:0px;')
+          div(layout='row')
+            h3.md-headline(ng-bind='meeting.owner_name', style='padding:0px;margin:0px;cursor:pointer;', ui-sref='user({id: meeting.owner_id})')
+          div(layout='row')
+            h4.md-subhead(ng-bind='meeting.date | date: "medium"', style='padding:0px;margin:0px;')
+          div(layout='row')
+            p.md-caption(ng-if='meeting.eventname', style='padding:0px;margin:0px;') {{"Событие: " + meeting.eventname}}
+          div(layout='row')
+            p.md-body-1(ng-if='meeting.place', style='padding:0px;margin:0px;'){{address}}
+          div(layout='row')
+            p.md-body-2(ng-bind='meeting.description', style='padding:0px;margin:0px;')
+      div(layout='row', flex)
+        div(layout='column', flex, layout-align='end')
+            md-button(md-theme='background', class='md-raised', style='border-radius:0px;font-size:11px;') Встречи {{meeting.owner_name}}
+            md-button(md-theme='background', class='md-raised', style='border-radius:0px;font-size:11px;', ng-click='show_invites($event)') Предложить Другу
+        div(layout='column', flex, layout-align='end')
+            md-button(md-theme='background', class='md-raised', style='border-radius:0px;font-size:11px;', ng-click='Meeting.show_onmap()') На Карте
+            md-button(md-theme='background', class='md-raised', style='border-radius:0px;font-size:11px;', ng-click='attend_meeting()') Откликнуться
+md-content(class='md-whiteframe-z1 md-padding', style='margin-top:20px;')
+  article
+    form(method='post', layout-gt-sm='row', layout-align='space-between', ng-submit='send_comment()')
+      md-input-container(class='md-accent md-hue-7', flex-gt-sm='80')
+        textarea(aria-label='Отправить Сообщение', ng-model='comment', columns='1', rows='4')
+      md-input-container(class='md-accent md-hue-7', flex-gt-sm='20', layout-align='space-between', style='margin-top:10px;')
+        md-button(class='md-raised md-accent md-hue-5', type='submit') Отправить
+  md-list
+    md-subheader(class='md-no-sticky') Комментарии:
+    md-list-item(class='md-3-line md-long-text', ng-repeat='comment in comments | orderBy : "+date"')
+      img(ng-src='{{comment.owner_picture}}', class='md-avatar', alt='comment.owner_name', ui-sref='user({id: comment.from})', style='cursor:pointer;')
+      div(class='md-list-item-text')
+        p(ng-bind='comment.body')

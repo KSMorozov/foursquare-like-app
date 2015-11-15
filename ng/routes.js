@@ -17,6 +17,15 @@
           loginRequired: loginRequired
       }
     })
+    .state('meeting', {
+      url : '/meeting/:id',
+      templateUrl  : 'templates/meeting.html',
+      controller   : 'MeetingController',
+      controllerAs : 'Meeting',
+      resolve      : {
+          loginRequired: loginRequired
+      }
+    })
     .state('new_meeting', {
       url : '/new_meeting',
       templateUrl  : 'templates/new.meeting.html',
