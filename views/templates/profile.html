@@ -1,0 +1,198 @@
+<article class="row" ng-if="user" style="padding-top: 1rem;">
+  <!-- Card -->
+  <div class="custom-card col s12 grey lighten-4">
+    <div class="row">
+      <!-- Main Card Content -->
+      <div class="col s12 m4 l3 image-card" style="padding:0;">
+        <!-- User Avatar -->
+        <img class="responsive-img" style="z-index:0;"
+             ng-src="{{user.picture || 'http://i.imgur.com/bNmfur9.jpg'}}"/>
+        <!-- User Actions -->
+        <!-- Friends Amount -->
+        <div class="col s12" style="z-index:1;">
+          <!-- TODO: link to friends list ??? -->
+          <a class="col s12">
+            <span class="link-focus grey-text darken-4 light-text">{{'Друзья(' + user.friends.length + ')'}}</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- User Info form -->
+      <div class="col s12 m8 l9 grey lighten-4">
+        <form class="col s12">
+          <!-- User Name -->
+          <div class="row">
+            <div class="input-field col s12">
+              <input type="text" id="name" placeholder="Имя" ng-model="user.displayName">
+              <label for="name" ng-class="{ 'active' : user.displayName }">Имя</label>
+            </div>
+          </div>
+          <!-- User City -->
+          <div class="row">
+            <div class="input-field col s12">
+              <input type="text" id="city" placeholder="Город" ng-model="user.city">
+              <label for="city" ng-class="{ 'active' : user.city }">Имя</label>
+            </div>
+          </div>
+
+          <!-- User Sex -->
+          <div class="row">
+            <div class="input-field col s12">
+              <select id="sex" ng-model="user.sex">
+                <option value="" disabled selected>Выберите Пол</option>
+                <option value="Муж">Муж</option>
+                <option value="Жен">Жен</option>
+              </select>
+              <label ng-class="{ 'active' : user.sex }">Пол</label>
+            </div>
+          </div>
+
+          <!-- User BirthDay -->
+          <div class="row">
+            <div class="input-field col s12">
+              <input type="date" class="datepicker" id="date">
+              <label for="date" ng-class="{'active' : user.date}">Дата Рождения</label>
+            </div>
+          </div>
+
+          <!-- User Bio -->
+          <div class="row">
+            <div class="input-field col s12">
+              <textarea id="bio" class="materialize-textarea" length="100"
+                        ng-model="user.info"></textarea>
+              <label for="bio" ng-class="{active : user.info}">О Себе</label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col s12">
+              <a class="col s8 offset-s2 m6 offset-m3 l4 offset-l4 btn hoverable waves-effect waves-light animated orange"
+                 ng-click="update_profile()">
+                <span class="light-text">Сохранить</span>
+              </a>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- <div class="col s12 m8 l9">
+        <div class="grey lighten-4">
+          <a ui-sref="user({id: user._id})">
+            <span class="link-focus title black-text" style="margin:0;" ng-bind="user.displayName"></span>
+          </a>
+          <p class="grey-text darken-4" style="margin:0;" ng-bind="user.city"></p>
+          <p class="black-text" style="margin-bottom:0;">О себе:</p>
+          <p class="flow-text italic-text grey-text darken-4 light-text" style="margin:0;" ng-bind="user.info"></p>
+          <p class="black-text">Интересы:</p>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</article>
+
+<article class="row" ng-if="achievements">
+  <!-- TODO:  Achievements -->
+  <div class="card-panel grey lighten-4 z-depth-1">
+    <div class="row">
+      <div class="col s6">
+        <p class="left black-text">{{"Достижения " + user.displayName + ":"}}</p>
+      </div>
+      <div class="col s6">
+        <a href="/" class="right orange-text"><p>Все достижения</p></a>
+      </div>
+    </div>
+  </div>
+</article>
+
+<article class="row" ng-if="meetings">
+  <!-- Meetings -->
+  <div class="custom-card col s12 grey lighten-4">
+    <div class="row">
+      <div class="col s12">
+        <p class="left black-text">{{"Встречи " + user.displayName + ":"}}</p>
+      </div>
+    </div>
+    <div class="row valign-wrapper">
+      <a class="col s1 right transparent"
+         ng-click="previous_meeting()"><i class="link-focus right mdi mdi-skip-previous" style="color:grey;font-size: 30px;"></i></a>
+      <div class="col s10">
+        <div class="row">
+          <div class="slider slider-meetings grey lighten-4">
+            <ul class="slides grey lighten-4">
+              <li ng-repeat="meeting in meetings | orderBy : '+date'" class="custom-card grey lighten-3">
+                <!-- TODO: Link to single meeting route with title  -->
+                <h5 class="black-text" ng-bind="meeting.title" style="margin:0"></h5>
+                <h5 class="black-text" ng-bind="meeting.date | date"></h5>
+                <p ng-bind="meeting.description" class="light-text italic-text grey-text text-lighten-1"></p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <a class="col s1 left transparent"
+         ng-click="next_meeting()"><i class="link-focus left mdi mdi-skip-next" style="color:grey;font-size: 30px;"></i></a>
+    </div>
+  </div>
+</article>
+
+  <!-- TODO: Attended Places-->
+  <div class="custom-card grey lighten-4 z-depth-1" ng-if="places">
+    <div class="row">
+      <div class="col s12">
+        <a href="/" class="left black-text"><p>{{"Посетил "}}</p></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TODO: Photos -->
+  <div class="custom-card grey lighten-4 z-depth-1" ng-if="photos">
+    <div class="row">
+      <div class="col s12">
+        <a href="/" class="left black-text"><p>{{"Все фотографии "}}</p></a>
+      </div>
+    </div>
+  </div>
+
+<article class="row" ng-if="comments.length" style="padding-bottom:0;margin-bottom:0;">
+  <!-- Comments -->
+  <div>
+    <ul class="collection grey lighten-4">
+      <div class="row" style="margin:auto 1px!important;">
+        <div class="col s12">
+          <p class="left black-text">{{"Отзывы:"}}</p>
+        </div>
+      </div>
+      <li class="chat-item collection-item avatar grey lighten-4"
+          style="box-sizing: content-box;padding-bottom:10px!important;"
+          ng-repeat="comment in comments | orderBy : '+date'">
+        <img class="circle responsive-img"
+             ng-src="{{comment.owner_picture || 'http://i.imgur.com/bNmfur9.jpg'}}" />
+        <a ui-sref="user({id: comment.from})">
+          <span class="black-text title link-focus" ng-bind="comment.owner_name"></span>
+        </a>
+        <span class="truncate light-text grey-text darken-4" ng-bind="comment.date | date"></span>
+        <span class="light-text grey-text darken-4" ng-bind="comment.body"></span>
+      </li>
+    </ul>
+  </div>
+</article>
+
+<article class="row" ng-if="user">
+  <!-- New Comment -->
+  <div class="custom-card col s12 grey lighten-4">
+    <div class="row">
+      <div class="input-field col s12">
+        <textarea id="message_input" class="materialize-textarea" ng-model="comment"></textarea>
+        <label for="message_input">Новый Комментарий:</label>
+      </div>
+      <div class="col s12">
+        <a class="col s8 offset-s2 m6 offset-m3 l4 offset-l4 btn"
+           ng-class="{'disabled disabled-cursor' : !comment,
+                      'hoverable waves-effect waves-light animated orange' : comment}"
+           ng-click="!comment || leave_comment()">
+          <span class="light-text">Отправить</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</article>

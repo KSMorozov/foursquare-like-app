@@ -1,91 +1,330 @@
-html body md-content{
-  overflow-x: hidden;
-}
-
-html body::-webkit-scrollbar {
-  display: none;
-}
-
-.md-dialog-container md-dialog::-webkit-scrollbar {
-  display: none;
-}
-
-::-webkit-scrollbar {
-    width: 5px;
-}
-
-::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-    border-radius: 1px;
-}
-
-::-webkit-scrollbar-thumb {
-    border-radius: 1px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
-}
-
-md-tab-item span {
-  color : black;
-  font-weight: normal;
-}
-
-md-icon svg {
-  fill: inherit;
-}
-
-md-icon {
-  svg {
-      fill: white;
-  }
-}
-
-.new-meeting-date {
-  margin-top: 0px;
-}
-
-
-/*md-datepicker .datefilter {
-  margin-top: 5px;
+/* Debugging */
+/** {
+  border: 1px solid red !important;
 }*/
 
-.md-datepicker-calendar-pane {
-  background-color: white;
+/* Achieve footer always at the bottom of the page behavior */
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+main {
+  flex: 1 0 auto;
 }
 
-.datefilter md-icon {
-   fill: #FF7043;
+/* Forms */
+form .row {
+  margin-top:0 !important;
+  margin-bottom:0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 
-/*md-datepicker md-icon {
-   margin-bottom: -6px;
-}*/
+/* Custom card style */
+.image-card {
+  border-bottom: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+  border-radius: 1px;
+}
 
-/*md-datepicker .md-datepicker-input-container {
-  margin-left: -5px;
-}*/
+.custom-card {
+  border:1px solid #e0e0e0;
+  border-radius: 1px;
+  /*padding-left: 20px;*/
+  /*margin: 0.5rem 0 1rem 0;*/
+}
 
+.chat-item {
+  padding-bottom: 0 !important;
+}
+
+/* Fixed Height for Header */
+.header-section {
+  height: 65px;
+}
+
+.button-text {
+  font-size: 14px !important;
+}
+
+/* Text styling*/
+.title {
+  font-size: 1.64rem;
+}
+
+.logo-text {
+  font-weight: lighter;
+  margin:0px;
+}
+
+.light-text {
+  font-weight: lighter;
+}
+
+.italic-text {
+  font-style: italic;
+}
+
+/* Link styling */
+/* Force pointer cursor ng-click issue */
 a {
+  cursor: pointer;
+}
+/* Links underline styles */
+a.animated {
+  font-weight: lighter;
   text-decoration: none;
-  /*margin-left: 5px;*/
-  color:black
+  position: relative;
+  color: white;
 }
 
-a:visited{
-  color:grey;
+a.animated:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  border-bottom: 1px solid white;
+  -o-transition: all ease-in-out .4s;
+  -ms-transition: all ease-in-out .4s;
+  -moz-transition: all ease-in-out .4s;
+  -webkit-transition: all ease-in-out .4s;
+  transition: all ease-in-out .4s;
 }
 
-a:active{
-  color:#FF7043;
+a.animated:hover:after {
+  width: 100%;
 }
 
-a:hover{
-  color:#FF7043;
+.text-underline {
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  -o-transition: all ease-in-out .4s;
+  -ms-transition: all ease-in-out .4s;
+  -moz-transition: all ease-in-out .4s;
+  -webkit-transition: all ease-in-out .4s;
+  transition: all ease-in-out .4s;
 }
 
-md-toast.md-success-toast-theme {
-    background-color: green;
+.text-underline:hover {
+  border-color: white;
 }
 
-md-toast.md-failed-toast-theme {
-    background-color: red;
+.link-focus {
+  -o-transition: all ease-in-out .4s;
+  -ms-transition: all ease-in-out .4s;
+  -moz-transition: all ease-in-out .4s;
+  -webkit-transition: all ease-in-out .4s;
+  transition: all ease-in-out .4s;
+}
+
+.link-focus:hover {
+  font-weight: normal;
+  color : orange !important;
+}
+
+.disabled-cursor {
+  cursor: not-allowed !important;
+}
+
+/* Tabs focus Style */
+.tabs .indicator {
+  background-color: orange;
+}
+
+/* Input Styles */
+
+/* Select */
+.select-wrapper + label {
+  top : 10px;
+}
+
+/* Placeholder match label */
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+ font-weight: lighter;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+ font-weight: lighter;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+ font-weight: lighter;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+ font-weight: lighter;
+}
+
+/* icon prefix focus color */
+.input-field .prefix.active {
+ color: #ff9800;
+}
+/* label color */
+.input-field label {
+ font-weight: lighter;
+ color: #ff9800;
+}
+/* For Email */
+/* label focus color */
+.input-field input[type=email]:focus + label {
+ color: #ffa726;
+}
+/* label underline focus color */
+.input-field input[type=email]:focus {
+ border-bottom: 1px solid #ffa726;
+ box-shadow: 0 1px 0 0 #fb8c00;
+}
+/* valid color */
+.input-field input[type=email].valid {
+ border-bottom: 1px solid #ffa726;
+ box-shadow: 0 1px 0 0 #fb8c00;
+}
+/* invalid color */
+.input-field input[type=email].invalid {
+ border-bottom: 1px solid #ef6c00;
+ box-shadow: 0 1px 0 0 #e65100;
+}
+
+/* For Password */
+/* label focus color */
+.input-field input[type=password]:focus + label {
+ color: #ffa726;
+}
+/* label underline focus color */
+.input-field input[type=password]:focus {
+ border-bottom: 1px solid #ffa726;
+ box-shadow: 0 1px 0 0 #fb8c00;
+}
+/* valid color */
+.input-field input[type=password].valid {
+ border-bottom: 1px solid #ffa726;
+ box-shadow: 0 1px 0 0 #fb8c00;
+}
+/* invalid color */
+.input-field input[type=password].invalid {
+ border-bottom: 1px solid #ef6c00;
+ box-shadow: 0 1px 0 0 #e65100;
+}
+
+/* For Text-area */
+/* label focus color */
+textarea:focus + label {
+ color: #ffa726;
+}
+/* label underline focus color */
+textarea:focus {
+ border-bottom: 1px solid #ffa726;
+ box-shadow: 0 1px 0 0 #fb8c00;
+}
+/* valid color */
+textarea.valid {
+ border-bottom: 1px solid #ffa726;
+ box-shadow: 0 1px 0 0 #fb8c00;
+}
+/* invalid color */
+textarea.invalid {
+ border-bottom: 1px solid #ef6c00;
+ box-shadow: 0 1px 0 0 #e65100;
+}
+
+/* For Text */
+/* label focus color */
+.input-field input[type=text]:focus + label {
+ color: #ffa726;
+}
+/* label underline focus color */
+.input-field input[type=text]:focus {
+ border-bottom: 1px solid #ffa726;
+ box-shadow: 0 1px 0 0 #fb8c00;
+}
+/* valid color */
+.input-field input[type=text].valid {
+ border-bottom: 1px solid #ffa726;
+ box-shadow: 0 1px 0 0 #fb8c00;
+}
+/* invalid color */
+.input-field input[type=text].invalid {
+ border-bottom: 1px solid #ef6c00;
+ box-shadow: 0 1px 0 0 #e65100;
+}
+
+input[type=text]:focus:not([readonly]), input[type=password]:focus:not([readonly]), input[type=email]:focus:not([readonly]), input[type=url]:focus:not([readonly]), input[type=time]:focus:not([readonly]), input[type=date]:focus:not([readonly]), input[type=datetime-local]:focus:not([readonly]), input[type=tel]:focus:not([readonly]), input[type=number]:focus:not([readonly]), input[type=search]:focus:not([readonly]), textarea.materialize-textarea:focus:not([readonly]) {
+  border-bottom: 1px solid #ffa726;
+  box-shadow: 0 1px 0 0 #fb8c00;
+}
+
+input[type=text]:focus:not([readonly])+label, input[type=password]:focus:not([readonly])+label, input[type=email]:focus:not([readonly])+label, input[type=url]:focus:not([readonly])+label, input[type=time]:focus:not([readonly])+label, input[type=date]:focus:not([readonly])+label, input[type=datetime-local]:focus:not([readonly])+label, input[type=tel]:focus:not([readonly])+label, input[type=number]:focus:not([readonly])+label, input[type=search]:focus:not([readonly])+label, textarea.materialize-textarea:focus:not([readonly])+label {
+  color: #ffa726;
+}
+
+/* Select Styles */
+/*select {
+  display: flex;
+}*/
+.dropdown-content li>a, .dropdown-content li>span {
+  color : #ffa726;
+}
+
+select:focus {
+  /*outline: 1px solid orange;*/
+  outline: none;
+}
+
+/* Toast Style */
+/* Toast Container */
+#toast-container {
+  top: 0;
+  right: 5px;
+}
+
+/* Success Toast */
+.success {
+  background-color: #4caf50;
+}
+
+/* Fail Toast */
+.fail {
+  background-color: #e53935;
+}
+
+/* Side Nav Styles */
+/* Menu Collection */
+.menu-collection {
+  border: none;
+}
+
+/* Menu Collection Item */
+a.menu-collection-item {
+  margin: 5px 5px !important;
+}
+
+/* Route Main Content */
+/* Container */
+.content-container {
+  /*padding:10px;*/
+  margin:14px auto;
+}
+
+/* Datepicker Styles */
+.picker__day--selected, .picker__day--selected:hover, .picker--focused .picker__day--selected {
+  background-color: orange;
+}
+
+.picker__day.picker__day--today {
+  color: orange;
+}
+
+.picker__nav--prev:hover, .picker__nav--next:hover {
+  background: transparent;
+}
+
+.picker__weekday-display {
+  background-color: orange;
+}
+
+.picker__date-display{
+  background-color: orange;
+}
+
+.picker__close, .picker__today {
+  color : orange;
 }

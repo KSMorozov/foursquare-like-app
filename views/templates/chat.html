@@ -1,0 +1,28 @@
+<article class="content-container" ng-cloak>
+  <!-- Messages -->
+  <ul class="collection grey lighten-4" ng-if="chat">
+    <li class="chat-item collection-item avatar grey lighten-4" ng-repeat="message in chat | orderBy : '+date'" style="box-sizing: content-box;">
+      <img class="circle responsive-img" ng-src="{{message.sender.picture || 'http://i.imgur.com/bNmfur9.jpg'}}" />
+      <a ui-sref="user({id: message.sender.id})"><span class="black-text title link-focus" ng-bind="message.sender.name"></span></a>
+      <span class="truncate light-text grey-text darken-4" ng-bind="message.date | date"></span></a>
+      <span class="light-text grey-text darken-4" ng-bind="message.body"></span></a>
+    </li>
+  </ul>
+  <!-- New Message Form -->
+  <section class="custom-card grey lighten-4">
+    <div class="container">
+      <div class="row">
+        <div class="input-field col s12">
+          <textarea id="message_input" class="materialize-textarea" ng-model="message"></textarea>
+          <label for="message_input">Новое Сообщение:</label>
+        </div>
+        <div class="col s12">
+          <a class="hoverable col s8 offset-s2 m6 offset-m3 l4 offset-l4 waves-effect waves-light btn orange animated"
+             ng-click="send_message()">
+            <span class="light-text">Отправить</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</article>

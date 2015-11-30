@@ -1,16 +1,14 @@
-(function () {
-  angular.module('FourApp')
+angular.module('FourApp')
   .factory('Account', function ($http) {
     return {
-      getProfile : function () {
+      get_profile : function () {
         return $http.get('/api/me');
       },
-      updateProfile : function (profileData) {
-        return $http.put('/api/me', profileData);
+      update_profile : function (profile_data) {
+        return $http.put('/api/me', profile_data);
       },
-      fetch_friends : function () {
+      get_friends : function () {
         return $http.get('/api/me/friends');
       }
-    };
+    }
   });
-})();

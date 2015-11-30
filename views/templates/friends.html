@@ -1,0 +1,8 @@
+<article class="content-container">
+  <!-- Friend List -->
+  <ul class="collection grey lighten-4" ng-if="friends">
+    <li class="collection-item avatar grey lighten-4 valign-wrapper" ng-repeat="friend in friends">
+      <img class="circle responsive-img" ng-src="{{friend.friend_picture || 'http://i.imgur.com/bNmfur9.jpg'}}" />
+      <a ui-sref="user({id: friend.friend_id})"><span class="black-text title link-focus" ng-bind="friend.friend_name"></span></a>
+    </li>
+  </ul>

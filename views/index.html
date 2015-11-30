@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base href="/" />
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="Materialize/bin/materialize.css"  media="screen,projection"/>
+    <!--Custom css-->
+    <link type="text/css" rel="stylesheet" href="/stylesheets/style.css"/>
+
+    <!-- material design icons -->
+    <link href="mdi/css/materialdesignicons.min.css" media="all" rel="stylesheet" type="text/css" />
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="utf-8">
+
+    <title>Кто Где</title>
+  </head>
+  <body ng-app="FourApp">
+
+    <!--App Header-->
+    <header ng-controller="MainNavigation" class="grey lighten-5">
+      <div class="container">
+        <div class="row" style="padding-bottom:0;margin-bottom:0;">
+
+          <!--Logo and stuff-->
+          <div class="col s2 orange header-section">
+            <h4 ui-sref="home" class="white-text logo-text center-align" style='cursor:pointer'>Кто Где</h4>
+            <p class="white-text logo-text center-align"><small>Афиша мест и событий</small></p>
+          </div>
+
+          <!--Toolbar ?-->
+          <div class="col s8 grey lighten-2 header-section">
+
+          </div>
+
+          <!--Sign Actions-->
+          <div class="col s2 orange header-section valign-wrapper">
+            <a ui-sref="login" ng-if="!isAuthenticated()"
+               class="col s12 center-align">
+               <span class="text-underline white-text light-text">Войти</span>
+             </a>
+            <a ui-sref="logout" ng-if="isAuthenticated()"
+               class="col s12 center-align">
+               <span class="text-underline white-text light-text">Выйти</span>
+             </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!--App Main Content-->
+    <main class="grey lighten-5">
+      <div class="container">
+        <div class="row" style='margin-bottom:0px;'>
+
+          <!-- Left Side Navigation Menu -->
+          <div class="col s2 grey lighten-5">
+            <div class="collection menu-collection grey lighten-5">
+              <a ui-sref="profile" class="waves-effect waves-light collection-item menu-collection-item animated grey lighten-5 grey-text lighten-3 center-align ">Мой Кабинет</a>
+              <a ui-sref="friends" class="waves-effect waves-light collection-item menu-collection-item animated grey lighten-5 grey-text lighten-3 center-align">Друзья</a>
+              <a ui-sref="chats" class="waves-effect waves-light collection-item menu-collection-item animated grey lighten-5 grey-text lighten-3 center-align">Сообщения</a>
+            </div>
+          </div>
+
+          <!-- Route Main Content -->
+          <div class="col s8" style="padding-top: 0rem;">
+            <ui-view></ui-view>
+          </div>
+
+          <!-- Additional controls menu -->
+          <div class="col s2">
+            <p class="black-text">menu right</p>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+    <!--App Footer-->
+    <footer class="page-footer grey lighten-4" style='margin-top:0px;'>
+      <div class="container grey lighten-4">
+        <div class="row">
+          <div class="col l6 s12">
+            <h5 class="grey-text text-darken-1">Footer Content</h5>
+            <p class="grey-text">You can use rows and columns here to organize your footer content.</p>
+          </div>
+          <div class="col l4 offset-l2 s12">
+            <h5 class="grey-text text-darken-1">Links</h5>
+            <ul>
+              <li><a class="grey-text" href="#!">Link 1</a></li>
+              <li><a class="grey-text" href="#!">Link 2</a></li>
+              <li><a class="grey-text" href="#!">Link 3</a></li>
+              <li><a class="grey-text" href="#!">Link 4</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-copyright grey lighten-4">
+        <div class="container grey lighten-4">
+        <span class="grey-text text-lighten-1">© 2014 Copyright Text</span>
+        <a class="grey-text right" href="#!">More Links</a>
+        </div>
+      </div>
+    </footer>
+
+    <!--App Scripts-->
+    <script type="text/javascript" src="/angular/angular.js"></script>
+    <script type="text/javascript" src="/angular-i18n/angular-locale_ru-ru.js"></script>
+    <script type="text/javascript" src="/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script type="text/javascript" src="/satellizer/satellizer.min.js"></script>
+    <script type="text/javascript" src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"></script>
+    <script type="text/javascript" src="/angular-ymaps/angular-ymaps.js"></script>
+    <script type="text/javascript" src="/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/Materialize/bin/materialize.js"></script>
+    <script type="text/javascript" src="/javascripts/app.js"></script>
+  </body>
+</html>

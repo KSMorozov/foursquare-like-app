@@ -64,6 +64,16 @@ router.get('/meetings/single', limit, function (req, res) {
   });
 });
 
+// find and send meetings for requested user.
+router.get('/meetings/owner', limit, function (req, res) {
+  var id = req.query.owner;
+  if (!id) return res.status(500).send({ message : 'Не предоставлена информация о пользователе.' });
+  Meeting.find({ owner_id : id}, function (err, meetings) {
+    if (err) return res.status(500).send({ message : 'Произошла ошибка :(.' });
+    res.status(200).send(meetings);
+  });
+});
+
 // attend meeting - add user id to the list of attendees.
 router.post('/meetings/attend', limit, function (req, res) {
   var meeting_id = req.body.id;

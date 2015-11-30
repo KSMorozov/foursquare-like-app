@@ -38,7 +38,7 @@ router.post('/facebook', function (req, res) {
               return res.status(400).send({ message: 'User not found' });
             }
             user.facebook = profile.id;
-            user.picture  = user.picture || 'https://graph.facebook.com/v2.3/' + profile.id + '/picture?type=large';
+            user.picture  = user.picture || 'https://graph.facebook.com/v2.3/' + profile.id + '/picture?width=350?height=350';
             user.displayName = user.displayName || profile.name;
             user.save(function () {
               var token = jwtutils.sign(user);
@@ -55,7 +55,7 @@ router.post('/facebook', function (req, res) {
           var user = new User();
           user.email    = user.email || profile.id;
           user.facebook = profile.id;
-          user.picture  = 'https://graph.facebook.com/' + profile.id + '/picture?type=large';
+          user.picture  = 'https://graph.facebook.com/' + profile.id + '/picture?width=350?height=350';
           user.displayName = profile.name;
           user.save(function (err) {
             if (err) console.log(err);

@@ -1,0 +1,9 @@
+<article class="content-container">
+  <ul class="collection grey lighten-4" ng-if="chats">
+    <li class="collection-item avatar grey lighten-4" ng-repeat="chat in chats | orderBy : '-message.date'">
+      <img class="circle responsive-img" ng-src="{{chat.friend.picture || 'http://i.imgur.com/bNmfur9.jpg'}}" />
+      <a ui-sref="user({id: chat.friend.id})"><span class="black-text title link-focus" ng-bind="chat.friend.name"></span></a>
+      <a ui-sref="chat({id: chat.friend.id})"><span class="truncate grey-text darken-4 link-focus" ng-bind="chat.message.body"></span></a>
+    </li>
+  </ul>
+</article>

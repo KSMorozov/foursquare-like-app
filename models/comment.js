@@ -6,7 +6,8 @@ var schema   = new mongoose.Schema({
     required : true
   },
   to      : {
-    type     : mongoose.Schema.Types.ObjectId, ref: 'Meeting',
+    // type     : mongoose.Schema.Types.ObjectId, ref: 'Meeting',
+    type     : mongoose.Schema.Types.ObjectId,
     required : true
   },
   body    : {

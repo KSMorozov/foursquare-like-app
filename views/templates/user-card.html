@@ -1,0 +1,227 @@
+<article class="row" ng-if="user" style="padding-top: 1rem;">
+  <!-- Card -->
+  <div class="custom-card col s12 grey lighten-4">
+    <div class="row">
+      <!-- Main Card Content -->
+      <div class="col s12 m4 l3 image-card" style="padding:0;">
+        <!-- User Avatar -->
+        <img class="responsive-img" style="z-index:0;"
+             ng-src="{{user.picture || 'http://i.imgur.com/bNmfur9.jpg'}}"/>
+        <!-- User Actions -->
+        <!-- Follow User -->
+        <div class="col s12" style="z-index:1;">
+          <a class="col s12" ng-click="follow_user()">
+            <span class="link-focus grey-text darken-4 light-text">Добавить в друзья</span>
+          </a>
+        </div>
+        <div class="divider col s12"></div>
+        <!-- Send Message -->
+        <div class="col s12" style="z-index:1;">
+          <a ui-sref="chat({id: user._id})" class="col s12">
+            <span class="link-focus grey-text darken-4 light-text">Написать сообщение</span>
+          </a>
+        </div>
+        <div class="divider col s12"></div>
+        <!-- TODO: link to friends list ??? -->
+        <div class="col s12" style="z-index:1;">
+          <a class="col s12">
+            <span class="link-focus grey-text darken-4 light-text">{{'Друзья(' + user.friends.length + ')'}}</span>
+          </a>
+        </div>
+      </div>
+      <div class="col s12 m8 l9">
+        <div class="grey lighten-4">
+          <a ui-sref="user({id: user._id})">
+            <span class="link-focus title black-text" style="margin:0;" ng-bind="user.displayName"></span>
+          </a>
+
+          <p class="grey-text darken-4" style="margin:0;" ng-bind="user.city"></p>
+          <p class="black-text" style="margin-bottom:0;">О себе:</p>
+          <p class="flow-text italic-text grey-text darken-4 light-text" style="margin:0;" ng-bind="user.info"></p>
+          <p class="black-text">Интересы:</p>
+        </div>
+      </div>
+    </div>
+</article>
+
+<article class="row" ng-if="meetings">
+  <div class="custom-card col s12 grey lighten-4">
+    <div class="row">
+      <div class="col s12">
+        <p class="left black-text">{{"Встречи " + user.displayName + ":"}}</p>
+      </div>
+    </div>
+    <div class="row valign-wrapper">
+      <a class="col s1 right transparent"
+         ng-click="previous_meeting()"><i class="link-focus right mdi mdi-skip-previous" style="color:grey;font-size: 30px;"></i></a>
+      <div class="col s10">
+        <div class="row">
+          <div class="slider slider-meetings grey lighten-4">
+            <ul class="slides grey lighten-4">
+              <li ng-repeat="meeting in meetings | orderBy : '+date'" class="custom-card grey lighten-3">
+                <!-- TODO: Link to single meeting route with title  -->
+                <h5 class="black-text" ng-bind="meeting.title" style="margin:0"></h5>
+                <h5 class="black-text" ng-bind="meeting.date | date"></h5>
+                <p ng-bind="meeting.description" class="light-text italic-text grey-text text-lighten-1"></p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <a class="col s1 left transparent"
+         ng-click="next_meeting()"><i class="link-focus left mdi mdi-skip-next" style="color:grey;font-size: 30px;"></i></a>
+    </div>
+  </div>
+</article>
+
+<article class="row" ng-if="comments.length">
+  <div>
+    <ul class="collection grey lighten-4">
+      <div class="row" style="margin:auto 10px!important;">
+        <div class="col s12">
+          <p class="left black-text">{{"Отзывы:"}}</p>
+        </div>
+      </div>
+      <li class="chat-item collection-item avatar grey lighten-4" ng-repeat="comment in comments | orderBy : '+date'" style="box-sizing: content-box;padding-bottom:10px!important;">
+        <img class="circle responsive-img" ng-src="{{comment.owner_picture || 'http://i.imgur.com/bNmfur9.jpg'}}" />
+        <a ui-sref="user({id: message.sender.id})"><span class="black-text title link-focus" ng-bind="comment.owner_name"></span></a>
+        <span class="truncate light-text grey-text darken-4" ng-bind="comment.date | date"></span></a>
+        <span class="light-text grey-text darken-4" ng-bind="comment.body"></span></a>
+      </li>
+    </ul>
+  </div>
+</article>
+
+<article class="row" ng-if="user">
+  <div class="custom-card col s12 grey lighten-4">
+    <div class="row">
+      <div class="input-field col s12">
+        <textarea id="message_input" class="materialize-textarea" ng-model="comment"></textarea>
+        <label for="message_input">Новый Комментарий:</label>
+      </div>
+      <div class="col s12">
+        <a class="col s8 offset-s2 m6 offset-m3 l4 offset-l4 btn"
+           ng-class="{'disabled disabled-cursor' : !comment,
+                      'hoverable waves-effect waves-light animated orange' : comment}"
+           ng-click="!comment || leave_comment()">
+          <span class="light-text">Отправить</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- old -->
+<!-- <article class="content-container">
+  <div class="custom-card grey lighten-4" ng-if="user">
+    <div class="row" style="width:100%;">
+      <div class="col s12 m4 l3 custom-card" style="padding:0;">
+        <img class="responsive-img" style="min-width:100%;z-index:0;"
+             ng-src="{{user.picture || 'http://i.imgur.com/bNmfur9.jpg'}}"/>
+        <div class="col s12" style="z-index:1;">
+          <a class="col s12" ng-click="follow_user()">
+            <span class="link-focus grey-text darken-4 light-text">Добавить в друзья</span>
+          </a>
+        </div>
+        <div class="divider col s12"></div>
+        <div class="col s12" style="z-index:1;">
+          <a ui-sref="chat({id: user._id})" class="col s12">
+            <span class="link-focus grey-text darken-4 light-text">Написать сообщение</span>
+          </a>
+        </div>
+        <div class="divider col s12"></div>
+        <div class="col s12" style="z-index:1;">
+          <a class="col s12">
+            <span class="link-focus grey-text darken-4 light-text">{{'Друзья(' + user.friends.length + ')'}}</span>
+          </a>
+        </div>
+      </div>
+      <div class="col s12 m8 l9">
+        <div class="grey lighten-4">
+          <a ui-sref="user({id: user._id})">
+            <span class="link-focus title black-text" style="margin:0;" ng-bind="user.displayName"></span>
+          </a>
+
+          <p class="grey-text darken-4" style="margin:0;" ng-bind="user.city"></p>
+          <p class="black-text" style="margin-bottom:0;">О себе:</p>
+          <p class="flow-text italic-text grey-text darken-4 light-text" style="margin:0;" ng-bind="user.info"></p>
+          <p class="black-text">Интересы:</p>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- TODO:  Achievements -->
+  <!-- <div class="card-panel grey lighten-4 z-depth-1" ng-if="achievements">
+    <div class="row">
+      <div class="col s6">
+        <p class="left black-text">{{"Достижения " + user.displayName + ":"}}</p>
+      </div>
+      <div class="col s6">
+        <a href="/" class="right orange-text"><p>Все достижения</p></a>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Meetings -->
+  <!-- <div class="custom-card grey lighten-4" ng-if="meetings">
+    <div class="row">
+      <div class="col s12">
+        <p class="left black-text">{{"Встречи " + user.displayName + ":"}}</p>
+      </div>
+    </div>
+    <div class="row valign-wrapper">
+      <a class="col s1 right transparent"
+         ng-click="previous_meeting()"><i class="link-focus right mdi mdi-skip-previous" style="color:grey;font-size: 30px;"></i></a>
+      <div class="col s10">
+        <div class="row">
+          <div class="slider slider-meetings grey lighten-4">
+            <ul class="slides grey lighten-4">
+              <li ng-repeat="meeting in meetings | orderBy : '+date'" class="custom-card grey lighten-3">
+                <h5 class="black-text" ng-bind="meeting.title" style="margin:0"></h5>
+                <h5 class="black-text" ng-bind="meeting.date | date"></h5>
+                <p ng-bind="meeting.description" class="light-text italic-text grey-text text-lighten-1"></p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <a class="col s1 left transparent"
+         ng-click="next_meeting()"><i class="link-focus left mdi mdi-skip-next" style="color:grey;font-size: 30px;"></i></a>
+    </div>
+  </div> -->
+
+  <!-- TODO: Attended Places-->
+  <!-- <div class="custom-card grey lighten-4 z-depth-1" ng-if="places">
+    <div class="row">
+      <div class="col s12">
+        <a href="/" class="left black-text"><p>{{"Посетил "}}</p></a>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- TODO: Photos -->
+  <!-- <div class="custom-card grey lighten-4 z-depth-1" ng-if="photos">
+    <div class="row">
+      <div class="col s12">
+        <a href="/" class="left black-text"><p>{{"Все фотографии "}}</p></a>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Comments -->
+  <!-- <div ng-if="comments.length">
+    <ul class="collection grey lighten-4">
+      <div class="row" style="margin:auto 10px!important;">
+        <div class="col s12">
+          <p class="left black-text">{{"Отзывы:"}}</p>
+        </div>
+      </div>
+      <li class="chat-item collection-item avatar grey lighten-4" ng-repeat="comment in comments | orderBy : '+date'" style="box-sizing: content-box;padding-bottom:10px!important;">
+        <img class="circle responsive-img" ng-src="{{comment.owner_picture || 'http://i.imgur.com/bNmfur9.jpg'}}" />
+        <a ui-sref="user({id: message.sender.id})"><span class="black-text title link-focus" ng-bind="comment.owner_name"></span></a>
+        <span class="truncate light-text grey-text darken-4" ng-bind="comment.date | date"></span></a>
+        <span class="light-text grey-text darken-4" ng-bind="comment.body"></span></a>
+      </li>
+    </ul>
+  </div> -->

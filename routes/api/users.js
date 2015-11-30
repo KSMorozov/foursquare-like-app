@@ -33,13 +33,13 @@ router.get('/users/:id/friends', limit, function (req, res) {
 });
 
 // make a friend/follow person
-router.post('/users/:id/friend', limit, function (req, res) {
-  var user_id = req.params.id;
+router.post('/users/friend', limit, function (req, res) {
+  var user_id = req.body.id;
   if (!user_id) return res.status(400).send({ message : 'No user id provided with request.' });
 
   User.findById(req.user, function (err, me) {
     User.findById(user_id, function (err, user) {
-      var follower = !!me.followers.filter(function (id) { return id.equals(user._id); }).length;
+      var follower = me.followers.indexOf(user._id) > -1;
 
       if (follower) {
         me.followers = me.followers.filter(function (id) { return !id.equals(user._id); });
@@ -47,16 +47,20 @@ router.post('/users/:id/friend', limit, function (req, res) {
         me.save(function (err) {
           user.friends.push(me._id);
           user.save(function (err) {
-            res.status(200).send({ message : 'Friend added.' });
+            res.status(200).send({ message : 'Вы добавили друга.' });
           })
         });
       } else {
+        var followed = user.followers.indexOf(me._id) > -1;
+        var friended = user.friends.indexOf(me._id) > -1;
+        if (followed) return res.status(200).send({ message : 'Вы уже отправляли заявку.' });
+        if (friended) return res.status(200).send({ message : 'Вы уже являетесь друзьями.' });
         user.followers.push(me._id);
         user.save(function (err) {
-          res.status(200).send({ message : 'Friend Request Sent.' });
+          res.status(200).send({ message : 'Вы отправили Заявку.' });
         });
       }
-    })
+    });
   });
 });
 

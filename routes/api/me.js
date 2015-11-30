@@ -30,7 +30,6 @@ router.put('/me', limit, function (req, res) {
 router.get('/me/friends', limit, function (req, res) {
   User.findById(req.user, function (err, user) {
     if (err) return res.status(500).send({ message : 'Произошла ошибка :(.' });
-    // res.status(200).send(user.friends);
     async.map(user.friends, function (friend, callback) {
       User.findById(friend, function (err, guy) {
         if (err) callback(err);

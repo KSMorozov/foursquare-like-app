@@ -1,0 +1,96 @@
+<!-- <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a> -->
+<!-- Login Modal -->
+<div id="login-modal" class="modal grey lighten-5 z-depth-1" style="max-width:550px;max-height:100%;">
+  <!-- Tabs Menu -->
+  <div>
+    <!-- Tabs -->
+    <div class="col s12 grey lighten-4">
+      <ul class="tabs">
+        <li class="tab col s6 grey lighten-4"><a href="#signin" class="active orange-text" style="font-weight:lighter;">Войти</a></li>
+        <li class="tab col s6 grey lighten-4"><a href="#signup" class="orange-text" style="font-weight:lighter;">Зарегистрироваться</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="modal-content">
+
+    <!-- Common Content -->
+    <div class="col s12" style="margin-top:20px;margin-bottom:0px;">
+      <div class="container">
+        <div class="row">
+          <div class="input-field col s12">
+            <input type="email" placeholder="Электронный Адрес" class="validate grey-text darken-3" id="email"
+                   ng-model="user.email">
+            <label for="email">Электронный Адрес</label>
+          </div>
+          <div class="input-field col s12">
+            <input type="password" placeholder="Пароль" class="validate grey-text darken-3" id="password"
+                   ng-model="user.password">
+            <label for="password">Пароль</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Content -->
+    <div id="signin" class="col s12 row">
+      <div class="container">
+        <a class="col s12 waves-effect waves-light btn orange" style="font-weight:lighter;" ng-click="signin()">Войти</a>
+      </div>
+    </div>
+
+    <!-- Signup Content -->
+    <div id="signup" class="col s12 row">
+      <div class="container">
+        <a class="col s12 waves-effect waves-light btn orange" style="font-weight:lighter;" ng-click="signup()">Зарегистрироваться</a>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="col s12" style='margin-top: 20px;'>
+      <div class="container">
+        <div class="row">
+          <div class="col s2"><p></p></div>
+          <div class="col s8 ">
+            <div class="divider" style="z-index:1;"></div>
+            <p class="center-align grey-text lighten-2" style="margin-top:-12px;z-index:2;">или</p>
+          </div>
+          <div class="col s2"><p></p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social Media Signup Buttons -->
+    <div class="col s12" style="margin-bottom:20px;">
+      <div class="container">
+        <a class="animated col s12 modal-action modal-close waves-effect waves-light btn light-blue darken-3 left-align" style="margin-bottom:20px;"
+           ng-click="authenticate('vkontakte')">
+          <i class="mdi mdi-vk left"></i>
+          <span class="left-align left">Войти с помощью VKontakte</span>
+        </a>
+        <a class="animated col s12 modal-action modal-close waves-effect waves-light btn cyan accent-4 left-align" style="margin-bottom:20px;"
+           ng-click="authenticate('instagram')">
+          <i class="mdi mdi-instagram left"></i>
+          <span class="left-align left">Войти с помощью Instagram</span>
+        </a>
+        <a class="animated col s12 modal-action modal-close waves-effect waves-light btn indigo darken-1 left-align" style="margin-bottom:20px;"
+           ng-click="authenticate('facebook')">
+          <i class="mdi mdi-facebook left"></i>
+          <span class="left-align left">Войти с помощью Facebook</span>
+        </a>
+        <a class="animated col s12 modal-action modal-close waves-effect waves-light btn blue lighten-1 left-align" style="margin-bottom:20px;"
+           ng-click="authenticate('twitter')">
+          <i class="mdi mdi-twitter left"></i>
+          <span class="left-align left">Войти с помощью Twitter</span>
+        </a>
+        <a class="animated col s12 modal-action modal-close waves-effect waves-light btn red lighten-1 left-align" style="margin-bottom:20px;"
+           ng-click="authenticate('google')">
+          <i class="mdi mdi-google-plus left"></i>
+          <span class="left-align left">Войти с помощью Google</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
