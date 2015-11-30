@@ -476,6 +476,7 @@
       };
 
       $scope.leave_comment = function () {
+        console.log(typeof $scope.comment);
         Comment.leave_comment($stateParams.id, $scope.comment)
         .then(function (res) {
           Toast.show_toast('success', res.data.message || 'Вы успешно оставили комментарий.');

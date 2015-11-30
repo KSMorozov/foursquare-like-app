@@ -7,6 +7,7 @@ var async    = require('async');
 
 // create meeting with provided data.
 router.post('/comments', limit, function (req, res) {
+  console.log(req.user, req.body.thing, req.body.body);
   var comment = new Comment({
     from : req.user,
     to   : req.body.thing,

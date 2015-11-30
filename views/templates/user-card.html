@@ -92,7 +92,7 @@
   </div>
 </article>
 
-<article class="row" ng-if="user">
+<article class="row">
   <div class="custom-card col s12 grey lighten-4">
     <div class="row">
       <div class="input-field col s12">
@@ -103,7 +103,7 @@
         <a class="col s8 offset-s2 m6 offset-m3 l4 offset-l4 btn"
            ng-class="{'disabled disabled-cursor' : !comment,
                       'hoverable waves-effect waves-light animated orange' : comment}"
-           ng-click="!comment || leave_comment()">
+           ng-click="comment ? leave_comment() : ''">
           <span class="light-text">Отправить</span>
         </a>
       </div>
