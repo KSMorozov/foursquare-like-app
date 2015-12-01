@@ -1,20 +1,12 @@
-var express = require('express');
 var User    = require('../../models/user');
 var limit   = require('../middleware/limit');
+var express = require('express');
 var router  = express.Router();
-
-router.get('/users/:id', limit, function (req, res) {
-  var user_id = req.params.id;
-  if (!user_id) return res.status(400).send({ message : 'No user id provided with request.' });
-  User.findById(user_id, function (err, user) {
-    if (!user) return res.status(404).send({ message : 'No User Found.' });
-    return res.send(user);
-  });
-});
+var async = require('async');
 
 // list followers
-router.get('/users/:id/followers', limit, function (req, res) {
-  var user_id = req.params.id;
+router.get('/users/followers', limit, function (req, res) {
+var user_id = req.query.id;
   if (!user_id) return res.status(400).send({ message : 'No user id provided with request.' });
   User.findById(user_id, function (err, user) {
     if (!user) return res.status(404).send({ message : 'No user found.'});
@@ -23,12 +15,37 @@ router.get('/users/:id/followers', limit, function (req, res) {
 });
 
 // list friends
-router.get('/users/:id/friends', limit, function (req, res) {
-  var user_id = req.params.id;
+router.get('/users/friends', limit, function (req, res) {
+  var user_id = req.query.id;
   if (!user_id) return res.status(400).send({ message : 'No user id provided with request.' });
   User.findById(user_id, function (err, user) {
     if (!user) return res.status(404).send({ message : 'No user found.'});
-    res.send(user.friends);
+    var friends = [];
+    async.each(user.friends, function (friend, callback) {
+      User.findById(friend, function (err, guy) {
+        if (err) callback(err);
+        else {
+          friends.push({
+            id : friend,
+            name : guy.displayName,
+            picture : guy.picture
+          });
+          callback();
+        }
+      });
+    }, function (err) {
+      if (err) return res.status(500).send({ message : 'Не удалось найти друзей :(.' });
+      res.status(200).send(friends);
+    });
+  });
+});
+
+router.get('/users/:id', limit, function (req, res) {
+  var user_id = req.params.id;
+  if (!user_id) return res.status(400).send({ message : 'No user id provided with request.' });
+  User.findById(user_id, function (err, user) {
+    if (!user) return res.status(404).send({ message : 'No User Found.' });
+    res.send(user);
   });
 });
 

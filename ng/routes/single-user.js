@@ -1,6 +1,7 @@
 (function () {
   angular.module('FourApp')
-    .controller('Single-User', function ($scope, $stateParams, $timeout, Toast, User, Meeting, Comment) {
+    .controller('Single-User', function ($scope, $stateParams, $timeout, Toast,
+                                         User, Meeting, Comment) {
       $scope.comment = '';
 
       // fetch user profile info
@@ -8,6 +9,22 @@
         User.fetch_user($stateParams.id)
         .then(function (res) {
           $scope.user = res.data;
+
+          // UI
+          $timeout(function () {
+            $(document).ready(function(){
+              // Initialize meetings slider
+              $('.slider-meetings').slider({full_width: true, indicators : false, interval : 1, height : 200});
+              $('.slider-meetings').slider('pause');
+
+              // fix jquery input cancer comment textarea
+              $('textarea#comment').on('change', function () {
+                $scope.comment = $(this).val();
+                $scope.$apply();
+              });
+            });
+          }, 0, false);
+
         })
         .catch(function (res) {
           Toast.show_toast('fail', 'Мы не смогли найти пользователя.');
@@ -25,18 +42,44 @@
         });
       };
 
+      $scope.fetch_friend_list = function () {
+        User.fetch_friend_list($stateParams.id)
+        .then(function (res) {
+          $scope.friends = res.data;
+          $(document).ready(function () {
+            $('#friendlist-modal').openModal({
+                dismissible: true,
+                opacity: .5, // Opacity of modal background
+                in_duration: 300, // Transition in duration
+                out_duration: 200, // Transition out duration
+                ready: function() {  }, // Callback for Modal open
+                complete: function() {  } // Callback for Modal close
+              }
+            );
+          });
+        })
+        .catch(function (res) {
+          Toast.show_toast('fail', res.data.message || 'Не удалось найти друзей пользователя.');
+        });
+      };
+
       // fetch user's meetings
-      $scope.fetch_owner_meetings = function () {
-        Meeting.fetch_owner_meetings($stateParams.id)
+      $scope.fetch_meetings = function () {
+        Meeting.fetch_meetings($stateParams.id)
         .then(function (res) {
           $scope.meetings = res.data;
 
           // UI
-          // Initialize meetings slider
           $timeout(function () {
             $(document).ready(function(){
               $('.slider-meetings').slider({full_width: true, indicators : false, interval : 1, height : 200});
               $('.slider-meetings').slider('pause');
+              // Initialize meetings slider
+              // fix jquery input cancer comment textarea
+              $('textarea#comment').on('change', function () {
+                $scope.comment = $(this).val();
+                $scope.$apply();
+              });
             });
           }, 0, false);
 
@@ -57,7 +100,6 @@
       };
 
       $scope.leave_comment = function () {
-        console.log(typeof $scope.comment);
         Comment.leave_comment($stateParams.id, $scope.comment)
         .then(function (res) {
           Toast.show_toast('success', res.data.message || 'Вы успешно оставили комментарий.');
@@ -70,15 +112,23 @@
       };
 
       $scope.previous_meeting = function () {
-        $('.slider-meetings').slider('prev');
+        $timeout(function () {
+          $('.slider-meetings').slider('prev');
+        }, 0, false);
       };
 
       $scope.next_meeting = function () {
-        $('.slider-meetings').slider('next');
+        $timeout(function () {
+          $('.slider-meetings').slider('next');
+        }, 0, false);
       };
 
-      $scope.fetch_owner_meetings();
+      $scope.close_friend_list = function () {
+        $('#friendlist-modal').closeModal();
+      };
+
       $scope.fetch_user();
+      $scope.fetch_meetings();
       $scope.fetch_comments();
     });
 })();

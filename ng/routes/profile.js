@@ -1,6 +1,7 @@
 (function () {
   angular.module('FourApp')
-    .controller('Profile', function ($scope, $auth, $stateParams, $timeout, Toast, Account, Meeting, Comment) {
+    .controller('Profile', function ($scope, $auth, $stateParams, $timeout,
+                                     Toast, Account, Meeting, Comment, User) {
       $scope.comment = '';
 
       // Get User Profile From the Server
@@ -8,15 +9,33 @@
         Account.get_profile()
         .then(function (res) {
           $scope.user = res.data;
-          $scope.fetch_owner_meetings(res.data._id);
+          $scope.fetch_meetings(res.data._id);
           $scope.fetch_comments(res.data._id);
+
+          // UI
           $timeout(function () {
             $(document).ready(function() {
               // bio text-area initialization
               $('textarea#bio').characterCounter();
 
+              // fix jquery input cancer info textarea
+              $('textarea#bio').on('change', function () {
+                $scope.user.bio = $(this).val();
+                $scope.$apply();
+              });
+
+              // fix jquery input cancer comment textarea
+              $('textarea#comment').on('change', function () {
+                $scope.comment = $(this).val();
+                $scope.$apply();
+              });
+
               // sex picker select initialization
               $('#sex').material_select();
+              $('#sex').on('change', function () {
+                $scope.user.sex = $(this).val();
+                $scope.$apply();
+              });
 
               // datepicker initialization
               $('.datepicker').pickadate({
@@ -61,15 +80,36 @@
         });
       };
 
+      $scope.fetch_friend_list = function () {
+        User.fetch_friend_list($scope.user._id)
+        .then(function (res) {
+          $scope.friends = res.data;
+          $(document).ready(function () {
+            $('#friendlist-modal').openModal({
+                dismissible: true,
+                opacity: .5, // Opacity of modal background
+                in_duration: 300, // Transition in duration
+                out_duration: 200, // Transition out duration
+                ready: function() {  }, // Callback for Modal open
+                complete: function() {  } // Callback for Modal close
+              }
+            );
+          });
+        })
+        .catch(function (res) {
+          Toast.show_toast('fail', res.data.message || 'Не удалось найти друзей пользователя.');
+        });
+      };
+
       // Fetch User Meetings
-      $scope.fetch_owner_meetings = function (owner) {
-        Meeting.fetch_owner_meetings(owner)
+      $scope.fetch_meetings = function (owner) {
+        Meeting.fetch_meetings(owner)
         .then(function (res) {
           $scope.meetings = res.data;
           // UI
-          // Initialize meetings slider
           $timeout(function () {
             $(document).ready(function(){
+              // Initialize meetings slider
               $('.slider-meetings').slider({full_width: true, indicators : false, interval : 1, height : 200});
               $('.slider-meetings').slider('pause');
             });
@@ -135,6 +175,10 @@
 
       $scope.next_meeting = function () {
         $('.slider-meetings').slider('next');
+      };
+
+      $scope.close_friend_list = function () {
+        $('#friendlist-modal').closeModal();
       };
 
       $scope.get_profile();

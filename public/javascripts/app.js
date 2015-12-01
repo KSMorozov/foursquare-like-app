@@ -166,16 +166,23 @@
   angular.module('FourApp')
     .controller('Login', function ($scope, $auth, $state, Toast) {
 
+      function close_modal() {
+        $timeout(function () {
+          $('#login-modal').closeModal();
+        }, 0, false);
+      }
+
       // Signup Action
       $scope.signup = function () {
         $auth.signup($scope.user)
         .then(function (res) {
           $auth.setToken(res);
+          close_modal();
           $state.go('home');
           Toast.show_toast('success', 'Вы Успешно зарегистрировались');
         })
         .catch(function (res) {
-          $('#login-modal').closeModal();
+          close_modal();
           $state.go($state.current, {}, {reload: true});
           Toast.show_toast('fail', 'Вы не смогли зарегистрироваться');
         });
@@ -185,11 +192,12 @@
       $scope.signin = function () {
         $auth.login($scope.user)
         .then(function (res) {
+          close_modal();
           $state.go('home');
           Toast.show_toast('success', 'Вы Успешно вошли');
         })
         .catch(function (res) {
-          $('#login-modal').closeModal();
+          close_modal();
           $state.go($state.current, {}, {reload: true});
           Toast.show_toast('fail', 'Вы не смогли войти');
         });
@@ -198,11 +206,12 @@
       $scope.authenticate = function (provider) {
         $auth.authenticate(provider)
         .then(function () {
+          close_modal();
           $state.go('home');
           Toast.show_toast('success', 'Вы Успешно вошли');
         })
         .catch(function () {
-          $('#login-modal').closeModal();
+          close_modal();
           $state.go($state.current, {}, {reload: true});
           Toast.show_toast('fail', 'Вы не смогли войти');
         });
@@ -217,7 +226,8 @@
             out_duration: 200, // Transition out duration
             ready: function() { $('ul.tabs').tabs(); }, // Callback for Modal open
             complete: function() {  } // Callback for Modal close
-          });
+          }
+        );
       });
 
     });
@@ -237,7 +247,8 @@
 
 (function () {
   angular.module('FourApp')
-    .controller('Profile', function ($scope, $auth, $stateParams, $timeout, Toast, Account, Meeting, Comment) {
+    .controller('Profile', function ($scope, $auth, $stateParams, $timeout,
+                                     Toast, Account, Meeting, Comment, User) {
       $scope.comment = '';
 
       // Get User Profile From the Server
@@ -245,15 +256,33 @@
         Account.get_profile()
         .then(function (res) {
           $scope.user = res.data;
-          $scope.fetch_owner_meetings(res.data._id);
+          $scope.fetch_meetings(res.data._id);
           $scope.fetch_comments(res.data._id);
+
+          // UI
           $timeout(function () {
             $(document).ready(function() {
               // bio text-area initialization
               $('textarea#bio').characterCounter();
 
+              // fix jquery input cancer info textarea
+              $('textarea#bio').on('change', function () {
+                $scope.user.bio = $(this).val();
+                $scope.$apply();
+              });
+
+              // fix jquery input cancer comment textarea
+              $('textarea#comment').on('change', function () {
+                $scope.comment = $(this).val();
+                $scope.$apply();
+              });
+
               // sex picker select initialization
               $('#sex').material_select();
+              $('#sex').on('change', function () {
+                $scope.user.sex = $(this).val();
+                $scope.$apply();
+              });
 
               // datepicker initialization
               $('.datepicker').pickadate({
@@ -298,15 +327,36 @@
         });
       };
 
+      $scope.fetch_friend_list = function () {
+        User.fetch_friend_list($scope.user._id)
+        .then(function (res) {
+          $scope.friends = res.data;
+          $(document).ready(function () {
+            $('#friendlist-modal').openModal({
+                dismissible: true,
+                opacity: .5, // Opacity of modal background
+                in_duration: 300, // Transition in duration
+                out_duration: 200, // Transition out duration
+                ready: function() {  }, // Callback for Modal open
+                complete: function() {  } // Callback for Modal close
+              }
+            );
+          });
+        })
+        .catch(function (res) {
+          Toast.show_toast('fail', res.data.message || 'Не удалось найти друзей пользователя.');
+        });
+      };
+
       // Fetch User Meetings
-      $scope.fetch_owner_meetings = function (owner) {
-        Meeting.fetch_owner_meetings(owner)
+      $scope.fetch_meetings = function (owner) {
+        Meeting.fetch_meetings(owner)
         .then(function (res) {
           $scope.meetings = res.data;
           // UI
-          // Initialize meetings slider
           $timeout(function () {
             $(document).ready(function(){
+              // Initialize meetings slider
               $('.slider-meetings').slider({full_width: true, indicators : false, interval : 1, height : 200});
               $('.slider-meetings').slider('pause');
             });
@@ -374,6 +424,10 @@
         $('.slider-meetings').slider('next');
       };
 
+      $scope.close_friend_list = function () {
+        $('#friendlist-modal').closeModal();
+      };
+
       $scope.get_profile();
 
     });
@@ -419,7 +473,8 @@
 
 (function () {
   angular.module('FourApp')
-    .controller('Single-User', function ($scope, $stateParams, $timeout, Toast, User, Meeting, Comment) {
+    .controller('Single-User', function ($scope, $stateParams, $timeout, Toast,
+                                         User, Meeting, Comment) {
       $scope.comment = '';
 
       // fetch user profile info
@@ -427,6 +482,22 @@
         User.fetch_user($stateParams.id)
         .then(function (res) {
           $scope.user = res.data;
+
+          // UI
+          $timeout(function () {
+            $(document).ready(function(){
+              // Initialize meetings slider
+              $('.slider-meetings').slider({full_width: true, indicators : false, interval : 1, height : 200});
+              $('.slider-meetings').slider('pause');
+
+              // fix jquery input cancer comment textarea
+              $('textarea#comment').on('change', function () {
+                $scope.comment = $(this).val();
+                $scope.$apply();
+              });
+            });
+          }, 0, false);
+
         })
         .catch(function (res) {
           Toast.show_toast('fail', 'Мы не смогли найти пользователя.');
@@ -444,18 +515,44 @@
         });
       };
 
+      $scope.fetch_friend_list = function () {
+        User.fetch_friend_list($stateParams.id)
+        .then(function (res) {
+          $scope.friends = res.data;
+          $(document).ready(function () {
+            $('#friendlist-modal').openModal({
+                dismissible: true,
+                opacity: .5, // Opacity of modal background
+                in_duration: 300, // Transition in duration
+                out_duration: 200, // Transition out duration
+                ready: function() {  }, // Callback for Modal open
+                complete: function() {  } // Callback for Modal close
+              }
+            );
+          });
+        })
+        .catch(function (res) {
+          Toast.show_toast('fail', res.data.message || 'Не удалось найти друзей пользователя.');
+        });
+      };
+
       // fetch user's meetings
-      $scope.fetch_owner_meetings = function () {
-        Meeting.fetch_owner_meetings($stateParams.id)
+      $scope.fetch_meetings = function () {
+        Meeting.fetch_meetings($stateParams.id)
         .then(function (res) {
           $scope.meetings = res.data;
 
           // UI
-          // Initialize meetings slider
           $timeout(function () {
             $(document).ready(function(){
               $('.slider-meetings').slider({full_width: true, indicators : false, interval : 1, height : 200});
               $('.slider-meetings').slider('pause');
+              // Initialize meetings slider
+              // fix jquery input cancer comment textarea
+              $('textarea#comment').on('change', function () {
+                $scope.comment = $(this).val();
+                $scope.$apply();
+              });
             });
           }, 0, false);
 
@@ -476,7 +573,6 @@
       };
 
       $scope.leave_comment = function () {
-        console.log(typeof $scope.comment);
         Comment.leave_comment($stateParams.id, $scope.comment)
         .then(function (res) {
           Toast.show_toast('success', res.data.message || 'Вы успешно оставили комментарий.');
@@ -489,15 +585,23 @@
       };
 
       $scope.previous_meeting = function () {
-        $('.slider-meetings').slider('prev');
+        $timeout(function () {
+          $('.slider-meetings').slider('prev');
+        }, 0, false);
       };
 
       $scope.next_meeting = function () {
-        $('.slider-meetings').slider('next');
+        $timeout(function () {
+          $('.slider-meetings').slider('next');
+        }, 0, false);
       };
 
-      $scope.fetch_owner_meetings();
+      $scope.close_friend_list = function () {
+        $('#friendlist-modal').closeModal();
+      };
+
       $scope.fetch_user();
+      $scope.fetch_meetings();
       $scope.fetch_comments();
     });
 })();
@@ -549,8 +653,8 @@ angular.module('FourApp')
 angular.module('FourApp')
   .factory('Meeting', function ($http) {
     return {
-      fetch_owner_meetings : function (owner) {
-        return $http.get('/api/meetings/owner', { params : { owner : owner } });
+      fetch_meetings : function (user) {
+        return $http.get('/api/meetings/owner', { params : { owner : user } });
       }
     }
   });
@@ -577,6 +681,9 @@ angular.module('FourApp')
       },
       follow_user : function (id) {
         return $http.post('/api/users/friend', { id : id });
+      },
+      fetch_friend_list : function (id) {
+        return $http.get('/api/users/friends', { params : { id : id } });
       }
     }
   });

@@ -1,22 +1,21 @@
+<!-- User Card -->
 <article class="row" ng-if="user" style="padding-top: 1rem;">
-  <!-- Card -->
   <div class="custom-card col s12 grey lighten-4">
     <div class="row">
       <!-- Main Card Content -->
       <div class="col s12 m4 l3 image-card" style="padding:0;">
         <!-- User Avatar -->
-        <img class="responsive-img" style="z-index:0;"
+        <img class="responsive-img" style="min-width:100%;z-index:0;"
              ng-src="{{user.picture || 'http://i.imgur.com/bNmfur9.jpg'}}"/>
         <!-- User Actions -->
         <!-- Friends Amount -->
         <div class="col s12" style="z-index:1;">
-          <!-- TODO: link to friends list ??? -->
-          <a class="col s12">
+          <!-- Show Friend List -->
+          <a class="col s12" ng-click="fetch_friend_list()">
             <span class="link-focus grey-text darken-4 light-text">{{'Друзья(' + user.friends.length + ')'}}</span>
           </a>
         </div>
       </div>
-
       <!-- User Info form -->
       <div class="col s12 m8 l9 grey lighten-4">
         <form class="col s12">
@@ -34,7 +33,6 @@
               <label for="city" ng-class="{ 'active' : user.city }">Имя</label>
             </div>
           </div>
-
           <!-- User Sex -->
           <div class="row">
             <div class="input-field col s12">
@@ -46,7 +44,6 @@
               <label ng-class="{ 'active' : user.sex }">Пол</label>
             </div>
           </div>
-
           <!-- User BirthDay -->
           <div class="row">
             <div class="input-field col s12">
@@ -54,7 +51,6 @@
               <label for="date" ng-class="{'active' : user.date}">Дата Рождения</label>
             </div>
           </div>
-
           <!-- User Bio -->
           <div class="row">
             <div class="input-field col s12">
@@ -63,7 +59,7 @@
               <label for="bio" ng-class="{active : user.info}">О Себе</label>
             </div>
           </div>
-
+          <!-- Update Profile Action -->
           <div class="row">
             <div class="col s12">
               <a class="col s8 offset-s2 m6 offset-m3 l4 offset-l4 btn hoverable waves-effect waves-light animated orange"
@@ -74,25 +70,13 @@
           </div>
         </form>
       </div>
-
-      <!-- <div class="col s12 m8 l9">
-        <div class="grey lighten-4">
-          <a ui-sref="user({id: user._id})">
-            <span class="link-focus title black-text" style="margin:0;" ng-bind="user.displayName"></span>
-          </a>
-          <p class="grey-text darken-4" style="margin:0;" ng-bind="user.city"></p>
-          <p class="black-text" style="margin-bottom:0;">О себе:</p>
-          <p class="flow-text italic-text grey-text darken-4 light-text" style="margin:0;" ng-bind="user.info"></p>
-          <p class="black-text">Интересы:</p>
-        </div>
-      </div> -->
     </div>
   </div>
 </article>
 
+<!-- TODO: Achievements Card -->
 <article class="row" ng-if="achievements">
-  <!-- TODO:  Achievements -->
-  <div class="card-panel grey lighten-4 z-depth-1">
+  <div class="card-panel col s12 grey lighten-4 z-depth-1">
     <div class="row">
       <div class="col s6">
         <p class="left black-text">{{"Достижения " + user.displayName + ":"}}</p>
@@ -104,8 +88,9 @@
   </div>
 </article>
 
+
+<!-- Meetings Card -->
 <article class="row" ng-if="meetings">
-  <!-- Meetings -->
   <div class="custom-card col s12 grey lighten-4">
     <div class="row">
       <div class="col s12">
@@ -130,31 +115,36 @@
         </div>
       </div>
       <a class="col s1 left transparent"
-         ng-click="next_meeting()"><i class="link-focus left mdi mdi-skip-next" style="color:grey;font-size: 30px;"></i></a>
+         ng-click="next_meeting()"><i class="link-focus left mdi mdi-skip-next" style="color:grey;font-size: 30px;"></i>
+       </a>
     </div>
   </div>
 </article>
 
-  <!-- TODO: Attended Places-->
-  <div class="custom-card grey lighten-4 z-depth-1" ng-if="places">
+<!-- TODO: Attended Places Card-->
+<article class="row" ng-if="places">
+  <div class="custom-card col s12 grey lighten-4 z-depth-1" ng-if="places">
     <div class="row">
       <div class="col s12">
         <a href="/" class="left black-text"><p>{{"Посетил "}}</p></a>
       </div>
     </div>
   </div>
+</article>
 
-  <!-- TODO: Photos -->
-  <div class="custom-card grey lighten-4 z-depth-1" ng-if="photos">
+<!-- TODO: Photos Card -->
+<article class="row" ng-if="photos">
+  <div class="custom-card col s12 grey lighten-4 z-depth-1" ng-if="photos">
     <div class="row">
       <div class="col s12">
         <a href="/" class="left black-text"><p>{{"Все фотографии "}}</p></a>
       </div>
     </div>
   </div>
+</article>
 
+<!-- Comments Card -->
 <article class="row" ng-if="comments.length" style="padding-bottom:0;margin-bottom:0;">
-  <!-- Comments -->
   <div>
     <ul class="collection grey lighten-4">
       <div class="row" style="margin:auto 1px!important;">
@@ -177,13 +167,13 @@
   </div>
 </article>
 
-<article class="row" ng-if="user">
-  <!-- New Comment -->
+<!-- New Comment Card -->
+<article class="row" ng-show="user">
   <div class="custom-card col s12 grey lighten-4">
     <div class="row">
       <div class="input-field col s12">
-        <textarea id="message_input" class="materialize-textarea" ng-model="comment"></textarea>
-        <label for="message_input">Новый Комментарий:</label>
+        <textarea id="comment" class="materialize-textarea" ng-model="comment"></textarea>
+        <label for="comment">Новый Комментарий:</label>
       </div>
       <div class="col s12">
         <a class="col s8 offset-s2 m6 offset-m3 l4 offset-l4 btn"
@@ -196,3 +186,16 @@
     </div>
   </div>
 </article>
+
+<!-- Friend List Modal -->
+<div id="friendlist-modal" class="modal grey lighten-4 z-depth-1"
+     style="max-width:550px;max-height:100%;">
+  <div class="modal-content">
+    <ul class="collection grey lighten-3" ng-if="friends">
+      <li class="collection-item avatar grey lighten-3 valign-wrapper" ng-repeat="friend in friends">
+        <img class="circle responsive-img" ng-src="{{friend.picture || 'http://i.imgur.com/bNmfur9.jpg'}}" />
+        <a ng-click="close_friend_list()" ui-sref="user({id: friend.id})"><span class="black-text title link-focus" ng-bind="friend.name"></span></a>
+      </li>
+    </ul>
+  </div>
+</div>
