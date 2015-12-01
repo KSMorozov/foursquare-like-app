@@ -18,26 +18,26 @@
 
     <title>Кто Где</title>
   </head>
-  <body ng-app="FourApp">
+  <body ng-app="FourApp" ng-controller="App">
 
     <!--App Header-->
-    <header ng-controller="MainNavigation" class="grey lighten-5">
+    <header ng-controller="MainNavigation" class="grey lighten-4">
       <div class="container">
         <div class="row" style="padding-bottom:0;margin-bottom:0;">
 
           <!--Logo and stuff-->
-          <div class="col s2 orange header-section">
+          <div class="col s2 orange header-section z-depth-1">
             <h4 ui-sref="home" class="white-text logo-text center-align" style='cursor:pointer'>Кто Где</h4>
             <p class="white-text logo-text center-align"><small>Афиша мест и событий</small></p>
           </div>
 
           <!--Toolbar ?-->
-          <div class="col s8 grey lighten-2 header-section">
+          <div class="col s8 transparent header-section">
 
           </div>
 
           <!--Sign Actions-->
-          <div class="col s2 orange header-section valign-wrapper">
+          <div class="col s2 orange header-section valign-wrapper z-depth-1">
             <a ui-sref="login" ng-if="!isAuthenticated()"
                class="col s12 center-align">
                <span class="text-underline white-text light-text">Войти</span>
@@ -57,11 +57,53 @@
         <div class="row" style='margin-bottom:0px;'>
 
           <!-- Left Side Navigation Menu -->
-          <div class="col s2 grey lighten-5">
-            <div class="collection menu-collection grey lighten-5">
-              <a ui-sref="profile" class="waves-effect waves-light collection-item menu-collection-item animated grey lighten-5 grey-text lighten-3 center-align ">Мой Кабинет</a>
-              <a ui-sref="friends" class="waves-effect waves-light collection-item menu-collection-item animated grey lighten-5 grey-text lighten-3 center-align">Друзья</a>
-              <a ui-sref="chats" class="waves-effect waves-light collection-item menu-collection-item animated grey lighten-5 grey-text lighten-3 center-align">Сообщения</a>
+          <div class="col s2 grey lighten-5" ng-cloak>
+            <!-- {{menu_hover}} -->
+            <div class="collection menu-collection transparent col s12" style="min-height:100vh;">
+              <a ui-sref="profile" class="hoverable waves-effect waves-light collection-item
+                 menu-collection-item animated center-align z-depth-1"
+                 ng-class="{
+                   'orange white-text' : menu_hover === 'profile',
+                   'grey lighten-4 grey-text text-lighten-1' : menu_hover !== 'profile' && !$state.is('profile'),
+                   'orange lighten-1 white-text' : menu_hover !== 'profile' && $state.is('profile'),
+                 }"
+                 ng-mouseover="menu_hover='profile'"
+                 ng-mouseleave="menu_hover=''">
+                 <span>Мой Кабинет</span>
+              </a>
+              <a ui-sref="friends" class="hoverable waves-effect waves-light collection-item
+                 menu-collection-item animated center-align z-depth-1"
+                 ng-class="{
+                   'orange white-text' : menu_hover === 'friends',
+                   'grey lighten-4 grey-text text-lighten-1' : menu_hover !== 'friends' && !$state.is('friends'),
+                   'orange lighten-1 white-text' : menu_hover !== 'friends' && $state.is('friends'),
+                 }"
+                 ng-mouseover="menu_hover='friends'"
+                 ng-mouseleave="menu_hover=''">
+                 <span>Друзья</span>
+               </a>
+              <a ui-sref="chats" class="hoverable waves-effect waves-light collection-item
+                 menu-collection-item animated center-align z-depth-1"
+                 ng-class="{
+                   'orange white-text' : menu_hover === 'chats',
+                   'grey lighten-4 grey-text text-lighten-1' : menu_hover !== 'chats' && !$state.is('chats'),
+                   'orange lighten-1 white-text' : menu_hover !== 'chats' && $state.is('chats'),
+                 }"
+                 ng-mouseover="menu_hover='chats'"
+                 ng-mouseleave="menu_hover=''">
+                 <span>Сообщения</span>
+               </a>
+              <!-- <a ui-sref="my-meetings" class="hoverable waves-effect waves-light collection-item
+                 menu-collection-item animated center-align z-depth-1"
+                 ng-class="{
+                   'orange white-text' : menu_hover === 'my-meetings',
+                   'grey lighten-4 grey-text text-lighten-1' : menu_hover !== 'my-meetings' && !$state.is('my-meetings'),
+                   'orange lighten-1 white-text' : menu_hover !== 'my-meetings' && $state.is('my-meetings'),
+                 }"
+                 ng-mouseover="menu_hover='my-meetings'"
+                 ng-mouseleave="menu_hover=''">
+                 <span>Мои Встречи</span>
+               </a> -->
             </div>
           </div>
 
@@ -81,7 +123,7 @@
 
     <!--App Footer-->
     <footer class="page-footer grey lighten-4" style='margin-top:0px;'>
-      <div class="container grey lighten-4">
+      <div class="container transparent">
         <div class="row">
           <div class="col l6 s12">
             <h5 class="grey-text text-darken-1">Footer Content</h5>
@@ -98,8 +140,8 @@
           </div>
         </div>
       </div>
-      <div class="footer-copyright grey lighten-4">
-        <div class="container grey lighten-4">
+      <div class="footer-copyright transparent">
+        <div class="container transparent">
         <span class="grey-text text-lighten-1">© 2014 Copyright Text</span>
         <a class="grey-text right" href="#!">More Links</a>
         </div>
