@@ -440,6 +440,7 @@
   angular.module('FourApp')
     .controller('Single-Chat', function ($scope, $stateParams, Chat, Toast) {
       var message = '';
+      $scope.show = false;
 
       var user   = $stateParams.id;
       var amount = 20;
@@ -449,20 +450,19 @@
         Chat.fetch_chat(user, amount, skip)
         .then(function (res) {
           $scope.chat = res.data;
-          console.log(res.data);
+          $scope.show = true;
         })
         .catch(function (res) {
           Toast.show_toast('fail', res.data.message || 'Не удалось получить сообщения.');
-          console.log(res.data);
+          $scope.show = true;
         });
       };
 
       $scope.send_message = function () {
-        console.log($scope.message);
         Chat.send_message($stateParams.id, $scope.message)
         .then(function (res) {
           $scope.chat.push(res.data);
-          console.log(res.data);
+          Toast.show_toast('success', res.data.message || 'Успешно отправили сообщение.');
           $scope.message = '';
         })
         .catch(function (res) {

@@ -1,9 +1,9 @@
 <!-- User Card -->
-<article class="row" ng-if="user" style="padding-top: 1rem;">
+<article class="row z-depth-1" ng-if="user" style="margin-top: 1rem;">
   <div class="custom-card col s12 grey lighten-4">
     <div class="row">
       <!-- Main Card Content -->
-      <div class="col s12 m4 l3 image-card" style="padding:0;">
+      <div class="col s12 m4 l3" style="padding:0;">
         <!-- User Avatar -->
         <img class="responsive-img" style="min-width:100%;z-index:0;"
              ng-src="{{user.picture || 'http://i.imgur.com/bNmfur9.jpg'}}"/>
@@ -46,7 +46,7 @@
 </article>
 
 <!-- TODO: Achievements Card -->
-<article class="row" ng-if="achievements">
+<article class="row z-depth-1" ng-if="achievements">
   <div class="card-panel col s12 grey lighten-4 z-depth-1">
     <div class="row">
       <div class="col s6">
@@ -60,7 +60,7 @@
 </article>
 
 <!-- Meetings Card -->
-<article class="row" ng-if="meetings">
+<article class="row z-depth-1" ng-if="meetings">
   <div class="custom-card col s12 grey lighten-4">
     <div class="row">
       <div class="col s12">
@@ -91,7 +91,7 @@
 </article>
 
 <!-- TODO: Attended Places Card-->
-<article class="row" ng-if="places">
+<article class="row z-depth-1" ng-if="places">
   <div class="custom-card col s12 grey lighten-4 z-depth-1" ng-if="places">
     <div class="row">
       <div class="col s12">
@@ -113,9 +113,9 @@
 </article>
 
 <!-- Comments Card -->
-<article class="row" ng-if="comments.length">
+<article class="row z-depth-1" ng-if="comments.length">
   <div>
-    <ul class="collection grey lighten-4">
+    <ul class="collection grey lighten-4" style="margin-bottom:0;">
       <div class="row" style="margin:auto 1px!important;">
         <div class="col s12">
           <p class="left black-text">{{"Отзывы:"}}</p>
@@ -132,7 +132,7 @@
 </article>
 
 <!-- New Comment Card -->
-<article class="row" ng-hide="!user">
+<article class="row z-depth-1" ng-hide="!user">
   <div class="custom-card col s12 grey lighten-4">
     <div class="row">
       <div class="input-field col s12">
