@@ -1249,6 +1249,7 @@
         Comment.fetch_comments($stateParams.id)
         .then(function (res) {
           $scope.comments = res.data;
+          console.log(res.data);
         })
         .catch(function (res) {
           Toast.show_toast('fail', res.data.message || 'Не удалось найти комментарии.');
