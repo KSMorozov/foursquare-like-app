@@ -367,3 +367,7 @@ button.picker__today:focus {
     background-color: #ffa726;
     color: white;
 }
+
+.container {
+	width: 85%;
+}

@@ -44,7 +44,8 @@
             </a>
           </div>
           <div class="col s4">
-            <a class="col s12 hoverable white waves-effect waves-light btn">
+            <a class="col s12 hoverable white waves-effect waves-light btn"
+               ng-click="fetch_friend_list()">
               <span class="center-align grey-text text-darken-3">Предложить</span>
             </a>
           </div>
@@ -59,3 +60,19 @@
     </div>
   </div>
 </article>
+
+<!-- Friend List Modal -->
+<div id="friendlist-modal" class="modal grey lighten-4 z-depth-1"
+     style="max-width:550px;max-height:100%;">
+  <ul class="collection grey lighten-3" ng-if="friends" style="margin:0 !important;">
+    <li class="collection-item avatar grey lighten-3 valign-wrapper" ng-repeat="friend in friends" style="min-height: 70px !important;">
+      <img class="circle responsive-img" ng-src="{{friend.picture || 'http://i.imgur.com/bNmfur9.jpg'}}" />
+      <a ng-click="close_friend_list()" ui-sref="user({id: friend.id})"><span class="black-text title link-focus" ng-bind="friend.name"></span></a>
+      <p class="secondary-content" style="padding-top:7px;">
+        <input type="checkbox" class="filled-in" id="item{{friend.id}}"
+                ng-click="select_friend(friend.id)" ng-checked="is_checked_friend(friend.id)"/>
+        <label for="item{{friend.id}}"></label>
+      </p>
+    </li>
+  </ul>
+</div>
