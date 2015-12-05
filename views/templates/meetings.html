@@ -37,7 +37,10 @@
         </div>
         <div class="row">
           <div class="col s12">
-            <p class="grey-text text-darken-2" style="margin:0;" ng-bind="meeting.owner_name | date"></p>
+            <a ui-sref="user({id: meeting.owner_id})">
+              <!-- <span class="link-focus title black-text" style="margin:0;" ng-bind="user.displayName"></span> -->
+              <p class="link-focus grey-text text-darken-2" style="margin:0;" ng-bind="meeting.owner_name | date"></p>
+            </a>
             <p class="grey-text text-darken-2" style="margin:0;" ng-bind="meeting.date | date"></p>
             <p class="light-text grey-text text-darken-3" style="margin:0;" ng-bind="meeting.address"></p>
             <!-- <p class="light-text grey-text text-darken-4" style="margin-bottom:0;" ng-bind="meeting.description"></p> -->
