@@ -1,0 +1,144 @@
+<article class="row z-depth-1" style="margin-top: 1rem;">
+  <div class="custom-card col s12 grey lighten-4">
+    <div class="row" style="margin-bottom:0px;">
+      <div class="input-field col s12">
+        <p class="grey-text text-darken-4" style="margin:0;">Назовите встречу</p>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom:0px;">
+      <div class="col s10 offset-s1" >
+        <div class="input-field col s12" style="margin-top: 0;">
+          <input required placeholder="Название встречи" id="title" type="text" class="grey-text text-darken-4 validate"
+                 ng-model="meeting.title">
+          <!-- <label for="title" class="active"></label> -->
+        </div>
+      </div>
+    </div>
+    <!-- Meeting date and stuff -->
+    <div class="row" style="margin-bottom:0px;">
+      <div class="input-field col s12">
+        <p class="grey-text text-darken-4" style="margin:0;">Выберите Дату</p>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom:0px;">
+      <div class="col s10 offset-s1" >
+        <div class="input-field col s6" style="margin-top: 0;">
+          <input required placeholder="Дата Встречи" type="date", class="grey-text text-darken-4 light-text datepicker col s12",
+                 id="date">
+        </div>
+        <!-- TODO: Time -->
+        <!-- <div class="input-field col s4">
+          <input type="date", class="datepicker col s8 offset-s2">
+        </div> -->
+        <div class="input-field col s6" style="margin-top: -1px;">
+          <select id="private" class="grey-text text-darken-4 light-text col s12">
+            <option value="" disabled selected>Приватная?</option>
+            <option value="false">Нет</option>
+            <option value="true">Да</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meeting Location and event name -->
+    <div class="row" style="margin-bottom:15px;">
+      <div class="input-field col s12">
+        <p class="grey-text text-darken-4" style="margin:0;">Куда хотите пойти?</p>
+      </div>
+    </div>
+    <!-- Location Options -->
+    <div class="row"  style="margin-bottom:10px;">
+      <div class="col s10 offset-s1">
+        <div class="col s3">
+          <a class="col s12 z-depth-1 hoverable grey lighten-5 grey-text text-darken-2 waves-effect waves-grey btn"
+             ng-click="set_anywhere()">
+            <span>Любое</span>
+          </a>
+        </div>
+        <div class="col s3">
+          <a class="col s12 z-depth-1 hoverable grey lighten-5 grey-text text-darken-2 waves-effect waves-grey btn"
+             ng-click="set_onmap()">
+            <span>Карта</span>
+          </a>
+        </div>
+        <div class="col s3">
+          <a class="col s12 z-depth-1 hoverable grey lighten-5 grey-text text-darken-2 waves-effect waves-grey btn"
+             ng-click="set_address()">
+            <span>Адрес</span>
+          </a>
+        </div>
+        <div class="col s3">
+          <a class="col s12 z-depth-1 hoverable grey lighten-5 grey-text text-darken-2 waves-effect waves-grey btn"
+             ng-click="set_nearby()">
+            <span>Рядом</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- IF meeting location set by exact Meeting Address -->
+    <div class="row" style="margin-bottom:0px;" ng-show="choice === 'address'">
+      <div class="col s10 offset-s1">
+        <div class="input-field col s12">
+          <input placeholder="Адрес Встречи" id="address" type="text" class="grey-text text-darken-4 validate"
+                 ng-model="address">
+        </div>
+      </div>
+    </div>
+
+    <!-- Optional Event Name -->
+    <div class="row" style="margin-bottom:0px;">
+      <div class="col s10 offset-s1">
+        <div class="input-field col s12">
+          <input placeholder="Название события" id="event_name" type="text" class="grey-text text-darken-4 validate"
+                 ng-model="meeting.event_name">
+        </div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="row" style="margin-bottom:0px;">
+      <div class="col s10 offset-s1">
+        <div class="col s12">
+          <textarea required placeholder="Описание Встречи" id="description" class="materialize-textarea" ng-model="meeting.description"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="center-wrapper">
+        <div class="col s12 center">
+          <a ng-repeat="category in categories"
+             ng-click="select_category(category.name)">
+            <img class="z-depth-1 hoverable grey responsive-img"
+                 style="width:45px;height:45px;margin:2px; border-radius:100%;"
+                 ng-src="{{'images/category_icons/' + category.name + '.png'}}"/>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col s10 offset-s1" ng-repeat="category in categories" ng-show="is_selected_category(category.name)">
+        <p class="col m6" ng-repeat="tag in category.tags" style="margin:0;margin-top:2px;">
+          <input class="filled-in" type="checkbox" id="{{tag}}" ng-click="check_tag(tag, category.name)"
+                  ng-checked="is_checked_tag(tag)"/>
+          <label for="{{tag}}">{{tag}}</label>
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col s4 offset-s4">
+        <div class="col s12">
+          <a class="col s12 z-depth-1 light-text center-align btn"
+             ng-class="valid ? 'hoverable waves-effect waves-light white-text animated orange lighten-1' : 'disabled disabled-cursor'"
+             ng-click="!valid || new_meeting()">
+            <span>Создать</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</article>

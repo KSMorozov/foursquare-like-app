@@ -41,7 +41,7 @@ router.get('/messages/chats', limit, function (req, res) {
           { to : me._id, from : friend },
           { to : friend, from: me._id }
         ]
-      }).sort('-date').limit(amount).exec(function (err, last_message) {
+      }).sort('+date').limit(amount).exec(function (err, last_message) {
         if (err) callback(err);
         User.findById(friend, function (err, friend) {
           if (err) callback(err);

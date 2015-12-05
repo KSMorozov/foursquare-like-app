@@ -1,33 +1,66 @@
+var geocoder = require('node-geocoder')('google', 'https', { language : 'RU' });
 var User     = require('../../models/user');
 var limit    = require('../middleware/limit');
 var Meeting  = require('../../models/meeting');
 var express  = require('express');
-var router   = express.Router();
 var async    = require('async');
+var router   = express.Router();
 
 // create meeting with provided data.
 router.post('/meetings', limit, function (req, res) {
   var data = req.body;
-  var meeting = new Meeting(data);
-  meeting.owner_id = req.user;
-  meeting.attendees.push(req.user);
-  meeting.save(function (err) {
-    if (err) return res.status(500).send({ message : 'Вы не смогли создать встречу.' });
-    res.status(200).send({ message : 'Вы успешно создали встречу.', meeting_id : meeting._id });
+
+  var meeting = new Meeting({
+    tags : req.body.tags,
+    categories : req.body.categories,
+    title : req.body.title,
+    date : new Date(req.body.date),
+    private : req.body.private === 'true',
+    place : req.body.place,
+    event_name : req.body.event_name,
+    description : req.body.description,
+    owner_id : req.user,
+    attendees : [req.user]
   });
+
+  geocoder.reverse({ lon : meeting.place[1], lat : meeting.place[0] })
+  .then(function (result) {
+    var address = [result[0].city, result[0].streetName, result[0].streetNumber];
+    meeting.address = address.join(', ');
+    meeting.save(function (err) {
+      if (err) return res.status(500).send({ message : 'Вы не смогли создать встречу.' });
+      res.status(200).send({ message : 'Вы успешно создали встречу.', id : meeting._id });
+    });
+  })
+  .catch(function (err) {
+    if (err) return res.status(500).send({ message : 'Вы не смогли создать встречу.' });
+  });
+
+  // var meeting = new Meeting(data);
+  // meeting.owner_id = req.user;
+  // meeting.attendees.push(req.user);
+  // geocoder.geocode(meeting.place)
+  // .then(function (res) {
+  //   console.log(res);
+  //   meeting.save(function (err) {
+  //     if (err) return res.status(500).send({ message : 'Вы не смогли создать встречу.' });
+  //     res.status(200).send({ message : 'Вы успешно создали встречу.', meeting_id : meeting._id });
+  //   });
+  // });
 });
 
 // find and send meetings according to search filters.
 router.get('/meetings', limit, function (req, res) {
-  var date  = req.query.date_filter,
-      tags  = req.query.tags_filter,
-      loc   = req.query.location_filter,
+  var date  = req.query.date,
+      tags  = typeof req.query.tags === 'string' ? [req.query.tags] : req.query.tags,
+      loc   = req.query.location,
       query = {
         date : { $gt : new Date() }
       };
+  var radius = req.query.location_type === 'city' ? 2 : .15;
   if (date) query.date   = new Date(date);
   if (tags) query.tags   = { $in : tags };
-  if (loc)  query.place  = { $geoWithin : { $center : [ loc.map(function (e) { return parseFloat(e); }), .15 ] } };
+  if (loc)  query.place  = { $geoWithin : { $center : [ loc.map(function (e) { return parseFloat(e); }), radius ] } };
 
   Meeting.find(query, function (err, meetings) {
     if (err) return res.status(500).send({ message : 'Произошла ошибка :(.' });
@@ -68,7 +101,7 @@ router.get('/meetings/single', limit, function (req, res) {
 router.get('/meetings/owner', limit, function (req, res) {
   var id = req.query.owner;
   if (!id) return res.status(500).send({ message : 'Не предоставлена информация о пользователе.' });
-  Meeting.find({ owner_id : id}, function (err, meetings) {
+  Meeting.find({ owner_id : id }, null, { sort: '+date' }, function (err, meetings) {
     if (err) return res.status(500).send({ message : 'Произошла ошибка :(.' });
     res.status(200).send(meetings);
   });
@@ -87,6 +120,21 @@ router.post('/meetings/attend', limit, function (req, res) {
       res.status(200).send({ message : 'Вы успешно откликнулись на встречу.' });
     });
   })
+});
+
+router.delete('/meetings/delete', limit, function (req, res) {
+  var meeting_id = req.query.id;
+  var user_id = req.user;
+  Meeting.findById(meeting_id, function (err, meeting) {
+    if (err) return res.status(500).send({ message : 'Не удалось найти встречу.' });
+    if (!meeting) return res.status(404).send({ message : 'Встреча не существует.' });
+    if (meeting.owner_id.toString() !== req.user) return res.status(500).send({ message : 'Вы не являетесь владельцем встречи.' });;
+
+    Meeting.remove({ _id : meeting_id }, function (err) {
+      if (err) return res.status(500).send({ message : 'Не удалось отменить встречу.' });
+      res.status(200).send({ message : 'Вы успешно отменили встречу.' });
+    });
+  });
 });
 
 module.exports = router;

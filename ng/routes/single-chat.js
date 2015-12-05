@@ -1,6 +1,6 @@
 (function () {
   angular.module('FourApp')
-    .controller('Single-Chat', function ($scope, $stateParams, Chat, Toast) {
+    .controller('Single-Chat', function ($scope, $stateParams, Chat, Toast, Invite) {
       var message = '';
       $scope.show = false;
 
@@ -20,6 +20,17 @@
         });
       };
 
+      $scope.fetch_invites = function (user) {
+        Invite.fetch_invites(user)
+        .then(function (res) {
+          console.log(res);
+          $scope.invites = res.data.invites;
+        })
+        .catch(function (res) {
+          console.log(res);
+        });
+      };
+
       $scope.send_message = function () {
         Chat.send_message($stateParams.id, $scope.message)
         .then(function (res) {
@@ -33,5 +44,6 @@
       };
 
       $scope.fetch_chat(user, amount, skip);
+      $scope.fetch_invites($stateParams.id);
     });
 })();

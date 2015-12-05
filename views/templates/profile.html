@@ -17,7 +17,7 @@
         </div>
       </div>
       <!-- User Info form -->
-      <div class="col s12 m8 l9 grey lighten-4">
+      <div class="col s12 m8 l9">
         <form class="col s12">
           <!-- User Name -->
           <div class="row">
@@ -106,9 +106,9 @@
             <ul class="slides grey lighten-4">
               <li ng-repeat="meeting in meetings | orderBy : '+date'" class="custom-card grey lighten-3">
                 <!-- TODO: Link to single meeting route with title  -->
-                <h5 class="black-text" ng-bind="meeting.title" style="margin:0"></h5>
-                <h5 class="black-text" ng-bind="meeting.date | date"></h5>
-                <p ng-bind="meeting.description" class="light-text italic-text grey-text text-lighten-1"></p>
+                <p class="title col s12 grey-text text-darken-2" style="margin:0;" ng-bind="meeting.title"></p>
+                <p class="title col s12 grey-text text-darken-2" style="margin:0;" ng-bind="meeting.date | date"></p>
+                <p ng-bind="meeting.description" class="col s12 light-text italic-text grey-text text-darken-2"></p>
               </li>
             </ul>
           </div>
@@ -190,12 +190,10 @@
 <!-- Friend List Modal -->
 <div id="friendlist-modal" class="modal grey lighten-4 z-depth-1"
      style="max-width:550px;max-height:100%;">
-  <div class="modal-content">
-    <ul class="collection grey lighten-3" ng-if="friends">
-      <li class="collection-item avatar grey lighten-3 valign-wrapper" ng-repeat="friend in friends">
-        <img class="circle responsive-img" ng-src="{{friend.picture || 'http://i.imgur.com/bNmfur9.jpg'}}" />
-        <a ng-click="close_friend_list()" ui-sref="user({id: friend.id})"><span class="black-text title link-focus" ng-bind="friend.name"></span></a>
-      </li>
-    </ul>
-  </div>
+  <ul class="collection grey lighten-3" ng-if="friends" style="margin:0 !important;">
+    <li class="collection-item avatar grey lighten-3 valign-wrapper" ng-repeat="friend in friends">
+      <img class="circle responsive-img" ng-src="{{friend.picture || 'http://i.imgur.com/bNmfur9.jpg'}}" />
+      <a ng-click="close_friend_list()" ui-sref="user({id: friend.id})"><span class="black-text title link-focus" ng-bind="friend.name"></span></a>
+    </li>
+  </ul>
 </div>

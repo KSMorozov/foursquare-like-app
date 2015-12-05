@@ -47,6 +47,38 @@
             loginRequired: loginRequired
           }
         })
+        .state('my-meetings', {
+          url : '/my-meetings',
+          templateUrl : 'templates/my-meetings.html',
+          controller  : 'MyMeetings',
+          resolve     : {
+            loginRequired: loginRequired
+          }
+        })
+        .state('meetings', {
+          url : '/meetings',
+          templateUrl : 'templates/meetings.html',
+          controller  : 'Meetings',
+          resolve     : {
+            loginRequired: loginRequired
+          }
+        })
+        .state('new-meeting', {
+          url : '/new-meetings',
+          templateUrl : 'templates/new-meeting.html',
+          controller  : 'NewMeeting',
+          resolve     : {
+            loginRequired: loginRequired
+          }
+        })
+        .state('meeting', {
+          url : '/meeting/:id',
+          templateUrl : 'templates/meeting.html',
+          controller  : 'Single-Meeting',
+          resolve     : {
+            loginRequired: loginRequired
+          }
+        })
         .state('login', {
           url : '/login',
           templateUrl  : 'templates/login.html',

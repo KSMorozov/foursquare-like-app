@@ -21,7 +21,7 @@
   <body ng-app="FourApp" ng-controller="App">
 
     <!--App Header-->
-    <header ng-controller="MainNavigation" class="grey lighten-4">
+    <header ng-controller="MainNavigation " class="grey lighten-4" id="top">
       <div class="container">
         <div class="row" style="padding-bottom:0;margin-bottom:0;">
 
@@ -32,8 +32,12 @@
           </div>
 
           <!--Toolbar ?-->
-          <div class="col s8 transparent header-section">
-
+          <div class="col s8 transparent header-section valign-wrapper">
+            <span class="grey-text text-darken-4" ng-if="user_city">
+              <i class="mdi mdi-map-marker" style="color:orange;font-size:16px;"></i>
+              Ваш город:
+              <i class="light-text italic-text orange-text" ng-bind="user_city"></i>
+            </span>
           </div>
 
           <!--Sign Actions-->
@@ -54,10 +58,34 @@
     <!--App Main Content-->
     <main class="grey lighten-5">
       <div class="container">
-        <div class="row" style='margin-bottom:0px;'>
 
+        <div class="row transparent" style="padding-top: 1rem;">
+          <div class="center-wrapper">
+            <div class="col s12 center">
+              <a class="btn-floating btn-large waves-effect waves-light orange darken-1 center"
+                 style="margin: auto 15px;">
+                <i class="mdi mdi-emoticon">События</i>
+              </a>
+              <a ui-sref="meetings"
+                 class="btn-floating btn-large waves-effect waves-light orange darken-1 center"
+                 style="margin: auto 15px;">
+                <i class="mdi mdi-account-multiple">Встречи</i>
+              </a>
+              <a class="btn-floating btn-large waves-effect waves-light orange darken-1 center"
+                 style="margin: auto 15px;">
+                <i class="mdi mdi-map-marker-multiple">Места</i>
+              </a>
+              <a class="btn-floating btn-large waves-effect waves-light orange darken-1 center"
+                 style="margin: auto 15px;">
+                <i class="mdi mdi-worker">Работа</i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style='margin-bottom:0px;'>
           <!-- Left Side Navigation Menu -->
-          <div class="col s2 grey lighten-5" ng-cloak>
+          <div class="col s2 transparent" ng-cloak style="padding:0;">
             <!-- {{menu_hover}} -->
             <div class="collection menu-collection transparent col s12" style="min-height:100vh;">
               <a ui-sref="profile" class="hoverable waves-effect waves-light collection-item
@@ -69,9 +97,9 @@
                  }"
                  ng-mouseover="menu_hover='profile'"
                  ng-mouseleave="menu_hover=''">
-                 <span>Мой Кабинет</span>
+                 <span class="">Мой Кабинет</span>
               </a>
-              <a ui-sref="friends" class="hoverable waves-effect waves-light collection-item
+              <a ui-sref="friends" class=" hoverable waves-effect waves-light collection-item
                  menu-collection-item animated center-align z-depth-1"
                  ng-class="{
                    'orange white-text' : menu_hover === 'friends',
@@ -82,7 +110,7 @@
                  ng-mouseleave="menu_hover=''">
                  <span>Друзья</span>
                </a>
-              <a ui-sref="chats" class="hoverable waves-effect waves-light collection-item
+              <a ui-sref="chats" class=" hoverable waves-effect waves-light collection-item
                  menu-collection-item animated center-align z-depth-1"
                  ng-class="{
                    'orange white-text' : menu_hover === 'chats',
@@ -93,7 +121,7 @@
                  ng-mouseleave="menu_hover=''">
                  <span>Сообщения</span>
                </a>
-              <a ui-sref="my-meetings" class="hoverable waves-effect waves-light collection-item
+              <a ui-sref="my-meetings" class=" hoverable waves-effect waves-light collection-item
                  menu-collection-item animated center-align z-depth-1"
                  ng-class="{
                    'orange white-text' : menu_hover === 'my-meetings',
@@ -108,13 +136,36 @@
           </div>
 
           <!-- Route Main Content -->
-          <div class="col s8" style="padding-top: 0rem;">
+          <div class="col s8 transparent" style="padding-top: 0rem;">
             <ui-view></ui-view>
           </div>
 
           <!-- Additional controls menu -->
-          <div class="col s2">
-            <p class="black-text">menu right</p>
+          <div class="col s2 transparent" style="padding-top: 1rem;" ng-cloak
+               ng-controller="RightNavigation">
+            <div class="z-depth-1 grey lighten-4" id="map"
+                 style="width:100% !important;height:300px; margin-bottom:1rem;">
+
+            </div>
+
+            <div class="grey lighten-4 z-depth-1 custom-card" style="width:100%; margin-bottom:3rem;">
+              <a class="hoverable waves-effect waves-light black-text btn grey lighten-4 col s12 center-align"
+                 style="border-radius:0;white-space:nowrap;font-size:10px;"
+                 ng-click="open_tags_picker()">
+                Выберите интерес
+              </a>
+            </div>
+
+
+            <div class="center-wrapper" style="width:100%; margin-bottom:3rem;">
+                <div class="col s12 center">
+                  <img ng-repeat="category in categories"
+                       class="z-depth-1 hoverable grey responsive-img"
+                       style="width:45px;height:45px;margin:2px; border-radius:100%;"
+                       ng-src="{{'images/category_icons/' + category + '.png'}}"/>
+                </div>
+            </div>
+
           </div>
 
         </div>
@@ -147,6 +198,48 @@
         </div>
       </div>
     </footer>
+
+    <!-- Login Modal -->
+    <div id="tags-modal" class="modal grey lighten-4 z-depth-1" style="max-width:550px;max-height:100%;"
+         ng-controller="Tags">
+
+      <div class="modal-content transparent">
+        <div class="row">
+          <div class="center-wrapper">
+            <div class="col s12 center">
+              <a ng-repeat="category in categories"
+                 ng-click="select_category(category.name)">
+                <img class="z-depth-1 hoverable grey responsive-img"
+                     style="width:45px;height:45px;margin:2px; border-radius:100%;"
+                     ng-src="{{'images/category_icons/' + category.name + '.png'}}"/>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s10 offset-s1" ng-repeat="category in categories" ng-show="is_selected_category(category.name)">
+            <p class="col m6" ng-repeat="tag in category.tags" style="margin:0;margin-top:2px;">
+              <input class="filled-in" type="checkbox" id="{{tag}}" ng-click="check_tag(tag, category.name)"
+                      ng-checked="is_checked_tag(tag)"/>
+              <label for="{{tag}}">{{tag}}</label>
+            </p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s4 offset-s4">
+            <div class="col s12">
+              <a class="modal-close col s12 z-depth-1 light-text center-align btn hoverable waves-effect waves-light white-text animated orange lighten-1"
+                 ng-click="apply_tags(!!meeting.tags.length)">
+                <span>{{meeting.tags.length ? 'Применить' : 'Отменить'}}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
 
     <!--App Scripts-->
     <script type="text/javascript" src="/angular/angular.js"></script>

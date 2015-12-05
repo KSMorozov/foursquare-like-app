@@ -26,6 +26,7 @@
     "moment": "^2.10.6",
     "mongoose": "^4.2.5",
     "morgan": "~1.6.1",
+    "node-geocoder": "^3.5.0",
     "path": "^0.12.7",
     "querystring": "^0.2.0",
     "request": "^2.63.0",

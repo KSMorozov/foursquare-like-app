@@ -5,6 +5,7 @@ var schema   = new mongoose.Schema({
   tags        : [String],
   title       : String,
   place       : [Number],
+  address     : String,
   categories  : [String],
   event_name  : String,
   description : String,

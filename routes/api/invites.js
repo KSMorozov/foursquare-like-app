@@ -38,6 +38,7 @@ router.post('/invites', limit, function (req, res) {
 router.get('/invites', limit, function (req, res) {
   var addresser = req.query.addresser;
   var recipient = req.user;
+  console.log(addresser, recipient);
   Invite.find({to : recipient, from : addresser}, function (err, invites) {
     if (err) return res.status(500).send({ message : 'Не получилось найти приглашения.' });
     if (!invites.length) return res.status(404).send({ message : 'Нету приглашений от данного пользователя.' });

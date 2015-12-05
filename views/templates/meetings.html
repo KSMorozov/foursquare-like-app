@@ -1,0 +1,68 @@
+<article class="row" style="margin-top: 1rem;">
+  <div class="col s6">
+    <div class="right col s3 input-field col s6" style="margin-top: .09rem;">
+      <input required placeholder="Выбрать Дату" type="date" id="date"
+             class="grey-text text-darken-4 light-text datepicker col s12">
+    </div>
+  </div>
+  <div class="col s6">
+    <select id="metro" class="left grey-text text-darken-4 light-text col s6">
+      <option value="" disabled selected>Выбрать метро</option>
+      <option value="Первомайская">Первомайская</option>
+      <option value="Авиамоторная">Авиамоторная</option>
+    </select>
+  </div>
+</article>
+
+<article class="row z-depth-1" style="margin-top: 1rem;"
+         ng-if="meetings" ng-repeat="meeting in meetings | orderBy : '+date'">
+  <div class="custom-card col s12 grey lighten-4">
+    <div class="row" style="height:0px;">
+      <div class="col s12 m4 l3 transparent" style="padding-top:13px;">
+        <img class="responsive-img" style="z-index:0;"
+             ng-src="{{meeting.owner_picture || 'http://i.imgur.com/bNmfur9.jpg'}}"/>
+      </div>
+      <div class="col s12 m8 l9 transparent" style="">
+        <div class="row" style="margin-bottom:0;">
+          <div class="col s6">
+            <a ui-sref="meeting({id: meeting._id})">
+              <span class="link-focus title black-text" style="margin:0;" ng-bind="meeting.title"></span>
+            </a>
+          </div>
+          <div class="col s6" style="padding-top:5px;">
+            <img class="right responsive-img" style="width:30px;height:30px;margin:2px;"
+                  ng-repeat="category in meeting.categories"
+                  ng-src="{{'images/category_icons/' + category + '.png'}}"/>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <p class="grey-text text-darken-2" style="margin:0;" ng-bind="meeting.owner_name | date"></p>
+            <p class="grey-text text-darken-2" style="margin:0;" ng-bind="meeting.date | date"></p>
+            <p class="light-text grey-text text-darken-3" style="margin:0;" ng-bind="meeting.address"></p>
+            <!-- <p class="light-text grey-text text-darken-4" style="margin-bottom:0;" ng-bind="meeting.description"></p> -->
+            <p class="light-text grey-text text-darken-4 grey lighten-2" style="border:1px solid #9e9e9e;margin-bottom:0;" ng-bind="meeting.description">What's good 😜 u candy cane cum guzzler 👅🎄DICKCEMBER🎄 is here and u know what that means ❄ HOE HOE HOE season has arrived 🎅 put on your rudolph pasties 🔴 pop ur peppermint pussy 🍬 and sit by the fireplace with some hot COCKLATE 🍆☕if u want to get RAWED 👉👌 under the mistletoe 🌿 this christmAss 🎁 send this to 15 of your sluttiest elves 👩👨 if u get 0 back 😔 ur an UGLY GRINCH👀 if u get 5 back 😌 ur a SEXY SNOWMAN ⛄⛄if u get 10 back 😘 ur a BAD JINGLE BELL BITCH 🔥🙌 SHARE in 69 😉💦 seconds or you won't be gettin dicked down 😱 in 2❕0❕1❕6</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s4">
+            <a class="col s12 hoverable white waves-effect waves-light btn">
+              <span class="center-align grey-text text-darken-3">Отменить</span>
+            </a>
+          </div>
+          <div class="col s4">
+            <a class="col s12 hoverable white waves-effect waves-light btn">
+              <span class="center-align grey-text text-darken-3">Предложить</span>
+            </a>
+          </div>
+          <div class="col s4">
+            <a class="col s12 hoverable white waves-effect waves-light btn"
+               ng-click="show_on_map(meeting.place, meeting.title)">
+              <span class="center-align grey-text text-darken-3">На карте</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>

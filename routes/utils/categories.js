@@ -140,11 +140,20 @@ router.post('/categories/init', function (req, res) {
 // 2. Return Category object to the client.
 router.get('/categories', function (req, res) {
   var category = req.query.category;
-  // var category = req.param('category');
-  Category.findOne({ name : category }, function (err, category) {
-    if (err) return res.status(404).send({ message : 'No Such Category found.' });
-    res.send(category);
-  });
+  if (!category) {
+    // If category not provided via http request return all of them.
+    Category.find({}, function (err, categories) {
+      if (err) return res.status(500).send({ message : 'Не удалось получить Категории.' });
+      res.status(200).send(categories);
+    });
+  } else {
+    // Otherwise return requested category.
+    Category.findOne({ name : category }, function (err, category) {
+      if (err) return res.status(500).send({ message : 'Не удалось получить Категорию.' });
+      if (!category) return res.status(404).send({ message : 'Запрашиваемая категория не существует.' });
+      res.status(200).send(category);
+    });
+  }
 });
 
 module.exports = router;

@@ -59,6 +59,9 @@
               $('.datepicker').pickadate('picker').on({
                 close : function () {
                   var val = $('.datepicker').pickadate('picker').get('value', { format: 'yyyy-mm-dd' });
+                  $('.datepicker').blur();
+                  $('.picker').blur();
+                  if (!val) return ;
                   $scope.user.date = new Date(val);
                 }
               });
@@ -110,7 +113,7 @@
           $timeout(function () {
             $(document).ready(function(){
               // Initialize meetings slider
-              $('.slider-meetings').slider({full_width: true, indicators : false, interval : 1, height : 200});
+              $('.slider-meetings').slider({full_width: true, indicators : false, interval : 1, height : 250});
               $('.slider-meetings').slider('pause');
             });
           }, 0, false);

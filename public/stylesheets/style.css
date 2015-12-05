@@ -3,6 +3,10 @@
   border: 1px solid red !important;
 }*/
 
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
 /* Achieve footer always at the bottom of the page behavior */
 body {
   display: flex;
@@ -21,6 +25,16 @@ form .row {
   padding-bottom: 0 !important;
 }
 
+/* Helpers */
+/* Center Wrapper */
+.center-wrapper {
+  display:flex; align-items: center; justify-conent: center;
+}
+
+/* Item to center */
+.center {
+  max-width:100%;
+}
 /* Custom card style */
 .image-card {
   border-bottom: 1px solid #e0e0e0;
@@ -269,6 +283,21 @@ select:focus {
   outline: none;
 }
 
+/* Checkbox */
+[type="checkbox"]:checked + label:before {
+  border-right: 2px solid #ff9800;
+  border-bottom: 2px solid #ff9800;
+}
+
+[type="checkbox"].filled-in:checked + label:after {
+  border: 2px solid #fb8c00;
+  background-color: #fb8c00;
+}
+
+.dropdown-content {
+  width: 250px !important;
+}
+
 /* Toast Style */
 /* Toast Container */
 #toast-container {
@@ -327,4 +356,14 @@ a.menu-collection-item {
 
 .picker__close, .picker__today {
   color : orange;
+}
+
+button.picker__close:focus {
+    background-color: #ffa726;
+    color: white;
+}
+
+button.picker__today:focus {
+    background-color: #ffa726;
+    color: white;
 }
